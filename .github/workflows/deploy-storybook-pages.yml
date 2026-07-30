@@ -57,6 +57,12 @@ jobs:
       - name: Run story play assertions
         run: npm run check:story-play
 
+      # A clipped slide renders and asserts perfectly well — the content is
+      # simply below the frame. Only a measurement catches it, so it gates the
+      # deploy alongside the play functions.
+      - name: Check slides fit their canvas
+        run: npm run check:slide-overflow
+
       - name: Include third-party notices
         shell: pwsh
         run: |
