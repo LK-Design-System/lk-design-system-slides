@@ -1,0 +1,9 @@
+export { SlideSurface } from './components/slides/SlideSurface.jsx';
+export { TitleSlide } from './components/slides/TitleSlide.jsx';
+export { ContentSlide } from './components/slides/ContentSlide.jsx';
+export { SectionSlide } from './components/slides/SectionSlide.jsx';
+export { SplitSlide } from './components/slides/SplitSlide.jsx';
+export { StatSlide } from './components/slides/StatSlide.jsx';
+export { AgendaSlide } from './components/slides/AgendaSlide.jsx';
+export { FigureSlide } from './components/slides/FigureSlide.jsx';
+export { EndSlide } from './components/slides/EndSlide.jsx';

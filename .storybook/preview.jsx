@@ -1,0 +1,31 @@
+import '@lk-robotics/lds-core/styles.css';
+import '@lk-robotics/lds-theme/styles.css';
+import '@lk-robotics/lds-product/styles.css';
+import '@lk-robotics/lds-editorial-ui/styles.css';
+import '../styles.css';
+import React from 'react';
+
+const preview = {
+  parameters: {
+    layout: 'fullscreen',
+    options: { storySort: { order: ['Slides'] } },
+  },
+  decorators: [
+    (Story) => (
+      <div
+        style={{
+          minHeight: '100vh',
+          boxSizing: 'border-box',
+          padding: 'clamp(16px, 5vw, 32px)',
+          background: 'var(--color-semantic-background-normal-alternative)',
+          color: 'var(--color-semantic-label-normal)',
+          fontFamily: 'var(--font-sans)',
+        }}
+      >
+        <Story />
+      </div>
+    ),
+  ],
+};
+
+export default preview;

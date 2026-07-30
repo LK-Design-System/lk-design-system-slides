@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "note": "Stories whose play function is known to fail. A ratchet: check:story-play fails on any unlisted failure, and also when a listed story starts passing. Only ever remove entries.",
+  "count": 0,
+  "failures": []
+}

@@ -1,0 +1,112 @@
+/*
+ * LDS Slides — slide-owned tokens.
+ *
+ * Ownership: this file may only define `--slides-*` variables. Color, spacing,
+ * radius, and font tokens are owned upstream (Core/Theme) per the cross-repository
+ * style contract; slides tokens compose them, never redefine them.
+ *
+ * The projection scale exists because slide type is read from meters away, not
+ * centimeters: steps are larger and fewer than the product ramp, and every step
+ * resolves through the upstream ramp variables so a Theme change re-skins decks.
+ *
+ * Presets: the deck kind is a token axis, not a layout axis. `:root` is the
+ * `keynote` preset — the strictest projection floor (body ≥ 24px ≈ 18pt on the
+ * 1280px canvas), so an unmarked deck is always auditorium-safe. Denser kinds
+ * opt in via `data-slides-preset` on the surface and only re-point `--slides-*`
+ * variables at other upstream ramp steps; layouts never change per preset.
+ */
+:root {
+  /* Geometry — one canonical canvas, safe area inside it. */
+  --slides-aspect: 16 / 9;
+  --slides-canvas-max-width: 1280px;
+  --slides-safe-x: 7%;
+  --slides-safe-y: 8%;
+
+  /* Projection type scale — display/title/body/caption for a projected room. */
+  --slides-display-size: var(--display1-size);
+  --slides-display-line: var(--display1-line);
+  --slides-display-spacing: var(--display1-spacing);
+  --slides-title-size: var(--display2-size);
+  --slides-title-line: var(--display2-line);
+  --slides-title-spacing: var(--display2-spacing);
+  --slides-body-size: var(--title3-size);
+  --slides-body-line: var(--title3-line);
+  --slides-body-spacing: var(--title3-spacing);
+  --slides-caption-size: var(--headline1-size);
+  --slides-caption-line: var(--headline1-line);
+  --slides-caption-spacing: var(--headline1-spacing);
+  /* `fine` is the floor rung: sources, legends, annotation bodies. Nothing on a
+     slide may be smaller than this, which is why it stops one rung under caption
+     rather than continuing down the product ramp. */
+  --slides-fine-size: var(--body1-size);
+  --slides-fine-line: var(--body1-line);
+  --slides-fine-spacing: var(--body1-spacing);
+
+  /* Surface — slides read on the elevated surface, chrome on the alternative. */
+  --slides-surface: var(--color-semantic-background-elevated-normal);
+  --slides-surface-edge: var(--color-semantic-line-normal-normal);
+}
+
+/*
+ * `briefing` — dense in-room reporting: tables and figures are allowed, the
+ * viewer sits close. Every step drops one rung on the upstream ramp and the
+ * safe area tightens; geometry and layout contracts are untouched.
+ */
+[data-slides-preset='briefing'] {
+  --slides-safe-x: 5%;
+  --slides-safe-y: 6%;
+
+  --slides-title-size: var(--title1-size);
+  --slides-title-line: var(--title1-line);
+  --slides-title-spacing: var(--title1-spacing);
+  --slides-body-size: var(--heading2-size);
+  --slides-body-line: var(--heading2-line);
+  --slides-body-spacing: var(--heading2-spacing);
+  --slides-caption-size: var(--body2-size);
+  --slides-caption-line: var(--body2-line);
+  --slides-caption-spacing: var(--body2-spacing);
+  --slides-fine-size: var(--label1-size);
+  --slides-fine-line: var(--label1-line);
+  --slides-fine-spacing: var(--label1-spacing);
+}
+
+/*
+ * Editorial ↔ Slides seam.
+ *
+ * LDS Editorial owns narrative RANK (value > claim > note > note-body >
+ * caption) and deliberately does not know the reading distance; the medium
+ * supplies it. This block is the slide medium answering: every editorial step
+ * is re-pointed at a `--slides-*` step, so an editorial component dropped on a
+ * slide is read from the back of the room without the component knowing.
+ *
+ * Mapping through `--slides-*` — not straight to the upstream ramp — is what
+ * makes presets flow through: `briefing` re-points the slide steps and the
+ * editorial layer follows for free.
+ *
+ * `note-body` and `caption` both land on `fine` on purpose: the floor is a
+ * floor. Past it, rank is carried by weight and color, never by shrinking.
+ *
+ * Specificity: `:root [data-lds-slide-surface]` (0,2,0) beats the editorial
+ * package's own `:root` (0,1,0), so this wins regardless of CSS import order.
+ */
+:root [data-lds-slide-surface] {
+  --editorial-value-size: var(--slides-title-size);
+  --editorial-value-line: var(--slides-title-line);
+  --editorial-value-spacing: var(--slides-title-spacing);
+
+  --editorial-claim-size: var(--slides-body-size);
+  --editorial-claim-line: var(--slides-body-line);
+  --editorial-claim-spacing: var(--slides-body-spacing);
+
+  --editorial-note-size: var(--slides-caption-size);
+  --editorial-note-line: var(--slides-caption-line);
+  --editorial-note-spacing: var(--slides-caption-spacing);
+
+  --editorial-note-body-size: var(--slides-fine-size);
+  --editorial-note-body-line: var(--slides-fine-line);
+  --editorial-note-body-spacing: var(--slides-fine-spacing);
+
+  --editorial-caption-size: var(--slides-fine-size);
+  --editorial-caption-line: var(--slides-fine-line);
+  --editorial-caption-spacing: var(--slides-fine-spacing);
+}
