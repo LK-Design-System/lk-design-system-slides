@@ -71,3 +71,62 @@ export const Default = {
     if (progress.textContent !== '2 / 3') throw new Error('The visible buttons must navigate too.');
   },
 };
+
+const NOTE = '적재 큐부터 짚고, 수집 이야기는 질문 나오면 그때.';
+
+export const SpeakerNotes = {
+  name: '발표자 노트',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '노트는 슬라이드 요소의 `notes` prop에 실려 덱이 읽습니다. **캔버스에는 절대 들어가지 '
+          + '않습니다** — 청중이 보는 표면에 발표자용 텍스트가 있으면 안 되기 때문입니다. '
+          + '기본은 숨김이고 `N` 또는 버튼으로 엽니다.',
+      },
+    },
+  },
+  render: () => (
+    <DeckViewer label="노트가 있는 덱">
+      <ContentSlide eyebrow="현황" title="수집 지연 현황" notes={NOTE}>
+        <p style={{ margin: 0 }}>p95 지연 41분 — 목표 초과 상태가 6주째 지속.</p>
+      </ContentSlide>
+      <EndSlide message="지연 민감 테이블부터, 3분기에 시작합니다." contact="플랫폼팀" />
+    </DeckViewer>
+  ),
+  play: async ({ canvasElement }) => {
+    const deck = canvasElement.querySelector('[data-lds-deck-viewer]');
+    const surface = canvasElement.querySelector('[data-lds-slide-surface]');
+    const notes = () => canvasElement.querySelector('[data-deck-notes]');
+    const press = async (key) => {
+      deck.focus();
+      deck.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+      await new Promise((resolve) => { setTimeout(resolve, 0); });
+    };
+
+    // The contract that matters: nothing written for the presenter reaches
+    // the canvas the room is looking at.
+    if (surface.textContent.includes(NOTE)) {
+      throw new Error('Speaker notes must never render inside the slide surface.');
+    }
+    if (notes()) throw new Error('Notes stay closed until the presenter asks for them.');
+
+    await press('n');
+    if (!notes() || !notes().textContent.includes(NOTE)) {
+      throw new Error('N must open the speaker notes for the current slide.');
+    }
+    if (canvasElement.querySelector('[data-lds-slide-surface]').contains(notes())) {
+      throw new Error('The notes region must live outside the slide surface, not within it.');
+    }
+
+    await press('n');
+    if (notes()) throw new Error('N must close the notes again.');
+
+    // A slide without notes offers no affordance to open them.
+    await press('n');
+    await press('ArrowRight');
+    if (canvasElement.querySelector('[data-deck-notes-toggle]')) {
+      throw new Error('A slide with no notes must not offer a notes toggle.');
+    }
+  },
+};

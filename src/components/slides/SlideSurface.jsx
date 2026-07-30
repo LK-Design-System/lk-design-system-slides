@@ -19,7 +19,18 @@ import React from 'react';
  * which `--slides-*` token values apply. Unset means the `:root` default
  * (keynote — the strictest projection floor).
  */
-export function SlideSurface({ children, safeArea = true, preset, style, ...rest }) {
+export function SlideSurface({
+  children,
+  safeArea = true,
+  preset,
+  // Speaker notes ride on the slide element so DeckViewer can read them off
+  // its own children, but they must never reach the canvas: the surface the
+  // room sees carries nothing written for the presenter. Destructured here so
+  // it neither renders nor leaks onto the DOM node.
+  notes,
+  style,
+  ...rest
+}) {
   const frameRef = React.useRef(null);
   const [scale, setScale] = React.useState(null);
 
