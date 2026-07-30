@@ -44,6 +44,12 @@ jobs:
       - name: Check style ownership
         run: npm run check:style-ownership
 
+      # catalogue.json is generated from the component docstrings and
+      # signatures. It is committed so consumers can read it without a build,
+      # which means it can be committed stale — this is the check that it is not.
+      - name: Check the catalogue matches source
+        run: npm run check:catalogue
+
       - name: Build Storybook
         run: npm run build:storybook
 
