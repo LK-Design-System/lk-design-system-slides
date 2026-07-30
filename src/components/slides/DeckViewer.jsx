@@ -1,5 +1,6 @@
 import React from 'react';
 import { DeckStepContext } from './stepContext.js';
+import { useDeck } from './useDeck.js';
 
 /**
  * LDS Slides — DeckViewer
@@ -20,66 +21,29 @@ import { DeckStepContext } from './stepContext.js';
  * Speaker notes are read off the slide element's own `notes` prop and never
  * enter the slide surface — the audience-facing canvas must not carry text
  * meant for the presenter. They stay hidden until asked for (`N`).
+ *
+ * `channel` joins a named deck, mirroring position with any other view on
+ * that channel — a `PresenterView` in the presenter's second window drives
+ * this one and follows it back.
  */
 export function DeckViewer({
   children,
   initial = 0,
+  channel,
   label = '슬라이드 덱',
   notesLabel = '발표자 노트',
   style,
   ...rest
 }) {
-  const slides = React.Children.toArray(children);
-  const count = slides.length;
-  const clamp = React.useCallback(
-    (value) => Math.min(Math.max(value, 0), Math.max(count - 1, 0)),
-    [count]
-  );
-  const [index, setIndex] = React.useState(() => clamp(initial));
-  const [step, setStep] = React.useState(0);
-  const [stepCount, setStepCount] = React.useState(0);
+  const {
+    slides, count, index, step, stepCount, slideRef,
+    forward, backward, deckKeyHandlers, atStart, atEnd, notes,
+  } = useDeck({ children, initial, channel });
   const [showNotes, setShowNotes] = React.useState(false);
-  const slideRef = React.useRef(null);
-  // Set just before a backwards slide change so the incoming slide can open
-  // fully revealed. A ref, not state: it must not schedule its own render.
-  const enterAtEndRef = React.useRef(false);
-
-  // The step count is read from the rendered slide rather than declared by
-  // the author: a layout composes its own steps, and asking every deck to
-  // restate the total is a number that would go stale.
-  React.useLayoutEffect(() => {
-    const slide = slideRef.current;
-    const declared = slide
-      ? [...slide.querySelectorAll('[data-lds-step]')]
-        .map((node) => Number(node.getAttribute('data-step-at')) || 0)
-      : [];
-    const total = declared.length > 0 ? Math.max(...declared) : 0;
-    setStepCount(total);
-    setStep(enterAtEndRef.current ? total : 0);
-    enterAtEndRef.current = false;
-  }, [index]);
-
-  const go = (next) => setIndex(clamp(next));
-  const goBack = () => {
-    if (index === 0) return;
-    enterAtEndRef.current = true;
-    setIndex(index - 1);
-  };
-  const forward = () => (step < stepCount ? setStep(step + 1) : go(index + 1));
-  const backward = () => (step > 0 ? setStep(step - 1) : goBack());
-  const jump = (next) => {
-    enterAtEndRef.current = false;
-    go(next);
-  };
 
   const onKeyDown = (event) => {
     const handlers = {
-      ArrowRight: forward,
-      PageDown: forward,
-      ArrowLeft: backward,
-      PageUp: backward,
-      Home: () => jump(0),
-      End: () => jump(count - 1),
+      ...deckKeyHandlers,
       n: () => setShowNotes((visible) => !visible),
       N: () => setShowNotes((visible) => !visible),
     };
@@ -88,8 +52,6 @@ export function DeckViewer({
       handlers[event.key]();
     }
   };
-
-  const notes = slides[index]?.props?.notes;
 
   return (
     <section
@@ -118,7 +80,7 @@ export function DeckViewer({
           type="button"
           data-deck-prev
           onClick={backward}
-          disabled={index === 0 && step === 0}
+          disabled={atStart}
           style={{ font: 'inherit' }}
         >
           이전
@@ -127,7 +89,7 @@ export function DeckViewer({
           type="button"
           data-deck-next
           onClick={forward}
-          disabled={index === count - 1 && step === stepCount}
+          disabled={atEnd}
           style={{ font: 'inherit' }}
         >
           다음

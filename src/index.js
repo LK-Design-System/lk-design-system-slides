@@ -12,4 +12,5 @@ export { CompareSlide } from './components/slides/CompareSlide.jsx';
 export { RoadmapSlide } from './components/slides/RoadmapSlide.jsx';
 export { AssessmentSlide } from './components/slides/AssessmentSlide.jsx';
 export { DeckViewer } from './components/slides/DeckViewer.jsx';
+export { PresenterView } from './components/slides/PresenterView.jsx';
 export { EndSlide } from './components/slides/EndSlide.jsx';
