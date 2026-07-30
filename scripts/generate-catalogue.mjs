@@ -131,7 +131,13 @@ if (process.argv.includes('--check')) {
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
   }
-  if (current !== serialised) {
+  // Compare on content, not bytes. `core.autocrlf` rewrites the file to CRLF
+  // on checkout, so a byte-exact comparison passes on the machine that wrote
+  // it and fails on every Windows CI runner that checks it out — a gate that
+  // only fires where nobody can reproduce it is worse than no gate.
+  const sameContent = (a, b) => a.replace(/\r\n/g, '\n') === b.replace(/\r\n/g, '\n');
+
+  if (!sameContent(current, serialised)) {
     console.error(
       'catalogue.json is stale — regenerate it with `npm run generate:catalogue` and commit the diff.\n'
       + 'It is generated from the component docstrings and signatures, so a stale file means the '
