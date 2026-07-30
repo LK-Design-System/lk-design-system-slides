@@ -16,8 +16,14 @@
  * variables at other upstream ramp steps; layouts never change per preset.
  */
 :root {
-  /* Geometry — one canonical canvas, safe area inside it. */
+  /* Geometry — one canonical canvas, safe area inside it.
+     `canvas-width` is the LOGICAL canvas: every other value in this file is a
+     design pixel measured against it, and SlideSurface fits it to the
+     container with a transform. Changing it re-measures the whole system, so
+     it is not a display knob — `canvas-max-width` is, capping how large the
+     fitted surface may render. */
   --slides-aspect: 16 / 9;
+  --slides-canvas-width: 1280px;
   --slides-canvas-max-width: 1280px;
   --slides-safe-x: 7%;
   --slides-safe-y: 8%;

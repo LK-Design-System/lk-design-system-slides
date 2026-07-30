@@ -67,6 +67,90 @@ export const Presets = {
   },
 };
 
+export const ScaleInvariance = {
+  name: '캔버스 스케일 불변',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '같은 슬라이드를 폭이 다른 두 컨테이너에 넣습니다. 캔버스는 논리 크기가 고정이라 '
+          + '줄바꿈과 구성이 완전히 같고, 컨테이너 폭에 따라 전체가 함께 축소될 뿐입니다. '
+          + '유동 박스였다면 좁은 쪽에서 타입이 상대적으로 커지며 구성이 달라집니다.',
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
+      {[960, 540].map((width) => (
+        <div key={width} data-probe-width={width} style={{ width }}>
+          <ContentSlide eyebrow="Operations" title="같은 캔버스, 다른 표시 크기">
+            <p style={{ margin: 0 }}>
+              논리 캔버스가 고정이라 이 문단의 줄바꿈은 두 판에서 동일합니다.
+            </p>
+          </ContentSlide>
+        </div>
+      ))}
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const probes = [...canvasElement.querySelectorAll('[data-probe-width]')].map((probe) => {
+      const surface = probe.querySelector('[data-lds-slide-surface]');
+      const frame = probe.querySelector('[data-lds-slide-frame]');
+      const title = probe.querySelector('[data-slide-title]');
+      return {
+        width: Number(probe.getAttribute('data-probe-width')),
+        surface: surface.getBoundingClientRect(),
+        frame: frame.getBoundingClientRect(),
+        title: title.getBoundingClientRect(),
+        designFontSize: Number.parseFloat(getComputedStyle(title).fontSize),
+        canvasWidth: Number.parseFloat(
+          getComputedStyle(surface).getPropertyValue('width'),
+        ),
+      };
+    });
+    if (probes.length !== 2) throw new Error('The invariance story needs two differently sized probes.');
+    const [wide, narrow] = probes;
+
+    // Guard against a vacuous pass: the two probes must actually render at
+    // different sizes, or the ratios below match for the wrong reason.
+    if (!(wide.surface.width > narrow.surface.width + 100)) {
+      throw new Error(
+        `The probes must render at different sizes; got ${wide.surface.width} and ${narrow.surface.width}.`,
+      );
+    }
+
+    // A transform does not shrink a layout box, so a canvas left in flow makes
+    // the deck reserve its full logical height and stack dead space under
+    // every slide. The frame must measure exactly what the canvas draws.
+    for (const probe of probes) {
+      const slack = Math.abs(probe.frame.height - probe.surface.height);
+      if (slack > 1) {
+        throw new Error(
+          `The frame must reserve exactly the scaled canvas at ${probe.width}px; `
+          + `frame ${probe.frame.height.toFixed(1)} vs canvas ${probe.surface.height.toFixed(1)}.`,
+        );
+      }
+    }
+
+    // The logical canvas is the same in both, so type is authored at one size
+    // and every visual difference is the fit transform.
+    if (wide.designFontSize !== narrow.designFontSize || wide.canvasWidth !== narrow.canvasWidth) {
+      throw new Error('The logical canvas and its type must be identical regardless of display size.');
+    }
+
+    // The invariant: a title occupies the same fraction of the canvas at any
+    // display size. A fluid box with fixed type fails this — that was the bug
+    // this contract exists to prevent.
+    const ratio = (probe) => probe.title.height / probe.surface.height;
+    const drift = Math.abs(ratio(wide) - ratio(narrow));
+    if (drift > 0.01) {
+      throw new Error(
+        `Title must hold its share of the canvas at any size; ratios ${ratio(wide).toFixed(4)} vs ${ratio(narrow).toFixed(4)}.`,
+      );
+    }
+  },
+};
+
 export const FullBleed = {
   name: 'Full Bleed',
   render: () => (
