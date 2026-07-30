@@ -56,20 +56,70 @@ async function measureStory(page, origin, id) {
   // Fit measures on a ResizeObserver pass; give it one settle before trusting
   // the numbers, or every Fit reads as overflowing on first paint.
   await page.waitForTimeout(400);
-  return page.evaluate((slack) => {
-    const surfaces = [...document.querySelectorAll('[data-lds-slide-surface]')]
-      .map((node, order) => ({
-        order,
-        client: node.clientHeight,
-        scroll: node.scrollHeight,
-        label: (node.querySelector('[data-slide-title], [data-slide-statement], [data-slide-message]')
-          ?.textContent ?? '').trim().slice(0, 40),
-      }))
-      .filter((surface) => surface.scroll > surface.client + slack);
-    const fits = [...document.querySelectorAll('[data-lds-fit][data-fit-overflow="true"]')]
-      .map((node) => ({ scale: node.getAttribute('data-fit-scale') }));
-    return { surfaces, fits };
-  }, SLACK_PX).then((result) => ({ id, ...result }));
+  return page.evaluate(async ({ slack, maxAdvances, settleMs }) => {
+    const wait = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+
+    const measure = (position) => {
+      const surfaces = [...document.querySelectorAll('[data-lds-slide-surface]')]
+        // A presenter view renders the NEXT slide as an inert preview. It is a
+        // copy of a slide measured in its own right, so counting it here would
+        // report the same overflow twice and blame the wrong view.
+        .filter((node) => !node.closest('[data-presenter-next-slide]'))
+        .map((node, order) => ({
+          order,
+          position,
+          client: node.clientHeight,
+          scroll: node.scrollHeight,
+          label: (node.querySelector('[data-slide-title], [data-slide-statement], [data-slide-message]')
+            ?.textContent ?? '').trim().slice(0, 40),
+        }))
+        .filter((surface) => surface.scroll > surface.client + slack);
+      const fits = [...document.querySelectorAll('[data-lds-fit][data-fit-overflow="true"]')]
+        .map((node) => ({ position, scale: node.getAttribute('data-fit-scale') }));
+      return { surfaces, fits };
+    };
+
+    // A deck mounts one slide at a time, so measuring what is on screen only
+    // ever judges slide one — the fourteen behind it were never looked at. The
+    // gate therefore drives the deck the way a presenter does, through the same
+    // keyboard affordance, and measures every position it stops at. Steps are
+    // spent before slides, which is why this counts positions reported by the
+    // deck rather than counting key presses.
+    const deck = document.querySelector('[data-lds-deck-viewer], [data-lds-presenter-view]');
+    if (!deck) return measure(null);
+
+    const progressOf = () => (
+      document.querySelector('[data-deck-progress], [data-presenter-progress]')?.textContent ?? ''
+    ).trim();
+    const slideOf = () => progressOf().split('·')[0].trim();
+
+    const press = async (key) => {
+      deck.focus();
+      deck.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+      await wait(settleMs);
+    };
+
+    await press('Home');
+    const surfaces = [];
+    const fits = [];
+    const visited = new Set();
+    for (let advance = 0; advance < maxAdvances; advance += 1) {
+      const here = slideOf();
+      if (!visited.has(here)) {
+        visited.add(here);
+        const seen = measure(here);
+        surfaces.push(...seen.surfaces);
+        fits.push(...seen.fits);
+      }
+      const before = progressOf();
+      // eslint-disable-next-line no-await-in-loop
+      await press('ArrowRight');
+      // The deck clamps at the end rather than wrapping, so a press that
+      // changes nothing means there is nothing left to measure.
+      if (progressOf() === before) break;
+    }
+    return { surfaces, fits, visited: visited.size };
+  }, { slack: SLACK_PX, maxAdvances: 400, settleMs: 90 }).then((result) => ({ id, ...result }));
 }
 
 async function loadKnown() {
@@ -122,11 +172,13 @@ async function main(origin) {
   const describe = (result) => {
     const lines = result.surfaces.map((surface) => {
       const where = surface.label ? ` ("${surface.label}")` : '';
-      return `    slide ${surface.order + 1}${where}: ${surface.scroll}px of content in a ${surface.client}px canvas`
+      const at = surface.position ? `slide ${surface.position}` : `slide ${surface.order + 1}`;
+      return `    ${at}${where}: ${surface.scroll}px of content in a ${surface.client}px canvas`
         + ` — ${surface.scroll - surface.client}px clipped`;
     });
     for (const fit of result.fits) {
-      lines.push(`    Fit hit the projection floor (${fit.scale}×) and still overflows`);
+      const at = fit.position ? ` at slide ${fit.position}` : '';
+      lines.push(`    Fit hit the projection floor (${fit.scale}×) and still overflows${at}`);
     }
     return `- ${result.id}\n${lines.join('\n')}`;
   };
@@ -149,8 +201,11 @@ async function main(origin) {
   const regressions = offenders.filter((result) => !known.has(result.id));
   const fixed = requestedIds !== null ? [] : [...known].filter((id) => !offenderIds.has(id)).sort();
 
+  // Deck stories contribute one measurement per slide, not per story, so the
+  // slide count is the number that says whether coverage is real.
+  const slidesSeen = results.reduce((total, result) => total + (result.visited ?? 1), 0);
   console.log(
-    `Measured ${results.length} stories for canvas overflow: `
+    `Measured ${results.length} stories (${slidesSeen} slide positions) for canvas overflow: `
     + `${results.length - offenders.length} fit, ${offenders.length} overflow `
     + `(${regressions.length} new, ${offenders.length - regressions.length} known).`
   );
