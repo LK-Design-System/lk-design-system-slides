@@ -120,9 +120,10 @@ async function main(origin) {
   const index = JSON.parse(await readFile(path.join(staticDir, 'index.json'), 'utf8'));
   const stories = Object.values(index.entries)
     .filter((entry) => entry.type === 'story')
-    // `!test` is Storybook's own opt-out tag; honour it so a story can be
-    // excluded in one place instead of in every runner.
-    .filter((entry) => !(entry.tags || []).includes('!test'))
+    // Storybook resolves a story's `!test` tag by REMOVING `test` from the
+    // index — it never writes `!test` there — so opting out is checked by the
+    // absence of `test`, not the presence of its negation.
+    .filter((entry) => (entry.tags || []).includes('test'))
     .filter((entry) => requestedIds === null || requestedIds.has(entry.id))
     .map((entry) => entry.id)
     .sort();

@@ -6,6 +6,7 @@ export { SplitSlide } from './components/slides/SplitSlide.jsx';
 export { StatSlide } from './components/slides/StatSlide.jsx';
 export { StatementSlide } from './components/slides/StatementSlide.jsx';
 export { Step } from './components/slides/Step.jsx';
+export { Fit } from './components/slides/Fit.jsx';
 export { AgendaSlide } from './components/slides/AgendaSlide.jsx';
 export { FigureSlide } from './components/slides/FigureSlide.jsx';
 export { CompareSlide } from './components/slides/CompareSlide.jsx';

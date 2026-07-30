@@ -47,6 +47,12 @@
   --slides-fine-size: var(--body1-size);
   --slides-fine-line: var(--body1-line);
   --slides-fine-spacing: var(--body1-spacing);
+  /* How far `Fit` may shrink over-full content before the shrinking is itself
+     a lie about legibility. Unset on purpose: Fit derives it from the ramp
+     (fine ÷ body — body type may fall to the smallest sanctioned step and no
+     further), so the floor follows the preset instead of being a constant that
+     outlives it. Pin a number here only to override that. */
+  /* --slides-fit-floor: 0.66; */
 
   /* Surface — slides read on the elevated surface, chrome on the alternative. */
   --slides-surface: var(--color-semantic-background-elevated-normal);
