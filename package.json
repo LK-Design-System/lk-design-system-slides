@@ -26,7 +26,8 @@
     "check:slide-overflow": "node scripts/check-slide-overflow.mjs",
     "generate:catalogue": "node scripts/generate-catalogue.mjs",
     "check:catalogue": "node scripts/generate-catalogue.mjs --check",
-    "check:deck-content": "node scripts/check-deck-content.mjs"
+    "check:deck-content": "node scripts/check-deck-content.mjs",
+    "qa": "node qa/run.mjs"
   },
   "dependencies": {
     "@lk-robotics/lds-core": "file:vendor/lk-robotics-lds-core-0.1.0-rc.3.tgz",
