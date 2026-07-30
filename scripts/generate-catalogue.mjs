@@ -31,6 +31,7 @@ const RULES = [
   'Content that overruns the canvas is clipped, not scrolled. Cut it, split the slide, or wrap the body in Fit — check:slide-overflow fails the build either way.',
   'Steps reveal on the presenter cue and must not reflow: a pending Step keeps its box. Outside a deck every Step renders revealed.',
   'Speaker notes ride on the slide element as `notes` and never reach the canvas the room sees.',
+  'A slide that shows data names its source; a deck spends StatementSlide at most twice; an EndSlide message carries the argument’s residue, not thanks. check:deck-content enforces all three, with thresholds cited at the top of that script.',
 ];
 
 const KINDS = [

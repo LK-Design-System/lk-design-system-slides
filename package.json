@@ -22,10 +22,11 @@
     "build:storybook": "storybook build",
     "check:story-play": "node scripts/check-story-play.mjs",
     "check:style-ownership": "node scripts/check-style-ownership.mjs",
-    "check:storybook": "npm run check:style-ownership && npm run check:catalogue && npm run build:storybook && npm run check:story-play && npm run check:slide-overflow",
+    "check:storybook": "npm run check:style-ownership && npm run check:catalogue && npm run build:storybook && npm run check:story-play && npm run check:slide-overflow && npm run check:deck-content",
     "check:slide-overflow": "node scripts/check-slide-overflow.mjs",
     "generate:catalogue": "node scripts/generate-catalogue.mjs",
-    "check:catalogue": "node scripts/generate-catalogue.mjs --check"
+    "check:catalogue": "node scripts/generate-catalogue.mjs --check",
+    "check:deck-content": "node scripts/check-deck-content.mjs"
   },
   "dependencies": {
     "@lk-robotics/lds-core": "file:vendor/lk-robotics-lds-core-0.1.0-rc.3.tgz",

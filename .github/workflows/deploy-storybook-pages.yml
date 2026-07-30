@@ -69,6 +69,13 @@ jobs:
       - name: Check slides fit their canvas
         run: npm run check:slide-overflow
 
+      # Content discipline with numbers — noun-final titles, governing shape,
+      # bullet and body caps, sources on data slides. The thresholds and their
+      # sources (Alley, tahta, academic-pptx-skill) live at the top of the
+      # script; the judgement calls without numbers stay in qa/rubric.md.
+      - name: Check deck content discipline
+        run: npm run check:deck-content
+
       - name: Include third-party notices
         shell: pwsh
         run: |
