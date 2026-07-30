@@ -41,6 +41,16 @@ jobs:
       - name: Build Storybook
         run: npm run build:storybook
 
+      # The play functions are where the expression contracts are enforced, so
+      # they gate the deploy: a build that violates one never reaches Pages.
+      # Chromium is installed explicitly because the runner image ships no
+      # Playwright browsers, and only Chromium is needed.
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Run story play assertions
+        run: npm run check:story-play
+
       - name: Include third-party notices
         shell: pwsh
         run: |
