@@ -1,0 +1,46 @@
+import React from 'react';
+import { NarrativeTimeline } from '@lk-robotics/lds-editorial-ui';
+import { ContentSlide } from './ContentSlide.jsx';
+
+/**
+ * LDS Slides — RoadmapSlide
+ * The phases slide (the consulting roadmap pattern): ContentSlide's header
+ * contract, with the content region given to one Editorial
+ * `NarrativeTimeline`. The chronology contract lives upstream — events
+ * sort themselves, an undated phase is a visible footnote rather than a
+ * guess on the rail, and rhythm is not duration. The slide owns placement,
+ * the source line, and the emphasis settlement: an emphasized phase is
+ * spent emphasis, so the accented eyebrow is dropped, same as the other
+ * figure-bearing slides.
+ */
+export function RoadmapSlide({ eyebrow, title, governing, phases = [], source, style, ...rest }) {
+  const emphasisSpent = phases.some((phase) => Boolean(phase.emphasis));
+
+  return (
+    <ContentSlide
+      eyebrow={emphasisSpent ? undefined : eyebrow}
+      title={title}
+      governing={governing}
+      data-lds-roadmap-slide
+      data-emphasis-spent={emphasisSpent ? 'phase' : undefined}
+      style={style}
+      {...rest}
+    >
+      <NarrativeTimeline events={phases} label="실행 로드맵" />
+      {source && (
+        <p
+          data-roadmap-slide-source
+          style={{
+            margin: 'var(--space-6) 0 0',
+            fontSize: 'var(--slides-fine-size)',
+            lineHeight: 'var(--slides-fine-line)',
+            letterSpacing: 'var(--slides-fine-spacing)',
+            color: 'var(--color-semantic-label-alternative)',
+          }}
+        >
+          {source}
+        </p>
+      )}
+    </ContentSlide>
+  );
+}

@@ -51,8 +51,14 @@ Core/Product는 `peerDependencies`라 트리에 Core는 정확히 하나만 존�
 semver 고정(캐럿 없음)으로 전환한다.
 
 ```bash
-npm run check:storybook   # 빌드 + 모든 play 단언을 headless Chromium에서 실행
+npm run check:storybook   # 소유권 검사 + 빌드 + 모든 play 단언을 headless Chromium에서 실행
 ```
+
+`check:style-ownership`이 체인의 첫 게이트다: 컴포넌트는 업스트림 램프 변수
+(`--display1-size` 등)를 직접 읽을 수 없고 `--slides-*` 단계만 읽는다 — 램프 직참조는
+프리셋 축을 무시하고 투사 하한을 조용히 깨는데, 모든 스토리에서 멀쩡해 보이기 때문에
+play가 아니라 정적 게이트가 잡는다. `tokens/slides.css`는 `--slides-*`만 정의할 수 있고,
+유일한 예외는 슬라이드 표면에 스코프된 `--editorial-*` 재지정(Editorial 접합부)이다.
 
 ```bash
 npm install
@@ -61,9 +67,7 @@ npm run storybook   # http://127.0.0.1:6009
 
 ## 다음 단계
 
-- 레이아웃 어휘 확장: 옵션 비교(CompareSlide), 로드맵(RoadmapSlide) 등 — mckinsey-pptx
-  카탈로그의 콘텐츠 패턴 층을 기준으로 선별.
-- Editorial 얹기 확장: `AnnotatedFigure`·`PictogramRow`를 쓰는 FigureSlide.
-- 덱 컨테이너: 슬라이드 순서·키보드 내비게이션·진행 표시를 소유하는 DeckViewer.
-- 게이트: 스타일 소유권 검사(컴포넌트의 업스트림 램프 직접 참조 금지), 배포 워크플로.
+- 레이아웃 어휘: mckinsey-pptx 카탈로그의 주요 패턴은 매핑 완료(구조·stat·도판·비교·
+  로드맵·상태 평가). 추가 확장은 실제 덱에서 수요가 생길 때 카탈로그 기준으로 선별.
+- 배포 워크플로.
 - Directory 등재: Core Storybook의 LDS Directory에 행 추가, github.io 배포.

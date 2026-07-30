@@ -6,4 +6,8 @@ export { SplitSlide } from './components/slides/SplitSlide.jsx';
 export { StatSlide } from './components/slides/StatSlide.jsx';
 export { AgendaSlide } from './components/slides/AgendaSlide.jsx';
 export { FigureSlide } from './components/slides/FigureSlide.jsx';
+export { CompareSlide } from './components/slides/CompareSlide.jsx';
+export { RoadmapSlide } from './components/slides/RoadmapSlide.jsx';
+export { AssessmentSlide } from './components/slides/AssessmentSlide.jsx';
+export { DeckViewer } from './components/slides/DeckViewer.jsx';
 export { EndSlide } from './components/slides/EndSlide.jsx';

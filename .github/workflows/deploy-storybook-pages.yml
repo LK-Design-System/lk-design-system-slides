@@ -38,6 +38,12 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      # Static ownership gate first: it is the cheapest check and a violation
+      # (a component reading the upstream ramp directly) renders fine in every
+      # story, so the play runner below would not catch it.
+      - name: Check style ownership
+        run: npm run check:style-ownership
+
       - name: Build Storybook
         run: npm run build:storybook
 

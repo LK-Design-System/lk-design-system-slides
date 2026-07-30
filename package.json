@@ -20,11 +20,12 @@
     "storybook": "storybook dev -p 6009 --host 127.0.0.1 --no-open",
     "build:storybook": "storybook build",
     "check:story-play": "node scripts/check-story-play.mjs",
-    "check:storybook": "npm run build:storybook && npm run check:story-play"
+    "check:style-ownership": "node scripts/check-style-ownership.mjs",
+    "check:storybook": "npm run check:style-ownership && npm run build:storybook && npm run check:story-play"
   },
   "dependencies": {
     "@lk-robotics/lds-core": "file:vendor/lk-robotics-lds-core-0.1.0-rc.3.tgz",
-    "@lk-robotics/lds-editorial-ui": "file:vendor/lk-robotics-lds-editorial-ui-0.1.0-alpha.1.tgz",
+    "@lk-robotics/lds-editorial-ui": "file:vendor/lk-robotics-lds-editorial-ui-0.1.0-alpha.3.tgz",
     "@lk-robotics/lds-product": "file:vendor/lk-robotics-lds-product-0.1.0-rc.3.tgz"
   },
   "peerDependencies": {
