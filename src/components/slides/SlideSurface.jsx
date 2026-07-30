@@ -1,4 +1,7 @@
 import React from 'react';
+import { DeckPositionContext } from './deckPosition.js';
+
+const pad = (value) => String(value ?? '').padStart(2, '0');
 
 /**
  * LDS Slides — SlideSurface
@@ -28,11 +31,17 @@ export function SlideSurface({
   // room sees carries nothing written for the presenter. Destructured here so
   // it neither renders nor leaks onto the DOM node.
   notes,
+  // Footer label — usually the deck or team name. The page number comes from
+  // the deck, not from here. `footer={false}` drops the whole strip.
+  foot,
+  footer = true,
   style,
   ...rest
 }) {
   const frameRef = React.useRef(null);
   const [scale, setScale] = React.useState(null);
+  const position = React.useContext(DeckPositionContext);
+  const showFooter = footer !== false && (foot || position);
 
   // Layout effect, not effect: the first paint must already be scaled, or the
   // slide flashes at full logical size before snapping down.
@@ -98,6 +107,38 @@ export function SlideSurface({
         {...rest}
       >
         {children}
+        {showFooter && (
+          // Out of flow on purpose. The footer sits in the bottom safe-area
+          // band, below where content stops, so adding it re-flows nothing and
+          // contributes nothing to the canvas's scroll height — the overflow
+          // gate keeps measuring content, not chrome.
+          <footer
+            data-slide-foot
+            style={{
+              position: 'absolute',
+              left: 'var(--slides-safe-x)',
+              right: 'var(--slides-safe-x)',
+              bottom: 'var(--space-4)',
+              display: 'flex',
+              alignItems: 'baseline',
+              justifyContent: 'space-between',
+              gap: 'var(--space-4)',
+              fontSize: 'var(--slides-fine-size)',
+              lineHeight: 'var(--slides-fine-line)',
+              letterSpacing: 'var(--slides-fine-spacing)',
+              color: 'var(--color-semantic-label-alternative)',
+            }}
+          >
+            <span data-slide-foot-label>{foot}</span>
+            {position && (
+              <span data-slide-page style={{ fontVariantNumeric: 'tabular-nums' }}>
+                <span data-slide-page-current>{pad(position.page)}</span>
+                {' / '}
+                {pad(position.total)}
+              </span>
+            )}
+          </footer>
+        )}
       </section>
     </div>
   );

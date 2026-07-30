@@ -1,5 +1,5 @@
 import React from 'react';
-import { ContentSlide, SlideSurface } from '../src/index.js';
+import { ContentSlide, DeckViewer, SlideSurface } from '../src/index.js';
 
 const meta = {
   title: 'Slides/Slide Surface',
@@ -148,6 +148,86 @@ export const ScaleInvariance = {
         `Title must hold its share of the canvas at any size; ratios ${ratio(wide).toFixed(4)} vs ${ratio(narrow).toFixed(4)}.`,
       );
     }
+  },
+};
+
+export const Footer = {
+  name: '푸터와 페이지 번호',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '페이지 번호는 **캔버스 위**에 있습니다. 덱 크롬에만 있으면 슬라이드를 내보내거나 '
+          + '캡처한 순간 신원이 사라지기 때문입니다. 위치는 덱이 컨텍스트로 내려주므로, 덱 밖에서 '
+          + '홀로 렌더된 슬라이드는 번호를 지어내지 않고 표시하지 않습니다. 푸터는 흐름 밖에 있어 '
+          + '어떤 레이아웃도 밀지 않고 초과 측정에도 잡히지 않습니다.',
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
+      <div data-probe="deck">
+        <DeckViewer label="푸터 데모">
+          <ContentSlide foot="플랫폼팀 · 2026 Q3" eyebrow="현황" title="덱 안에서는 번호가 붙는다">
+            <p style={{ margin: 0 }}>페이지 번호는 덱이 알고, 캔버스가 그린다.</p>
+          </ContentSlide>
+          <ContentSlide foot="플랫폼팀 · 2026 Q3" eyebrow="현황" title="두 번째 장">
+            <p style={{ margin: 0 }}>번호는 진행에 따라 움직인다.</p>
+          </ContentSlide>
+        </DeckViewer>
+      </div>
+      <div data-probe="standalone">
+        <ContentSlide foot="플랫폼팀 · 2026 Q3" eyebrow="현황" title="덱 밖에서는 번호가 없다">
+          <p style={{ margin: 0 }}>홀로 선 슬라이드에는 보고할 위치가 없다.</p>
+        </ContentSlide>
+      </div>
+      <div data-probe="opted-out">
+        <ContentSlide footer={false} eyebrow="현황" title="푸터를 끈 장">
+          <p style={{ margin: 0 }}>표지나 전면 도판은 푸터를 내린다.</p>
+        </ContentSlide>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const at = (probe, selector) => canvasElement.querySelector(`[data-probe="${probe}"] ${selector}`);
+
+    // In a deck the page number is on the canvas, zero-padded.
+    const page = at('deck', '[data-slide-page]');
+    if (!page) throw new Error('A slide inside a deck must carry its page number on the canvas.');
+    if (page.textContent.replace(/\s/g, '') !== '01/02') {
+      throw new Error(`The page number must be zero-padded "01 / 02"; got "${page.textContent.trim()}".`);
+    }
+    const surface = at('deck', '[data-lds-slide-surface]');
+    if (!surface.contains(page)) throw new Error('The page number must live inside the canvas, not the deck chrome.');
+    if (at('deck', '[data-slide-foot-label]').textContent !== '플랫폼팀 · 2026 Q3') {
+      throw new Error('The footer label is the deck’s to set and the canvas’s to draw.');
+    }
+
+    // Out of flow: adding chrome must not make a slide look over-full.
+    if (surface.scrollHeight > surface.clientHeight + 1) {
+      throw new Error('The footer must not contribute to the canvas scroll height.');
+    }
+
+    // A lone slide has no position, so it invents none.
+    if (at('standalone', '[data-slide-page]')) {
+      throw new Error('Outside a deck a slide must not print a page number it cannot know.');
+    }
+    if (!at('standalone', '[data-slide-foot-label]')) {
+      throw new Error('A footer label still shows without a deck — only the number needs a position.');
+    }
+
+    if (at('opted-out', '[data-slide-foot]')) throw new Error('footer={false} must drop the whole strip.');
+
+    // The number follows the deck.
+    const deck = canvasElement.querySelector('[data-lds-deck-viewer]');
+    deck.focus();
+    deck.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    for (let attempt = 0; attempt < 100; attempt += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => { setTimeout(resolve, 10); });
+      if (at('deck', '[data-slide-page]')?.textContent.replace(/\s/g, '') === '02/02') return;
+    }
+    throw new Error(`The page number must follow the deck; stayed at "${at('deck', '[data-slide-page]')?.textContent}".`);
   },
 };
 

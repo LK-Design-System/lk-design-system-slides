@@ -1,5 +1,6 @@
 import React from 'react';
 import { DeckStepContext } from './stepContext.js';
+import { DeckPositionContext } from './deckPosition.js';
 import { useDeck } from './useDeck.js';
 
 /**
@@ -40,6 +41,9 @@ export function DeckViewer({
     forward, backward, deckKeyHandlers, atStart, atEnd, notes,
   } = useDeck({ children, initial, channel });
   const [showNotes, setShowNotes] = React.useState(false);
+  // Memoised so a step reveal does not hand the slide a new position object
+  // and re-render every layout that reads the page number.
+  const positionValue = React.useMemo(() => ({ page: index + 1, total: count }), [index, count]);
 
   const onKeyDown = (event) => {
     const handlers = {
@@ -65,7 +69,9 @@ export function DeckViewer({
       {...rest}
     >
       <div data-deck-slide ref={slideRef}>
-        <DeckStepContext.Provider value={step}>{slides[index]}</DeckStepContext.Provider>
+        <DeckPositionContext.Provider value={positionValue}>
+            <DeckStepContext.Provider value={step}>{slides[index]}</DeckStepContext.Provider>
+          </DeckPositionContext.Provider>
       </div>
       <footer
         data-deck-chrome

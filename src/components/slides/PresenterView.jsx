@@ -1,5 +1,6 @@
 import React from 'react';
 import { DeckStepContext } from './stepContext.js';
+import { DeckPositionContext } from './deckPosition.js';
 import { useDeck } from './useDeck.js';
 
 function formatElapsed(seconds) {
@@ -45,6 +46,9 @@ export function PresenterView({
     forward, backward, deckKeyHandlers, atStart, atEnd, notes, nextSlide,
   } = useDeck({ children, initial, channel });
   const [elapsed, setElapsed] = React.useState(0);
+  // Memoised so a step reveal does not hand the slide a new position object
+  // and re-render every layout that reads the page number.
+  const positionValue = React.useMemo(() => ({ page: index + 1, total: count }), [index, count]);
 
   React.useEffect(() => {
     if (!running) return undefined;
@@ -146,7 +150,9 @@ export function PresenterView({
         <div style={paneStyle}>
           <p style={paneLabel}>현재</p>
           <div data-presenter-current ref={slideRef}>
+            <DeckPositionContext.Provider value={positionValue}>
             <DeckStepContext.Provider value={step}>{slides[index]}</DeckStepContext.Provider>
+          </DeckPositionContext.Provider>
           </div>
         </div>
         <div style={paneStyle}>
