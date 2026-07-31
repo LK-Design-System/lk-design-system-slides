@@ -58,6 +58,11 @@ async function measureStory(page, origin, id) {
   await page.waitForTimeout(400);
   return page.evaluate(async ({ slack, maxAdvances, settleMs }) => {
     const wait = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+    // Images decode after layout; measuring before they settle judges a slide
+    // that does not exist yet. Await every current <img> before each look.
+    const imagesSettled = () => Promise.all([...document.images].map((img) => (
+      img.complete ? Promise.resolve() : new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; })
+    )));
 
     const measure = (position) => {
       const surfaces = [...document.querySelectorAll('[data-lds-slide-surface]')]
@@ -86,7 +91,7 @@ async function measureStory(page, origin, id) {
     // spent before slides, which is why this counts positions reported by the
     // deck rather than counting key presses.
     const deck = document.querySelector('[data-lds-deck-viewer], [data-lds-presenter-view]');
-    if (!deck) return measure(null);
+    if (!deck) { await imagesSettled(); return measure(null); }
 
     const progressOf = () => (
       document.querySelector('[data-deck-progress], [data-presenter-progress]')?.textContent ?? ''
@@ -107,6 +112,7 @@ async function measureStory(page, origin, id) {
       const here = slideOf();
       if (!visited.has(here)) {
         visited.add(here);
+        await imagesSettled();
         const seen = measure(here);
         surfaces.push(...seen.surfaces);
         fits.push(...seen.fits);

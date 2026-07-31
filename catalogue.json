@@ -312,6 +312,57 @@
       ]
     },
     {
+      "name": "ImageSlide",
+      "kind": "layout",
+      "useFor": "The photograph slide: one image as the content, either inside the header contract (contained) or as the whole canvas (`bleed`). FigureSlide is for an exhibit that carries annotations; this is for an image that carries the moment — a product shot, a site photo, a hero.",
+      "props": [
+        {
+          "name": "eyebrow"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "governing"
+        },
+        {
+          "name": "src"
+        },
+        {
+          "name": "alt"
+        },
+        {
+          "name": "caption"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "aspect",
+          "default": "'16 / 9'"
+        },
+        {
+          "name": "fit",
+          "default": "'cover'"
+        },
+        {
+          "name": "bleed",
+          "default": "false"
+        }
+      ],
+      "dataAttributes": [
+        "data-image-alt-missing",
+        "data-image-alt-warning",
+        "data-image-bleed",
+        "data-image-slide-attribution",
+        "data-image-slide-box",
+        "data-image-slide-caption",
+        "data-image-slide-figure",
+        "data-image-slide-source",
+        "data-lds-image-slide"
+      ]
+    },
+    {
       "name": "CompareSlide",
       "kind": "layout",
       "useFor": "The option-assessment slide (the consulting comparison-table pattern): ContentSlide's header contract, with the content region given to one Editorial `OptionAssessment`. The judgment contract — closed verdict vocabulary, text-spoken verdicts, one recommended column — lives upstream in Editorial; the slide owns placement, the source line, and the emphasis settlement: a recommendation is spent emphasis, so the accented eyebrow is dropped, same as StatSlide and FigureSlide.",

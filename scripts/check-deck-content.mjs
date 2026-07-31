@@ -43,6 +43,17 @@ import { closeServer, startStaticServer } from './_storybook-static.mjs';
 //                      (Found by the first qa harness critique, 2026-07-31: an
 //                      agent-authored deck passed every gate with a roadmap
 //                      whose three phases shared one date.)
+//   img-alt            An image with no text channel. ImageSlide renders its
+//                      own visible breach marker (data-image-alt-missing); a
+//                      raw <img> missing the alt attribute entirely is the
+//                      same breach unmarked. alt="" on a raw img is an
+//                      explicit decorative declaration and passes.
+//   img-unsized        A raw <img> with no reserved box (width+height attrs,
+//                      CSS aspect-ratio, or a fixed height). Images decode
+//                      after layout, so an unsized one reflows the slide when
+//                      it arrives — the reveal no-reflow contract, broken by
+//                      the network instead of the presenter. ImageSlide
+//                      reserves its box by construction and is exempt.
 //   canvas-under-fill  Three or more content slides whose PAINTED content ends
 //                      above half the canvas. The overflow gate catches spill,
 //                      never sparseness, and the defect survived one round of
@@ -103,6 +114,11 @@ async function auditStory(page, origin, id) {
   return page.evaluate(async ({ maxAdvances, settleMs }) => {
     const wait = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
     const clean = (text) => (text ?? '').replace(/\s+/g, ' ').trim();
+    // Images decode after layout; auditing before they settle judges a slide
+    // that does not exist yet. Await every current <img> before each look.
+    const imagesSettled = () => Promise.all([...document.images].map((img) => (
+      img.complete ? Promise.resolve() : new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; })
+    )));
     const issues = [];
     let statements = 0;
     const underFilled = [];
@@ -211,6 +227,38 @@ async function auditStory(page, origin, id) {
         }
       }
 
+      // img-alt — a photograph the audience is asked to read is content, and
+      // content has a text channel (Editorial: graphics are the secondary
+      // channel). ImageSlide reports its own breach via data-image-alt-missing;
+      // a raw <img> with no alt attribute at all is the same breach unmarked.
+      // alt="" on a raw img is an explicit decorative declaration and passes.
+      for (const box of surface.querySelectorAll('[data-image-alt-missing="true"]')) {
+        void box;
+        flag('img-alt', 'ImageSlide에 alt가 없다 — 사진이 말하는 바를 텍스트로');
+      }
+      for (const img of surface.querySelectorAll('img')) {
+        if (img.closest('[data-image-slide-box]')) continue;
+        if (!img.hasAttribute('alt')) flag('img-alt', `raw <img>에 alt 속성 자체가 없다 (src: ${(img.getAttribute('src') ?? '').slice(0, 40)})`);
+      }
+
+      // img-unsized — an image without a reserved box reflows the slide when
+      // it decodes, which breaks the same no-reflow contract Step holds for
+      // reveals. ImageSlide reserves via aspect-ratio; a raw img needs
+      // width+height attributes or a CSS aspect-ratio of its own.
+      for (const img of surface.querySelectorAll('img')) {
+        if (img.closest('[data-image-slide-box]')) continue;
+        // The question is whether the AUTHOR reserved the box, not whether the
+        // browser found a size — computed height on a replaced element reports
+        // the used pixels after decode, which is exactly the reservation that
+        // does not exist before it. Declared reservations only: width+height
+        // attributes, an aspect-ratio, or an explicit height.
+        const sized = (img.hasAttribute('width') && img.hasAttribute('height'))
+          || getComputedStyle(img).aspectRatio !== 'auto'
+          || img.style.height !== ''
+          || img.style.aspectRatio !== '';
+        if (!sized) flag('img-unsized', `크기 없는 <img> — 로드 순간 리플로한다 (src: ${(img.getAttribute('src') ?? '').slice(0, 40)})`);
+      }
+
       // roadmap-flat-dates — dated phases surface as <time> elements through
       // Editorial's NarrativeTimeline; two or more of them all reading the same
       // date means the time axis carries no information.
@@ -234,6 +282,7 @@ async function auditStory(page, origin, id) {
       .filter((node) => !node.closest('[data-presenter-next-slide]'));
 
     if (!deck) {
+      await imagesSettled();
       surfacesNow().forEach((surface) => auditSurface(surface, null));
       if (underFilled.length >= 3) issues.push({ rule: 'canvas-under-fill', position: 'deck', detail: `절반도 못 채운 콘텐츠 슬라이드 ${underFilled.length}장 — ${underFilled.join(', ')} — 병합하거나 더 찬 레이아웃으로` });
     if (statements > 2) issues.push({ rule: 'statement-budget', position: 'deck', detail: `StatementSlide ${statements}장 — 한두 번이 한계` });
@@ -256,6 +305,7 @@ async function auditStory(page, origin, id) {
       const here = slideOf();
       if (!visited.has(here)) {
         visited.add(here);
+        await imagesSettled();
         surfacesNow().forEach((surface) => auditSurface(surface, here));
       }
       const before = progressOf();

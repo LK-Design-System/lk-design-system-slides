@@ -10,6 +10,7 @@ export { Step } from './components/slides/Step.jsx';
 export { Fit } from './components/slides/Fit.jsx';
 export { AgendaSlide } from './components/slides/AgendaSlide.jsx';
 export { FigureSlide } from './components/slides/FigureSlide.jsx';
+export { ImageSlide } from './components/slides/ImageSlide.jsx';
 export { CompareSlide } from './components/slides/CompareSlide.jsx';
 export { RoadmapSlide } from './components/slides/RoadmapSlide.jsx';
 export { AssessmentSlide } from './components/slides/AssessmentSlide.jsx';

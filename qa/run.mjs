@@ -150,6 +150,10 @@ async function contactSheet(storyId, origin, outDir) {
     ).trim().split('·')[0].trim());
 
     const shoot = async () => {
+      // A screenshot of a half-decoded photo reviews a slide nobody will see.
+      await page.evaluate(() => Promise.all([...document.images].map((img) => (
+        img.complete ? Promise.resolve() : new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; })
+      ))));
       const at = await slideAt();
       const number = at.split('/')[0].trim().padStart(2, '0');
       const surface = await page.$('[data-lds-slide-surface]');
