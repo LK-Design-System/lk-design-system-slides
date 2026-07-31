@@ -36,6 +36,13 @@ import { closeServer, startStaticServer } from './_storybook-static.mjs';
 //                      §6: what stays on screen through Q&A is the argument's
 //                      residue — "감사합니다"로 끝나는 덱은 마지막 10분을 빈
 //                      화면에 버리는 것과 같다.)
+//   roadmap-flat-dates A RoadmapSlide whose dated phases all share one date.
+//                      A timeline's value is its time axis; when every phase
+//                      reads "2026 Q4" the axis carries nothing and the content
+//                      is a dependency graph wearing a schedule's clothes.
+//                      (Found by the first qa harness critique, 2026-07-31: an
+//                      agent-authored deck passed every gate with a roadmap
+//                      whose three phases shared one date.)
 //
 // Scope: stories under Decks/ only. Component stories demonstrate contracts —
 // sometimes by violating them on purpose — so the discipline binds the decks,
@@ -147,6 +154,16 @@ async function auditStory(page, origin, id) {
         if (!source || clean(source.textContent).length === 0) {
           const title = clean(surface.querySelector('[data-slide-title]')?.textContent ?? '(무제)');
           flag('source-required', `"${title}" — 데이터를 보였으면 출처를 채운다`);
+        }
+      }
+
+      // roadmap-flat-dates — dated phases surface as <time> elements through
+      // Editorial's NarrativeTimeline; two or more of them all reading the same
+      // date means the time axis carries no information.
+      if (surface.hasAttribute('data-lds-roadmap-slide') || surface.querySelector('[data-lds-roadmap-slide]')) {
+        const dates = [...surface.querySelectorAll('time')].map((node) => clean(node.textContent)).filter(Boolean);
+        if (dates.length >= 2 && new Set(dates).size === 1) {
+          flag('roadmap-flat-dates', `phase ${dates.length}개가 전부 "${dates[0]}" — 시간축이 정보를 나르지 않으면 일정이 아니라 의존 관계다`);
         }
       }
 
