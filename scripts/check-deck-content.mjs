@@ -43,6 +43,24 @@ import { closeServer, startStaticServer } from './_storybook-static.mjs';
 //                      (Found by the first qa harness critique, 2026-07-31: an
 //                      agent-authored deck passed every gate with a roadmap
 //                      whose three phases shared one date.)
+//   canvas-under-fill  Three or more content slides whose PAINTED content ends
+//                      above half the canvas. The overflow gate catches spill,
+//                      never sparseness, and the defect survived one round of
+//                      prose guidance — both harness critiques flagged decks
+//                      whose bodies stopped at 45–50% while every gate stayed
+//                      green, which is what promoted this from rubric to rule.
+//                      Thresholds from measurement, not taste: the flagged
+//                      slides sat at 45–50%, the two committed decks span
+//                      0.46–0.89 with at most ONE slide under 0.5 each, and the
+//                      failing agent deck had four. So one sparse slide is a
+//                      breathing beat, three are a pattern. Painted content
+//                      means text ranges and replaced elements — a flex
+//                      container stretches to the safe area and reads ~0.86
+//                      regardless of how empty the slide looks, so container
+//                      boxes are exactly the wrong thing to measure. The
+//                      footer is excluded (out-of-flow chrome), and layouts
+//                      without a content region (Title/Section/Statement/End)
+//                      are exempt: their whitespace is the design.
 //
 // Scope: stories under Decks/ only. Component stories demonstrate contracts —
 // sometimes by violating them on purpose — so the discipline binds the decks,
@@ -87,6 +105,32 @@ async function auditStory(page, origin, id) {
     const clean = (text) => (text ?? '').replace(/\s+/g, ' ').trim();
     const issues = [];
     let statements = 0;
+    const underFilled = [];
+
+    // How far the slide's PAINTED content reaches down the canvas: text via
+    // Range boxes, replaced elements via their own. Container boxes lie —
+    // a flex:1 region stretches to the safe area however empty it is.
+    const paintedFill = (surface) => {
+      const surfaceRect = surface.getBoundingClientRect();
+      let bottom = null;
+      const walker = document.createTreeWalker(surface, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+      for (let node = walker.currentNode; node; node = walker.nextNode()) {
+        if (node.nodeType === 1) {
+          if (node.closest('[data-slide-foot]')) continue;
+          if (/^(svg|IMG|CANVAS|VIDEO)$/i.test(node.tagName)) {
+            const rect = node.getBoundingClientRect();
+            if (rect.height > 0) bottom = Math.max(bottom ?? -Infinity, rect.bottom);
+          }
+          continue;
+        }
+        if (!node.textContent.trim() || node.parentElement?.closest('[data-slide-foot]')) continue;
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        const rect = range.getBoundingClientRect();
+        if (rect.height > 0) bottom = Math.max(bottom ?? -Infinity, rect.bottom);
+      }
+      return bottom === null ? 0 : (bottom - surfaceRect.top) / surfaceRect.height;
+    };
 
     const auditSurface = (surface, position) => {
       const at = position ? `slide ${position}` : 'slide';
@@ -131,6 +175,16 @@ async function auditStory(page, origin, id) {
         const terminators = (text.match(/[.!?](?=\s|$)/g) ?? []).length;
         if (terminators > 1) flag('governing-shape', `"${text.slice(0, 40)}…" — 문장이 둘이면 슬라이드가 둘`);
         if (text.length > 55) flag('governing-shape', `${text.length}자 — 상한 55자 (Alley 8–14 단어)`);
+      }
+
+      // canvas-under-fill — counted per slide here, judged per deck below:
+      // one sparse slide is a breathing beat, three are a pattern.
+      if (content) {
+        const fill = paintedFill(surface);
+        if (fill < 0.5) {
+          const title = clean(surface.querySelector('[data-slide-title]')?.textContent ?? '(무제)');
+          underFilled.push(`${at} "${title}" (${Math.round(fill * 100)}%)`);
+        }
       }
 
       if (!delegation && content) {
@@ -181,7 +235,8 @@ async function auditStory(page, origin, id) {
 
     if (!deck) {
       surfacesNow().forEach((surface) => auditSurface(surface, null));
-      if (statements > 2) issues.push({ rule: 'statement-budget', position: 'deck', detail: `StatementSlide ${statements}장 — 한두 번이 한계` });
+      if (underFilled.length >= 3) issues.push({ rule: 'canvas-under-fill', position: 'deck', detail: `절반도 못 채운 콘텐츠 슬라이드 ${underFilled.length}장 — ${underFilled.join(', ')} — 병합하거나 더 찬 레이아웃으로` });
+    if (statements > 2) issues.push({ rule: 'statement-budget', position: 'deck', detail: `StatementSlide ${statements}장 — 한두 번이 한계` });
       return { issues, visited: surfacesNow().length };
     }
 
@@ -208,6 +263,7 @@ async function auditStory(page, origin, id) {
       await press('ArrowRight');
       if (progressOf() === before) break;
     }
+    if (underFilled.length >= 3) issues.push({ rule: 'canvas-under-fill', position: 'deck', detail: `절반도 못 채운 콘텐츠 슬라이드 ${underFilled.length}장 — ${underFilled.join(', ')} — 병합하거나 더 찬 레이아웃으로` });
     if (statements > 2) issues.push({ rule: 'statement-budget', position: 'deck', detail: `StatementSlide ${statements}장 — 한두 번이 한계` });
     return { issues, visited: visited.size };
   }, { maxAdvances: 400, settleMs: 90 }).then((result) => ({ id, ...result }));
