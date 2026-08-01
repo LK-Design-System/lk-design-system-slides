@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnnotatedFigure } from '@lk-robotics/lds-editorial-ui';
+import { AnnotatedFigure } from '@lk-design-system/lds-editorial-ui';
 import { ContentSlide } from './ContentSlide.jsx';
 
 /**

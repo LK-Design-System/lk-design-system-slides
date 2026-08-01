@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyFigure } from '@lk-robotics/lds-editorial-ui';
+import { KeyFigure } from '@lk-design-system/lds-editorial-ui';
 import { ContentSlide } from './ContentSlide.jsx';
 
 /**

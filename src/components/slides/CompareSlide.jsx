@@ -1,5 +1,5 @@
 import React from 'react';
-import { OptionAssessment } from '@lk-robotics/lds-editorial-ui';
+import { OptionAssessment } from '@lk-design-system/lds-editorial-ui';
 import { ContentSlide } from './ContentSlide.jsx';
 
 /**

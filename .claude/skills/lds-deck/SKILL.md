@@ -1,6 +1,6 @@
 ---
 name: lds-deck
-description: "LDS Slides 컴포넌트로 발표 덱을 생성한다. 이 저장소(lk-design-system-slides) 안에서 사용자가 발표자료·슬라이드·덱·장표·프레젠테이션을 만들어 달라고 하면 — '~에 대한 발표자료 만들어줘', '이 문서로 슬라이드 만들어줘', '보고용 장표 구성해줘' 등 — 이 스킬을 사용한다. 산출물은 raw HTML이나 PPTX가 아니라 @lk-robotics/lds-slides-ui 컴포넌트를 조립한 덱 스토리(stories/decks/*.stories.jsx)이며, Storybook(포트 6009)에서 재생한다."
+description: "LDS Slides 컴포넌트로 발표 덱을 생성한다. 이 저장소(lk-design-system-slides) 안에서 사용자가 발표자료·슬라이드·덱·장표·프레젠테이션을 만들어 달라고 하면 — '~에 대한 발표자료 만들어줘', '이 문서로 슬라이드 만들어줘', '보고용 장표 구성해줘' 등 — 이 스킬을 사용한다. 산출물은 raw HTML이나 PPTX가 아니라 @lk-design-system/lds-slides-ui 컴포넌트를 조립한 덱 스토리(stories/decks/*.stories.jsx)이며, Storybook(포트 6009)에서 재생한다."
 ---
 
 # lds-deck — LDS Slides 덱 생성 스킬
@@ -8,7 +8,7 @@ description: "LDS Slides 컴포넌트로 발표 덱을 생성한다. 이 저장�
 ## 전제
 
 이 스킬은 **내용을 만들고 컴포넌트를 조립하는 스킬**이지, 스타일을 만드는 스킬이 아니다.
-슬라이드의 지오메트리·타입 스케일·레이아웃 계약은 전부 `@lk-robotics/lds-slides-ui`가
+슬라이드의 지오메트리·타입 스케일·레이아웃 계약은 전부 `@lk-design-system/lds-slides-ui`가
 이미 소유한다. 스킬이 하는 일은 세 가지다:
 
 1. 내용을 논증 구조로 편성한다 → [references/content-rules.md](references/content-rules.md)

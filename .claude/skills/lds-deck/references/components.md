@@ -1,6 +1,6 @@
 # 컴포넌트 어휘
 
-`@lk-robotics/lds-slides-ui`의 슬라이드 어휘 전체. 모두 `src/index.js`에서 flat export.
+`@lk-design-system/lds-slides-ui`의 슬라이드 어휘 전체. 모두 `src/index.js`에서 flat export.
 모든 슬라이드는 `preset`('keynote' | 'briefing')과 `style`을 받고 나머지는 표면으로 전달한다.
 
 ## 골격 슬라이드
