@@ -1,5 +1,6 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
+import { phrased } from './phrasing.jsx';
 
 /**
  * LDS Slides — EndSlide
@@ -23,9 +24,10 @@ export function EndSlide({ message, contact, style, ...rest }) {
           fontWeight: 'var(--fw-bold)',
           color: 'var(--color-semantic-label-strong)',
           maxWidth: '18ch',
+          textWrap: 'balance',
         }}
       >
-        {message}
+        {phrased(message)}
       </p>
       {contact && (
         <p

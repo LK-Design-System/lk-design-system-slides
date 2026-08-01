@@ -43,6 +43,18 @@
 `--slides-canvas-width`는 표시 손잡이가 아니다. 바꾸면 시스템 전체가 다시 측정된다.
 표시 상한은 `--slides-canvas-max-width`가 따로 소유한다.
 
+줄바꿈도 매체의 것이다. 상류 한국어 조판 규약(Core typography: `keep-all` +
+`balance/pretty`)을 `SlideSurface`가 캔버스 전체에 상속시키므로 — display 스케일
+제목·주장·막지 메시지는 `balance`, 거버닝은 `pretty` — 어절 중간에서 꺾인 투사
+텍스트는 컴포넌트 결함이지 덱이 수동 개행으로 고칠 일이 아니다.
+
+어절 위에 **구**가 있다. `keep-all`은 "개선할 수 | 없다는"처럼 의존명사가 줄 머리에
+홀로 서는 것까지는 못 막는데, display 스케일에서는 한 줄이 서너 어절이라 이 걸림이
+방 전체에 보인다. CSS에 한국어 구 단위 줄바꿈이 없으므로(BudouX도 한국어 모델이 없다)
+매체가 직접 묶는다: `phrasing.jsx`가 문법이 쪼개기를 금하는 것만 — 의존명사는 앞말에,
+부정 부사(안/못)는 뒷말에, "수"는 뒤따르는 있다/없다 계열까지 — no-wrap 구로 묶고,
+줄은 구 사이에서만 꺾인다. 취향은 묶지 않는다: 규칙이 커지면 구가 자를 넘친다.
+
 ## Editorial 접합부
 
 Editorial 컴포넌트는 업스트림 램프를 직접 참조하지 않고 `--editorial-*` 5단계
@@ -61,7 +73,8 @@ Editorial 컴포넌트는 업스트림 램프를 직접 참조하지 않고 `--e
 
 ## 상태
 
-`0.1.0-alpha.1` — 최소 골격. Storybook 포트는 **6009** (Core 6006 · 3D 6007 · Robotics 6008 다음).
+`0.1.0-alpha.1` — 최소 골격. Storybook 포트는 **6009**
+(사다리: Core 6006 · 3D 6007 · Robotics 6008 · Slides 6009 · Editorial 6010 — 새 자매는 6011부터).
 
 Core/Theme/Product는 Robotics·Editorial과 같은 `0.1.0-rc.3`을 소비한다. Editorial의
 Core/Product는 `peerDependencies`라 트리에 Core는 정확히 하나만 존재한다 — 토큰 층이
@@ -83,6 +96,13 @@ play가 아니라 정적 게이트가 잡는다. `tokens/slides.css`는 `--slide
 npm install
 npm run storybook   # http://127.0.0.1:6009
 ```
+
+## 덱 생성 스킬
+
+`.claude/skills/lds-deck/`에 덱 작성용 Claude 스킬이 있다. 이 저장소에서 "발표자료
+만들어줘"류의 요청이 오면 스킬이 내용 규율(거버닝 체인 고스트 덱 테스트, 전시물
+규율, 강조 예산)과 컴포넌트 어휘 매핑을 거쳐 `stories/decks/*.stories.jsx`로 덱을
+조립한다. 덱은 Storybook `Decks/` 아래에서 재생한다.
 
 ## 단계 공개와 발표자 노트
 
@@ -127,7 +147,6 @@ DOM에도 남기지 않는다. 기본 숨김이고 `N`으로 연다.
 ← 키를 눌러 덱을 걸어가며 멈추는 모든 위치를 잰다. 키를 세지 않고 **덱이 보고하는 위치**를
 세는 이유는 단계(`Step`)가 슬라이드보다 먼저 키를 소비하기 때문이다. 발표자 화면의 다음 장
 미리보기는 다른 곳에서 이미 재는 슬라이드의 사본이라 제외한다.
-
 
 ## 푸터와 페이지 번호
 
@@ -197,3 +216,6 @@ StatementSlide 최대 2장, 막지의 잔향. 임계값마다 출처가 스크�
 
 - 레이아웃 어휘: mckinsey-pptx 카탈로그의 주요 패턴은 매핑 완료(구조·stat·도판·비교·
   로드맵·상태 평가·주장). 추가 확장은 실제 덱에서 수요가 생길 때 카탈로그 기준으로 선별.
+- 프리젠터 뷰: 노트·다음 장·경과 시간을 별도 창에 띄우는 2창 동기화 (덱 밖 도구 영역과의
+  경계를 먼저 정할 것).
+- Directory 등재: Core Storybook의 LDS Directory에 행 추가, github.io 배포.

@@ -1,5 +1,6 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
+import { phrased } from './phrasing.jsx';
 
 /**
  * LDS Slides — ContentSlide
@@ -42,9 +43,10 @@ export function ContentSlide({ eyebrow, title, governing, children, style, ...re
             letterSpacing: 'var(--slides-title-spacing)',
             fontWeight: 'var(--fw-bold)',
             color: 'var(--color-semantic-label-strong)',
+            textWrap: 'balance',
           }}
         >
-          {title}
+          {phrased(title)}
         </h2>
         {governing && (
           <p
@@ -57,9 +59,10 @@ export function ContentSlide({ eyebrow, title, governing, children, style, ...re
               fontWeight: 'var(--fw-semibold)',
               color: 'var(--color-semantic-label-normal)',
               maxWidth: '46ch',
+              textWrap: 'pretty',
             }}
           >
-            {governing}
+            {phrased(governing)}
           </p>
         )}
       </header>

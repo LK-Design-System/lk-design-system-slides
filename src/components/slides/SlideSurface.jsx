@@ -101,6 +101,10 @@ export function SlideSurface({
           borderRadius: 'var(--radius-md, 12px)',
           color: 'var(--color-semantic-label-normal)',
           fontFamily: 'var(--font-sans)',
+          // Upstream Korean-copy contract (Core typography.css): lines break
+          // between words, never mid-word. Inherited, so one declaration on
+          // the canvas covers every layout and the deck's own markup.
+          wordBreak: 'keep-all',
           overflow: 'hidden',
           ...style,
         }}

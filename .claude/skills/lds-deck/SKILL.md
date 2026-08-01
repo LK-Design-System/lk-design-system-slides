@@ -1,0 +1,117 @@
+---
+name: lds-deck
+description: "LDS Slides 컴포넌트로 발표 덱을 생성한다. 이 저장소(lk-design-system-slides) 안에서 사용자가 발표자료·슬라이드·덱·장표·프레젠테이션을 만들어 달라고 하면 — '~에 대한 발표자료 만들어줘', '이 문서로 슬라이드 만들어줘', '보고용 장표 구성해줘' 등 — 이 스킬을 사용한다. 산출물은 raw HTML이나 PPTX가 아니라 @lk-robotics/lds-slides-ui 컴포넌트를 조립한 덱 스토리(stories/decks/*.stories.jsx)이며, Storybook(포트 6009)에서 재생한다."
+---
+
+# lds-deck — LDS Slides 덱 생성 스킬
+
+## 전제
+
+이 스킬은 **내용을 만들고 컴포넌트를 조립하는 스킬**이지, 스타일을 만드는 스킬이 아니다.
+슬라이드의 지오메트리·타입 스케일·레이아웃 계약은 전부 `@lk-robotics/lds-slides-ui`가
+이미 소유한다. 스킬이 하는 일은 세 가지다:
+
+1. 내용을 논증 구조로 편성한다 → [references/content-rules.md](references/content-rules.md)
+2. 각 슬라이드를 컴포넌트 어휘에 매핑한다 → [references/components.md](references/components.md)
+3. `stories/decks/<덱이름>.stories.jsx` 한 파일로 조립한다
+
+**두 레퍼런스를 모두 읽은 뒤에 개요를 짜기 시작한다.**
+
+## 금지 사항 (소유 경계)
+
+- 새 CSS 파일·새 토큰·인라인 폰트 크기(px 직접 지정) 금지. 타입은 `--slides-*` 단계만,
+  색은 `--color-semantic-*` 토큰만 사용한다. 업스트림 램프 변수(`--display1-size` 등)
+  직접 참조는 `check:style-ownership`가 컴포넌트에서 잡는 위반이며, 덱 콘텐츠 마크업에서도
+  같은 이유로 금지다 — 프리셋 축이 무시되고 투사 하한이 조용히 깨진다.
+- 슬라이드 레이아웃을 새로 발명하지 않는다. 필요한 패턴이 어휘에 없으면 우회하지 말고
+  사용자에게 알린다 (레이아웃 어휘 확장은 mckinsey-pptx 카탈로그 기준으로 저장소가 결정).
+- 수치·주석·비교표·타임라인을 손으로 그리지 않는다. Editorial 위임 슬라이드
+  (`StatSlide` `FigureSlide` `CompareSlide` `RoadmapSlide` `AssessmentSlide`)에 데이터로 넘긴다.
+
+## 워크플로
+
+### 1단계 — 입력 판별
+
+- **A. 주제만**: "X에 대한 10분 발표" → 구조·내용을 직접 설계
+- **B. 자료 제공**: 문서/노트/데이터 → 자료를 논증으로 증류
+- **C. 대본 제공**: 발표 대본 → 대본 구조에 맞춰 슬라이드 구성
+
+슬라이드 수 가늠: 5분 ≈ 6–9장, 10분 ≈ 10–15장, 20분 ≈ 18–25장.
+보고용(회람) 덱은 발표용보다 장수가 줄고 장당 밀도가 올라간다.
+
+### 2단계 — 프리셋 결정
+
+`preset`은 토큰 축이지 레이아웃 축이 아니다. 물어보거나 맥락으로 정한다:
+
+- `keynote` (기본): 강당 발표. 본문 24px 투사 하한.
+- `briefing`: 배포·회람용 보고서 덱. 각 단계가 한 눈금 내려가고 세이프 존이 좁아진다.
+
+프리셋은 `DeckViewer` 안 각 슬라이드에 `preset="briefing"`으로 전달한다.
+
+### 3단계 — 개요 작성과 고스트 덱 테스트
+
+한국 장표 골격을 따른다: **표지(TitleSlide) → 목차(AgendaSlide) → 본문 챕터들
+(SectionSlide + 콘텐츠 슬라이드) → 막지(EndSlide)**.
+
+슬라이드마다 세 가지를 정한다:
+
+| 항목 | 규칙 |
+|------|------|
+| 컴포넌트 | components.md의 어휘에서 선택 |
+| 제목(title) | **명사형 종결** ("1위 달성" — "~했다" 금지) |
+| 거버닝(governing) | **완결 문장 한 개의 주장** — 본문이 이를 입증 |
+
+**고스트 덱 테스트**: 거버닝 메시지만 순서대로 이어 읽는다. 그것만으로 논증 전체가
+성립해야 한다. 성립하지 않으면 슬라이드를 만들기 전에 개요를 고친다.
+(제목이 아니라 거버닝이 문장을 소유한다 — 제목만 읽으면 목차, 거버닝만 읽으면 논증.)
+
+개요를 사용자에게 보여주고 확인받은 뒤 조립한다. 10장 이하 단순 덱은 생략 가능.
+
+### 4단계 — 조립
+
+`stories/decks/<덱이름>.stories.jsx` 한 파일로 작성한다:
+
+```jsx
+import React from 'react';
+import { DeckViewer, TitleSlide, AgendaSlide, SectionSlide, /* … */ EndSlide } from '../../src/index.js';
+
+const meta = { title: 'Decks/<덱 제목>' };
+export default meta;
+
+export const Deck = {
+  name: '<덱 제목>',
+  render: () => (
+    <DeckViewer label="<덱 제목>">
+      <TitleSlide eyebrow="…" title="…" subtitle="…" />
+      <AgendaSlide items={['…', '…']} />
+      <SectionSlide index={1} title="…" />
+      {/* … */}
+      <EndSlide message="…" contact="…" />
+    </DeckViewer>
+  ),
+};
+```
+
+- 챕터 사이에 `AgendaSlide`를 `current={n}`으로 재사용하면 진행 표시 슬라이드가 된다.
+- 자유 마크업은 `ContentSlide`/`SplitSlide`의 children 안에서만. 타입 단계는
+  `var(--slides-body-*)` 등 `--slides-*`, 색은 semantic 토큰.
+- **발표자 노트는 각 슬라이드의 `notes` prop**에 싣는다 (DeckViewer가 `N` 키로 표시).
+  대화체로, 슬라이드 텍스트의 반복이 아니라 확장을 쓴다. 타이밍 힌트(`[~2분]`) 허용.
+  발표 전체 대본이 필요하면 추가로 `<덱이름>.script.md`를 같은 폴더에 생성한다.
+- 발표자 신호에 맞춰 드러낼 항목은 `Step`으로 감싼다(`at` 순번, `as`로 시맨틱 유지).
+  공개는 리플로를 일으키지 않으므로 맞춤 확인은 전부 공개된 상태에서 한다.
+
+### 5단계 — QA
+
+1. `npm run storybook` (127.0.0.1:6009) → `Decks/<덱 제목>` 확인. 각 슬라이드에서
+   내용이 세이프 존을 넘치지 않는지 본다 — 넘치면 스타일을 줄이지 말고 **내용을 쪼갠다**
+   (슬라이드 추가가 정답, 폰트 축소는 오답).
+2. content-rules.md의 체크리스트를 통과시킨다.
+3. 저장소 게이트: `npm run check:storybook` (소유권 검사 + 모든 play 단언).
+
+## 산출 규칙
+
+- 산출물: `stories/decks/<덱이름>.stories.jsx` (+ 선택 `<덱이름>.script.md`)
+- 내용 언어는 대화 언어를 따른다. 제목 명사형 종결 규약은 한국어 덱에 적용.
+- PPTX/PDF 내보내기는 아직 이 저장소에 없다. 요청받으면 "배포 워크플로는 README 다음
+  단계 항목"임을 알리고, 임시로는 Storybook 화면 캡처를 안내한다.

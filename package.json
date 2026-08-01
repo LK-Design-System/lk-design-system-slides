@@ -30,16 +30,16 @@
     "qa": "node qa/run.mjs"
   },
   "dependencies": {
-    "@lk-robotics/lds-core": "file:vendor/lk-robotics-lds-core-0.1.0-rc.3.tgz",
+    "@lk-design-system/lds-core": "file:vendor/lk-design-system-lds-core-0.1.0-rc.4.tgz",
     "@lk-robotics/lds-editorial-ui": "file:vendor/lk-robotics-lds-editorial-ui-0.1.0-alpha.3.tgz",
-    "@lk-robotics/lds-product": "file:vendor/lk-robotics-lds-product-0.1.0-rc.3.tgz"
+    "@lk-design-system/lds-product": "file:vendor/lk-design-system-lds-product-0.1.0-rc.4.tgz"
   },
   "peerDependencies": {
     "react": ">=18 <20",
     "react-dom": ">=18 <20"
   },
   "devDependencies": {
-    "@lk-robotics/lds-theme": "file:vendor/lk-robotics-lds-theme-0.1.0-rc.3.tgz",
+    "@lk-design-system/lds-theme": "file:vendor/lk-design-system-lds-theme-0.1.0-rc.4.tgz",
     "@playwright/test": "1.61.1",
     "@storybook/addon-a11y": "10.4.6",
     "@storybook/addon-docs": "10.4.6",

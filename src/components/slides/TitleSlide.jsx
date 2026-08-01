@@ -1,5 +1,6 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
+import { phrased } from './phrasing.jsx';
 
 /**
  * LDS Slides — TitleSlide
@@ -36,9 +37,10 @@ export function TitleSlide({ eyebrow, title, subtitle, style, ...rest }) {
           fontWeight: 'var(--fw-bold)',
           color: 'var(--color-semantic-label-strong)',
           maxWidth: '18ch',
+          textWrap: 'balance',
         }}
       >
-        {title}
+        {phrased(title)}
       </h2>
       {subtitle && (
         <p

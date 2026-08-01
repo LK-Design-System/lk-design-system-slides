@@ -1,5 +1,6 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
+import { phrased } from './phrasing.jsx';
 
 /**
  * LDS Slides — StatementSlide
@@ -48,9 +49,10 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
           // A statement that runs the full canvas width stops reading as one
           // breath; the measure forces it to break where a speaker would.
           maxWidth: '22ch',
+          textWrap: 'balance',
         }}
       >
-        {statement}
+        {phrased(statement)}
       </p>
       {attribution && (
         <p
