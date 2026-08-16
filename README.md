@@ -219,3 +219,11 @@ StatementSlide 최대 2장, 막지의 잔향. 임계값마다 출처가 스크�
 - 프리젠터 뷰: 노트·다음 장·경과 시간을 별도 창에 띄우는 2창 동기화 (덱 밖 도구 영역과의
   경계를 먼저 정할 것).
 - Directory 등재: Core Storybook의 LDS Directory에 행 추가, github.io 배포.
+
+## AI 에이전트 진입점
+
+소비 레포의 에이전트가 슬라이드·에디토리얼 작업에서 로드하는 도메인 규칙 요약은
+[docs/AGENT_SKILL_REFERENCE.md](docs/AGENT_SKILL_REFERENCE.md)다 — LDS Core가 배포하는
+`lds-ui` 스킬이 이 경로로 라우팅한다(설치 기준
+`@lk-design-system/lds-slides-ui/docs/AGENT_SKILL_REFERENCE.md`). 이 저장소 안에서
+덱을 저작할 때의 정본은 여전히 `.claude/skills/lds-deck`이다.
