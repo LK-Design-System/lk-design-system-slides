@@ -22,6 +22,7 @@ export function RoadmapSlide({ eyebrow, title, governing, phases = [], source, s
       title={title}
       governing={governing}
       data-lds-roadmap-slide
+      source={source}
       data-emphasis-spent={emphasisSpent ? 'phase' : undefined}
       style={style}
       {...rest}
@@ -30,20 +31,6 @@ export function RoadmapSlide({ eyebrow, title, governing, phases = [], source, s
           is a document idiom, and on a fixed canvas it strands the right
           half (full-deck review, 2026-08-16). */}
       <NarrativeTimeline events={phases} label="실행 로드맵" direction="row" />
-      {source && (
-        <p
-          data-roadmap-slide-source
-          style={{
-            margin: 'var(--space-6) 0 0',
-            fontSize: 'var(--slides-fine-size)',
-            lineHeight: 'var(--slides-fine-line)',
-            letterSpacing: 'var(--slides-fine-spacing)',
-            color: 'var(--color-semantic-label-alternative)',
-          }}
-        >
-          {source}
-        </p>
-      )}
     </ContentSlide>
   );
 }

@@ -35,6 +35,7 @@ export function FigureSlide({
       title={title}
       governing={governing}
       data-lds-figure-slide
+      source={source}
       data-emphasis-spent={emphasisSpent ? 'annotation' : undefined}
       style={style}
       {...rest}
@@ -42,20 +43,6 @@ export function FigureSlide({
       <AnnotatedFigure annotations={annotations} caption={caption}>
         {children}
       </AnnotatedFigure>
-      {source && (
-        <p
-          data-figure-slide-source
-          style={{
-            margin: 'var(--space-6) 0 0',
-            fontSize: 'var(--slides-fine-size)',
-            lineHeight: 'var(--slides-fine-line)',
-            letterSpacing: 'var(--slides-fine-spacing)',
-            color: 'var(--color-semantic-label-alternative)',
-          }}
-        >
-          {source}
-        </p>
-      )}
     </ContentSlide>
   );
 }

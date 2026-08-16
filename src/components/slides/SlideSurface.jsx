@@ -48,6 +48,12 @@ export function SlideSurface({
   // the deck, not from here. `footer={false}` drops the whole strip.
   foot,
   footer = true,
+  // Provenance line ("출처: …"). Slide chrome, not content: on a slide the
+  // source is pinned to the bottom of the canvas whatever the content does
+  // — a source trailing the content mid-canvas is a document idiom (the
+  // same class of mistake as a vertical timeline). Sits just above the
+  // footer strip, in the same out-of-flow band.
+  source,
   style,
   ...rest
 }) {
@@ -127,6 +133,29 @@ export function SlideSurface({
         {...rest}
       >
         {children}
+        {source && (
+          // Out of flow like the footer: chrome must not contribute to the
+          // canvas's scroll height, or the overflow gate would measure it
+          // as content.
+          <p
+            data-slide-source
+            style={{
+              position: 'absolute',
+              left: 'var(--slides-safe-x)',
+              right: 'var(--slides-safe-x)',
+              bottom: showFooter
+                ? 'calc(var(--space-4) + var(--slides-fine-line) + var(--space-3))'
+                : 'var(--space-4)',
+              margin: 0,
+              fontSize: 'var(--slides-fine-size)',
+              lineHeight: 'var(--slides-fine-line)',
+              letterSpacing: 'var(--slides-fine-spacing)',
+              color: 'var(--color-semantic-label-alternative)',
+            }}
+          >
+            {source}
+          </p>
+        )}
         {showFooter && (
           // Out of flow on purpose. The footer sits in the bottom safe-area
           // band, below where content stops, so adding it re-flows nothing and

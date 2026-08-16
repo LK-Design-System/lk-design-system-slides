@@ -55,7 +55,7 @@ export const Default = {
     if (canvasElement.querySelector('[data-slide-eyebrow]')) {
       throw new Error('When a recommendation spends emphasis, the accented eyebrow must be dropped.');
     }
-    const source = canvasElement.querySelector('[data-compare-slide-source]');
+    const source = canvasElement.querySelector('[data-slide-source]');
     const fineSize = parseFloat(getComputedStyle(slide).getPropertyValue('--slides-fine-size'));
     if (!source || parseFloat(getComputedStyle(source).fontSize) !== fineSize) {
       throw new Error('The source line reads at the fine floor — provenance, not content.');

@@ -218,8 +218,7 @@ async function auditStory(page, origin, id) {
       // names where it came from.
       if (delegation && !surface.querySelector('[data-lds-code]')) {
         const source = surface.querySelector(
-          '[data-stat-slide-source], [data-figure-slide-source], [data-compare-slide-source], '
-          + '[data-roadmap-slide-source], [data-assessment-slide-source]',
+          '[data-slide-source]',
         );
         if (!source || clean(source.textContent).length === 0) {
           const title = clean(surface.querySelector('[data-slide-title]')?.textContent ?? '(무제)');

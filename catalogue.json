@@ -65,6 +65,9 @@
         {
           "name": "footer",
           "default": "true"
+        },
+        {
+          "name": "source"
         }
       ],
       "dataAttributes": [
@@ -74,6 +77,7 @@
         "data-slide-foot-label",
         "data-slide-page",
         "data-slide-page-current",
+        "data-slide-source",
         "data-slides-preset"
       ]
     },
@@ -197,8 +201,7 @@
       "dataAttributes": [
         "data-emphasis-spent",
         "data-lds-stat-slide",
-        "data-stat-slide-figures",
-        "data-stat-slide-source"
+        "data-stat-slide-figures"
       ]
     },
     {
@@ -314,7 +317,6 @@
       ],
       "dataAttributes": [
         "data-emphasis-spent",
-        "data-figure-slide-source",
         "data-lds-figure-slide"
       ]
     },
@@ -402,7 +404,6 @@
         }
       ],
       "dataAttributes": [
-        "data-compare-slide-source",
         "data-emphasis-spent",
         "data-lds-compare-slide"
       ]
@@ -431,8 +432,7 @@
       ],
       "dataAttributes": [
         "data-emphasis-spent",
-        "data-lds-roadmap-slide",
-        "data-roadmap-slide-source"
+        "data-lds-roadmap-slide"
       ]
     },
     {
@@ -461,7 +461,6 @@
         }
       ],
       "dataAttributes": [
-        "data-assessment-slide-source",
         "data-lds-assessment-slide"
       ]
     },

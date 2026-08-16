@@ -20,24 +20,11 @@ export function AssessmentSlide({ eyebrow, title, governing, metrics = [], capti
       title={title}
       governing={governing}
       data-lds-assessment-slide
+      source={source}
       style={style}
       {...rest}
     >
       <StatusAssessment metrics={metrics} caption={caption} />
-      {source && (
-        <p
-          data-assessment-slide-source
-          style={{
-            margin: 'var(--space-6) 0 0',
-            fontSize: 'var(--slides-fine-size)',
-            lineHeight: 'var(--slides-fine-line)',
-            letterSpacing: 'var(--slides-fine-spacing)',
-            color: 'var(--color-semantic-label-alternative)',
-          }}
-        >
-          {source}
-        </p>
-      )}
     </ContentSlide>
   );
 }

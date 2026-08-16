@@ -30,6 +30,7 @@ export function StatSlide({ eyebrow, title, figures = [], source, style, ...rest
       title={title}
       data-lds-stat-slide
       data-emphasis-spent={emphasisTaken ? 'figure' : undefined}
+      source={source}
       style={style}
       {...rest}
     >
@@ -63,20 +64,6 @@ export function StatSlide({ eyebrow, title, figures = [], source, style, ...rest
           <KeyFigure key={id ?? index} style={{ flex: '1 1 240px', minWidth: 0 }} {...figure} />
         ))}
       </div>
-      {source && (
-        <p
-          data-stat-slide-source
-          style={{
-            margin: 'var(--space-6) 0 0',
-            fontSize: 'var(--slides-fine-size)',
-            lineHeight: 'var(--slides-fine-line)',
-            letterSpacing: 'var(--slides-fine-spacing)',
-            color: 'var(--color-semantic-label-alternative)',
-          }}
-        >
-          {source}
-        </p>
-      )}
     </ContentSlide>
   );
 }

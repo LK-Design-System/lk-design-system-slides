@@ -32,6 +32,7 @@ export function CompareSlide({
       title={title}
       governing={governing}
       data-lds-compare-slide
+      source={source}
       data-emphasis-spent={emphasisSpent ? 'recommendation' : undefined}
       style={style}
       {...rest}
@@ -42,20 +43,6 @@ export function CompareSlide({
         recommendation={recommendation}
         caption={caption}
       />
-      {source && (
-        <p
-          data-compare-slide-source
-          style={{
-            margin: 'var(--space-6) 0 0',
-            fontSize: 'var(--slides-fine-size)',
-            lineHeight: 'var(--slides-fine-line)',
-            letterSpacing: 'var(--slides-fine-spacing)',
-            color: 'var(--color-semantic-label-alternative)',
-          }}
-        >
-          {source}
-        </p>
-      )}
     </ContentSlide>
   );
 }

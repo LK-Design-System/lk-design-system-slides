@@ -89,7 +89,7 @@ export const Default = {
       () => figure.querySelectorAll('[data-annotation-anchor-status="linked"]').length === 1
     );
     if (!linked) throw new Error("Editorial's anchor contract must survive being placed on a slide.");
-    const source = canvasElement.querySelector('[data-figure-slide-source]');
+    const source = canvasElement.querySelector('[data-slide-source]');
     const fineSize = parseFloat(
       getComputedStyle(slide).getPropertyValue('--slides-fine-size')
     );

@@ -52,7 +52,7 @@ export const Default = {
     if (slide.hasAttribute('data-emphasis-spent')) {
       throw new Error('AssessmentSlide spends no emphasis — deviations are not accents.');
     }
-    const source = canvasElement.querySelector('[data-assessment-slide-source]');
+    const source = canvasElement.querySelector('[data-slide-source]');
     const fineSize = parseFloat(getComputedStyle(slide).getPropertyValue('--slides-fine-size'));
     if (!source || parseFloat(getComputedStyle(source).fontSize) !== fineSize) {
       throw new Error('The source line reads at the fine floor — provenance, not content.');
