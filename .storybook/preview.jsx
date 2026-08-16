@@ -1,7 +1,7 @@
 import '@lk-design-system/lds-core/styles.css';
 import '@lk-design-system/lds-theme/styles.css';
 import '@lk-design-system/lds-product/styles.css';
-import '@lk-design-system/lds-editorial-ui/styles.css';
+// Editorial tokens now come through this package's own styles.css.
 import '../styles.css';
 import React from 'react';
 

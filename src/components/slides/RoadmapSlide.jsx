@@ -1,5 +1,5 @@
 import React from 'react';
-import { NarrativeTimeline } from '@lk-design-system/lds-editorial-ui';
+import { NarrativeTimeline } from '../editorial/NarrativeTimeline.jsx';
 import { ContentSlide } from './ContentSlide.jsx';
 
 /**

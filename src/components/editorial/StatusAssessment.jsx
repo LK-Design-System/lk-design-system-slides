@@ -1,0 +1,137 @@
+import React from 'react';
+import { StatusBadge } from '@lk-design-system/lds-core';
+
+/**
+ * LDS Editorial — StatusAssessment
+ * The narrative frame for reporting metrics against targets (the consulting
+ * traffic-light assessment pattern). Editorial owns the judgment contract,
+ * Core's StatusBadge owns the badge: the status vocabulary is closed
+ * (met / watch / missed), every status is spoken in text (달성·주의·미달 —
+ * the tint is an auxiliary channel), and color marks deviation only: a met
+ * metric wears the achromatic badge, never green — on a report, color is
+ * the exception channel, and a wall of green would drown the two cells
+ * that matter. A status outside the vocabulary is not coerced to neutral;
+ * it visibly reports "판정 미상", mirroring the broken-anchor honesty of
+ * AnnotatedFigure: an unjudged row must not pass as a judged one.
+ */
+const STATUSES = {
+  met: { label: '달성', tone: 'normal' },
+  watch: { label: '주의', tone: 'cautionary' },
+  missed: { label: '미달', tone: 'negative' },
+};
+
+export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
+  const headCell = {
+    padding: 'var(--space-2) var(--space-4)',
+    textAlign: 'left',
+    fontSize: 'var(--editorial-note-size)',
+    lineHeight: 'var(--editorial-note-line)',
+    letterSpacing: 'var(--editorial-note-spacing)',
+    fontWeight: 'var(--fw-semibold)',
+    color: 'var(--color-semantic-label-strong)',
+    borderBottom: '1px solid var(--color-semantic-line-normal-normal)',
+  };
+  const bodyCell = {
+    padding: 'var(--space-2) var(--space-4)',
+    fontSize: 'var(--editorial-note-body-size)',
+    lineHeight: 'var(--editorial-note-body-line)',
+    letterSpacing: 'var(--editorial-note-body-spacing)',
+    color: 'var(--color-semantic-label-neutral)',
+    borderBottom: '1px solid var(--color-semantic-line-normal-neutral, var(--color-semantic-line-normal-normal))',
+  };
+  const numberCell = { ...bodyCell, textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
+
+  // Group headers render once per contiguous run; the caller's order is the
+  // report's order, so a scattered group is the caller's claim, not ours to fix.
+  const rows = [];
+  let lastGroup;
+  for (const metric of metrics) {
+    if (metric.group && metric.group !== lastGroup) {
+      rows.push({ kind: 'group', label: metric.group });
+    }
+    lastGroup = metric.group;
+    rows.push({ kind: 'metric', metric });
+  }
+
+  return (
+    <figure
+      data-lds-status-assessment
+      style={{ margin: 0, display: 'inline-block', maxWidth: '100%', fontFamily: 'var(--font-sans)', ...style }}
+      {...rest}
+    >
+      <table style={{ borderCollapse: 'collapse' }}>
+        <thead>
+          <tr>
+            <th scope="col" style={headCell}>지표</th>
+            <th scope="col" style={{ ...headCell, textAlign: 'right' }}>목표</th>
+            <th scope="col" style={{ ...headCell, textAlign: 'right' }}>실적</th>
+            <th scope="col" style={headCell}>판정</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => {
+            if (row.kind === 'group') {
+              return (
+                <tr key={`group-${row.label}-${index}`}>
+                  <th
+                    scope="colgroup"
+                    colSpan={4}
+                    data-assessment-group
+                    style={{
+                      ...headCell,
+                      paddingTop: 'var(--space-4)',
+                      fontSize: 'var(--editorial-caption-size)',
+                      lineHeight: 'var(--editorial-caption-line)',
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: 'var(--color-semantic-label-alternative)',
+                      borderBottom: 'none',
+                    }}
+                  >
+                    {row.label}
+                  </th>
+                </tr>
+              );
+            }
+            const { metric } = row;
+            const status = STATUSES[metric.status];
+            return (
+              <tr key={metric.id ?? metric.name}>
+                <th scope="row" style={{ ...bodyCell, fontWeight: 'var(--fw-regular)', textAlign: 'left' }}>
+                  {metric.name}
+                </th>
+                <td style={numberCell}>{metric.target}</td>
+                <td style={numberCell}>{metric.actual}</td>
+                <td data-assessment-status={status ? metric.status : undefined} style={bodyCell}>
+                  {status ? (
+                    <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
+                  ) : (
+                    <span
+                      data-assessment-status-unknown
+                      style={{ color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))' }}
+                    >
+                      판정 미상: {String(metric.status)}
+                    </span>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      {caption && (
+        <figcaption
+          style={{
+            marginTop: 'var(--space-2)',
+            fontSize: 'var(--editorial-caption-size)',
+            lineHeight: 'var(--editorial-caption-line)',
+            letterSpacing: 'var(--editorial-caption-spacing)',
+            color: 'var(--color-semantic-label-alternative)',
+          }}
+        >
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}

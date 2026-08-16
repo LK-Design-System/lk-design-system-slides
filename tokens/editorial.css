@@ -1,0 +1,60 @@
+/*
+ * LDS Editorial — editorial-owned tokens.
+ *
+ * Ownership: this file may only define `--editorial-*` variables. Color,
+ * spacing, radius, and font tokens are owned upstream (Core/Theme) per the
+ * cross-repository style contract; editorial tokens compose them.
+ *
+ * The emphasis contract has exactly one accent: a narrative graphic makes one
+ * claim at a time, so there is deliberately no second emphasis token.
+ */
+:root {
+  /* Emphasis — one claim at a time. */
+  --editorial-emphasis: var(--color-semantic-primary-normal);
+  --editorial-emphasis-surface: color-mix(in srgb, var(--editorial-emphasis) 12%, transparent);
+  --editorial-muted: var(--color-semantic-interaction-inactive);
+
+  /* Type ramp — the MEDIUM owns reading distance, this layer owns rank.
+     Editorial components never reference the upstream ramp directly: they
+     read these five steps, which default to the product ramp (screen, arm's
+     length). A medium re-points them under its own scope — Slides maps them
+     to the projection scale — and the whole editorial layer follows without
+     touching a component. Rank is what is fixed here: value > claim > note >
+     note-body > caption, always in that order, whatever the distance. */
+  --editorial-value-size: var(--headline1-size);
+  --editorial-value-line: var(--headline1-line);
+  --editorial-value-spacing: var(--headline1-spacing);
+
+  --editorial-claim-size: var(--body2-size);
+  --editorial-claim-line: var(--body2-line);
+  --editorial-claim-spacing: var(--body2-spacing);
+
+  --editorial-note-size: var(--label1-size);
+  --editorial-note-line: var(--label1-line);
+  --editorial-note-spacing: var(--label1-spacing);
+
+  --editorial-note-body-size: var(--label2-size);
+  --editorial-note-body-line: var(--label2-line);
+  --editorial-note-body-spacing: var(--label2-spacing);
+
+  --editorial-caption-size: var(--caption1-size);
+  --editorial-caption-line: var(--caption1-line);
+  --editorial-caption-spacing: var(--caption1-spacing);
+
+  /* Annotation — connector and label, never covering data.
+     Geometry is a ratio of the FIGURE BODY's rendered width, never absolute
+     pixels and never the outer container: a small donut gets a narrow nearby
+     note, a wide chart a wider one (Datawrapper convention, adopted in
+     docs/references/README.md; AnnotatedFigure measures the body). */
+  --editorial-annotation-line: var(--color-semantic-label-alternative);
+  --editorial-annotation-offset: 3%;
+  --editorial-annotation-width: 32%;
+  /* Readability floor: below this the note column wraps into shreds, so the
+     ratio is clamped up to it; a figure narrower than the floor stacks its
+     notes underneath instead (Datawrapper's mobile behavior). */
+  --editorial-annotation-min-width: 200px;
+
+  /* Pictogram — unit geometry. */
+  --editorial-unit-size: 16px;
+  --editorial-unit-gap: var(--space-1);
+}

@@ -17,3 +17,15 @@ export { AssessmentSlide } from './components/slides/AssessmentSlide.jsx';
 export { DeckViewer } from './components/slides/DeckViewer.jsx';
 export { PresenterView } from './components/slides/PresenterView.jsx';
 export { EndSlide } from './components/slides/EndSlide.jsx';
+
+// Editorial surface, absorbed from @lk-design-system/lds-editorial-ui.
+// Five of these back the Assessment, Compare, Figure, Roadmap, and Stat
+// slides; the rest are the same family and ship with them.
+export { KeyFigure } from './components/editorial/KeyFigure.jsx';
+export { PictogramRow } from './components/editorial/PictogramRow.jsx';
+export { AnnotatedFigure } from './components/editorial/AnnotatedFigure.jsx';
+export { RankShift } from './components/editorial/RankShift.jsx';
+export { BeforeAfter } from './components/editorial/BeforeAfter.jsx';
+export { NarrativeTimeline } from './components/editorial/NarrativeTimeline.jsx';
+export { OptionAssessment } from './components/editorial/OptionAssessment.jsx';
+export { StatusAssessment } from './components/editorial/StatusAssessment.jsx';

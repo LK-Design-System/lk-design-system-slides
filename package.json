@@ -1,6 +1,6 @@
 {
   "name": "@lk-design-system/lds-slides-ui",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "Presentation slide surface, layout, and deck presentation layer for LDS.",
   "license": "MIT",
   "type": "module",
@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "@lk-design-system/lds-core": "file:vendor/lk-design-system-lds-core-0.1.0-rc.4.tgz",
-    "@lk-design-system/lds-editorial-ui": "file:vendor/lk-design-system-lds-editorial-ui-0.1.0-alpha.3.tgz",
     "@lk-design-system/lds-product": "file:vendor/lk-design-system-lds-product-0.1.0-rc.4.tgz"
   },
   "peerDependencies": {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusAssessment } from '@lk-design-system/lds-editorial-ui';
+import { StatusAssessment } from '../editorial/StatusAssessment.jsx';
 import { ContentSlide } from './ContentSlide.jsx';
 
 /**
