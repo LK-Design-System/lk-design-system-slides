@@ -161,4 +161,6 @@ space-1/2)과 RankShift의 컬럼 구조 gap은 밀도가 아니라 구조라 �
 2. **keynote 최소 단 상향** + 전 덱 오버플로 측정·해소
 3. **hero 단 신설** (토큰만; 소비는 레이아웃 제안으로)
 4. **간격 seam 2단계** (슬라이드 매체 재지정) — 2·3의 시각 리뷰와 묶어서
-5. 업스트림에 **display0 승격 제안** 제출, body 상향은 측정 후 별도 제안
+5. 업스트림에 **display0 승격 제안** 제출 — 제출됨:
+   `lk-design-system/docs/TYPE_RAMP_DISPLAY0_PROPOSAL.md` (2026-08-16).
+   body 상향은 측정 후 별도 제안
