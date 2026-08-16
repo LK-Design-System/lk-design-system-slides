@@ -21,11 +21,24 @@ const pad = (value) => String(value ?? '').padStart(2, '0');
  * `preset` names the deck kind ('keynote' | 'briefing'): it only switches
  * which `--slides-*` token values apply. Unset means the `:root` default
  * (keynote — the strictest projection floor).
+ *
+ * `scale` decides who owns the fit:
+ *
+ * - `'auto'` (default) — this component measures its frame and scales itself,
+ *   which is what a browser deck wants.
+ * - `'none'` — the canvas draws at its logical size and the caller places it.
+ *   For renderers that step time by hand, the measurement is a liability: the
+ *   layout effect and its ResizeObserver may or may not have run before a
+ *   frame is captured, so the same input can produce a scaled or an unscaled
+ *   screenshot. Callers used to force this by overwriting `transform` from the
+ *   outside; `scale="none"` makes it a contract instead, and skips the
+ *   measurement entirely rather than measuring and discarding the result.
  */
 export function SlideSurface({
   children,
   safeArea = true,
   preset,
+  scale: scaleMode = 'auto',
   // Speaker notes ride on the slide element so DeckViewer can read them off
   // its own children, but they must never reach the canvas: the surface the
   // room sees carries nothing written for the presenter. Destructured here so
@@ -46,6 +59,7 @@ export function SlideSurface({
   // Layout effect, not effect: the first paint must already be scaled, or the
   // slide flashes at full logical size before snapping down.
   React.useLayoutEffect(() => {
+    if (scaleMode === 'none') return undefined;
     const frame = frameRef.current;
     if (!frame) return undefined;
     const update = () => {
@@ -62,7 +76,7 @@ export function SlideSurface({
     const observer = new ResizeObserver(update);
     observer.observe(frame);
     return () => observer.disconnect();
-  }, []);
+  }, [scaleMode]);
 
   return (
     <div
@@ -90,8 +104,10 @@ export function SlideSurface({
           left: 0,
           width: 'var(--slides-canvas-width)',
           aspectRatio: 'var(--slides-aspect)',
-          transform: `scale(${scale ?? 1})`,
-          transformOrigin: 'top left',
+          ...(scaleMode === 'none' ? {} : {
+            transform: `scale(${scale ?? 1})`,
+            transformOrigin: 'top left',
+          }),
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
