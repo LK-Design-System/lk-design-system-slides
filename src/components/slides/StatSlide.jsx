@@ -38,7 +38,11 @@ export function StatSlide({ eyebrow, title, figures = [], source, style, ...rest
         style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: 'var(--space-9)',
+          // Was `var(--space-9)` — a step the 4px ramp never had, so the gap
+          // silently resolved to 0 and the cards touched (the exact
+          // missing-token failure SKILL.md's 함정 2 warns about, found live
+          // 2026-08-16). The figure-gap seam is the real knob.
+          gap: 'var(--editorial-figure-gap)',
           alignItems: 'flex-start',
         }}
       >

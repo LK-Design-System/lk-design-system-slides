@@ -70,6 +70,10 @@
   --editorial-row-gap: var(--space-3);
   --editorial-figure-pad-block: var(--space-4);
   --editorial-figure-pad-inline: var(--space-5);
+  /* Gap between sibling figures sharing a row — key-figure rows, horizontal
+     timeline phases. (Reinstated 2026-08-16 with its first real consumers;
+     an earlier draft cut it for having none.) */
+  --editorial-figure-gap: var(--space-6);
 
   /* Width policy — also the medium's call. In flowing product prose a table
      takes its intrinsic width and no more; on a fixed canvas where the table

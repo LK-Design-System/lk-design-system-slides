@@ -26,7 +26,10 @@ export function RoadmapSlide({ eyebrow, title, governing, phases = [], source, s
       style={style}
       {...rest}
     >
-      <NarrativeTimeline events={phases} label="실행 로드맵" />
+      {/* The slide medium reads a chronology left-to-right: a vertical rail
+          is a document idiom, and on a fixed canvas it strands the right
+          half (full-deck review, 2026-08-16). */}
+      <NarrativeTimeline events={phases} label="실행 로드맵" direction="row" />
       {source && (
         <p
           data-roadmap-slide-source
