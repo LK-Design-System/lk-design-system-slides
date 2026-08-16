@@ -24,8 +24,15 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
         data-slide-eyebrow
         style={{
           margin: '0 0 var(--space-8)',
-          fontSize: 'var(--slides-caption-size)',
-          lineHeight: 'var(--slides-caption-line)',
+          // Body, not caption: on every other layout the eyebrow is a kicker
+          // riding directly above a title, but here it is the slide's ONLY
+          // header, floating a space-8 above the list — and the list itself
+          // was promoted to title scale. A label at the caption rung under
+          // that promotion reads as a stray footnote (deck review follow-up,
+          // 2026-08-16). One rung up keeps it subordinate to the items
+          // (≥1.6:1) while letting it anchor the slide.
+          fontSize: 'var(--slides-body-size)',
+          lineHeight: 'var(--slides-body-line)',
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
           fontWeight: 'var(--fw-semibold)',
