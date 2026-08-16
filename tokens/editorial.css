@@ -57,4 +57,17 @@
   /* Pictogram — unit geometry. */
   --editorial-unit-size: 16px;
   --editorial-unit-gap: var(--space-1);
+
+  /* Density — the medium owns reading distance for SPACE as well as type.
+     Same seam as the ramp above: components read these steps, the defaults
+     are the product medium (screen, arm's length), and a medium re-points
+     them under its own scope without touching a component. Only
+     density-bearing values live here — cell padding, row rhythm, the figure
+     card's own padding. Rank-internal micro-margins (space-1/2 between a
+     label and its value) are not density and stay literal in components. */
+  --editorial-cell-pad-block: var(--space-2);
+  --editorial-cell-pad-inline: var(--space-4);
+  --editorial-row-gap: var(--space-3);
+  --editorial-figure-pad-block: var(--space-4);
+  --editorial-figure-pad-inline: var(--space-5);
 }

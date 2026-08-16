@@ -22,7 +22,7 @@ const STATUSES = {
 
 export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
   const headCell = {
-    padding: 'var(--space-2) var(--space-4)',
+    padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)',
     textAlign: 'left',
     fontSize: 'var(--editorial-note-size)',
     lineHeight: 'var(--editorial-note-line)',
@@ -32,7 +32,7 @@ export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
     borderBottom: '1px solid var(--color-semantic-line-normal-normal)',
   };
   const bodyCell = {
-    padding: 'var(--space-2) var(--space-4)',
+    padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)',
     fontSize: 'var(--editorial-note-body-size)',
     lineHeight: 'var(--editorial-note-body-line)',
     letterSpacing: 'var(--editorial-note-body-spacing)',

@@ -105,7 +105,7 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
         flexDirection: notesLayout?.mode === 'stacked' ? 'column' : 'row',
         maxWidth: '100%',
         columnGap: notesLayout != null ? notesLayout.gap : 'var(--space-4)',
-        rowGap: 'var(--space-3)',
+        rowGap: 'var(--editorial-row-gap)',
         alignItems: 'flex-start',
         fontFamily: 'var(--font-sans)',
         ...style,
@@ -137,7 +137,7 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
             padding: 0,
             display: 'flex',
             flexDirection: 'column',
-            gap: 'var(--space-3)',
+            gap: 'var(--editorial-row-gap)',
             flex: 'none',
             width: notesLayout != null ? notesLayout.width : 'var(--editorial-annotation-min-width)',
           }}

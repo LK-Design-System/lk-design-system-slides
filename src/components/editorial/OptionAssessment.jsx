@@ -24,7 +24,7 @@ export function OptionAssessment({ criteria = [], options = [], recommendation, 
   const recommendationMissing = recommendation != null && !recommended;
 
   const headCell = {
-    padding: 'var(--space-2) var(--space-4)',
+    padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)',
     textAlign: 'left',
     fontSize: 'var(--editorial-note-size)',
     lineHeight: 'var(--editorial-note-line)',
@@ -94,7 +94,7 @@ export function OptionAssessment({ criteria = [], options = [], recommendation, 
                     key={option.id ?? option.name}
                     data-assessment-verdict={option.verdicts?.[row]}
                     style={{
-                      padding: 'var(--space-2) var(--space-4)',
+                      padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)',
                       fontSize: 'var(--editorial-note-body-size)',
                       lineHeight: 'var(--editorial-note-body-line)',
                       letterSpacing: 'var(--editorial-note-body-spacing)',

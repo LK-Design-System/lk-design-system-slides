@@ -97,13 +97,17 @@ PPT 권장 하한(3.3%)의 3분의 2다. 한 단씩 올린다:
 --editorial-cell-pad-block: var(--space-2);     /* 8px */
 --editorial-cell-pad-inline: var(--space-4);    /* 16px */
 --editorial-row-gap: var(--space-3);            /* 12px */
---editorial-figure-gap: var(--space-6);         /* 24px */
+--editorial-figure-pad-block: var(--space-4);   /* 16px — 피겨 카드 패딩 */
+--editorial-figure-pad-inline: var(--space-5);  /* 20px */
 ```
 
-컴포넌트의 리터럴 `--space-*` 참조를 위 변수로 치환한다. 대상은 caption/fine
-사용 밀도 상위 컴포넌트부터: OptionAssessment(셀 패딩 2곳),
-StatusAssessment, AnnotatedFigure, RankShift, KeyFigure. 제품 매체에서는
-기본값이 동일하므로 **이 단계는 순수 리팩터링이다.**
+컴포넌트의 리터럴 `--space-*` 참조 중 **밀도를 나르는 것만** 위 변수로
+치환한다: OptionAssessment·StatusAssessment의 셀 패딩, AnnotatedFigure의
+행 리듬, KeyFigure의 카드 패딩. 랭크 내부 미세 마진(라벨↔값 사이의
+space-1/2)과 RankShift의 컬럼 구조 gap은 밀도가 아니라 구조라 리터럴로
+남긴다 — 전수 조사 결과다(당초 후보였던 figure-gap은 실소비자가 없어
+카드 패딩으로 대체). 제품 매체에서는 기본값이 동일하므로 **이 단계는
+순수 리팩터링이다.** (2026-08-16 구현됨)
 
 2단계 — 슬라이드 매체가 재지정한다 (타입 seam과 같은 자리, 같은 특이도):
 
@@ -112,7 +116,8 @@ StatusAssessment, AnnotatedFigure, RankShift, KeyFigure. 제품 매체에서는
 --editorial-cell-pad-block: var(--space-3);     /* 8 → 12px */
 --editorial-cell-pad-inline: var(--space-6);    /* 16 → 24px */
 --editorial-row-gap: var(--space-4);            /* 12 → 16px */
---editorial-figure-gap: var(--space-9);         /* StatSlide 지표 간격과 정렬 */
+--editorial-figure-pad-block: var(--space-5);   /* 16 → 20px */
+--editorial-figure-pad-inline: var(--space-6);  /* 20 → 24px */
 ```
 
 값은 전부 업스트림 space 램프의 단이다 — 재정의가 아니라 다른 단을 가리키는
