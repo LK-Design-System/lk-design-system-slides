@@ -144,8 +144,8 @@ export function SlideSurface({
               left: 'var(--slides-safe-x)',
               right: 'var(--slides-safe-x)',
               bottom: showFooter
-                ? 'calc(var(--space-4) + var(--slides-fine-line) + var(--space-3))'
-                : 'var(--space-4)',
+                ? 'calc(var(--space-6) + var(--slides-fine-line) + var(--space-3))'
+                : 'var(--space-6)',
               margin: 0,
               fontSize: 'var(--slides-fine-size)',
               lineHeight: 'var(--slides-fine-line)',
@@ -167,7 +167,12 @@ export function SlideSurface({
               position: 'absolute',
               left: 'var(--slides-safe-x)',
               right: 'var(--slides-safe-x)',
-              bottom: 'var(--space-4)',
+              // space-6, not space-4: at 16px the band visually merged with
+              // the 12px rounded corner and read as stuck to the edge
+              // (user-flagged). 24px clears the corner radius with room to
+              // spare and still keeps the whole chrome stack inside the
+              // keynote margin band.
+              bottom: 'var(--space-6)',
               display: 'flex',
               alignItems: 'baseline',
               justifyContent: 'space-between',
