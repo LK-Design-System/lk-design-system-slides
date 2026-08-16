@@ -116,15 +116,21 @@ export function NarrativeTimeline({ events = [], label, direction = 'column', st
           >
             {event.date}
           </time>
+          {/* Row events read one rank UP from the vertical log: horizontal
+              exists for the sparse idiom — a roadmap where three events own
+              the whole region — so the label is a CLAIM and the body a note,
+              not the note/note-body rungs sized for a timeline embedded in
+              dense data graphics. Density-appropriate is not
+              role-appropriate (user-flagged: small type amid open canvas). */}
           <span
             data-timeline-event
             data-event-emphasis={event.emphasis ? 'true' : undefined}
             style={{
               display: 'block',
               marginTop: 'var(--space-1)',
-              fontSize: 'var(--editorial-note-size)',
-              lineHeight: 'var(--editorial-note-line)',
-              letterSpacing: 'var(--editorial-note-spacing)',
+              fontSize: 'var(--editorial-claim-size)',
+              lineHeight: 'var(--editorial-claim-line)',
+              letterSpacing: 'var(--editorial-claim-spacing)',
               fontWeight: 'var(--fw-semibold)',
               color: event.emphasis
                 ? 'var(--color-semantic-primary-strong)'
@@ -138,9 +144,9 @@ export function NarrativeTimeline({ events = [], label, direction = 'column', st
               style={{
                 display: 'block',
                 marginTop: 'var(--space-1)',
-                fontSize: 'var(--editorial-note-body-size)',
-                lineHeight: 'var(--editorial-note-body-line)',
-                letterSpacing: 'var(--editorial-note-body-spacing)',
+                fontSize: 'var(--editorial-note-size)',
+                lineHeight: 'var(--editorial-note-line)',
+                letterSpacing: 'var(--editorial-note-spacing)',
                 color: 'var(--color-semantic-label-neutral)',
               }}
             >
