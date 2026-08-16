@@ -39,7 +39,10 @@ export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
     color: 'var(--color-semantic-label-neutral)',
     borderBottom: '1px solid var(--color-semantic-line-normal-neutral, var(--color-semantic-line-normal-normal))',
   };
-  const numberCell = { ...bodyCell, textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
+  // nowrap matches the column intent set in the header row: a measure —
+  // numeric or a short phrase ("전건 통과") — is one token and never wraps;
+  // the label column is the one that absorbs width pressure.
+  const numberCell = { ...bodyCell, textAlign: 'right', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' };
 
   // Group headers render once per contiguous run; the caller's order is the
   // report's order, so a scattered group is the caller's claim, not ours to fix.
@@ -62,10 +65,16 @@ export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
       <table style={{ borderCollapse: 'collapse', width: 'var(--editorial-table-width)' }}>
         <thead>
           <tr>
+            {/* Column intent, not auto distribution: when the medium grants
+                the table full width, the surplus belongs to the LABEL column
+                alone. The measure columns pin to their content (1% + nowrap
+                is the table-layout idiom for shrink-to-fit), so 목표·실적·
+                판정 stay clustered at the right rail where they are compared,
+                instead of drifting apart across the canvas. */}
             <th scope="col" style={headCell}>지표</th>
-            <th scope="col" style={{ ...headCell, textAlign: 'right' }}>목표</th>
-            <th scope="col" style={{ ...headCell, textAlign: 'right' }}>실적</th>
-            <th scope="col" style={headCell}>판정</th>
+            <th scope="col" style={{ ...headCell, textAlign: 'right', width: '1%', whiteSpace: 'nowrap' }}>목표</th>
+            <th scope="col" style={{ ...headCell, textAlign: 'right', width: '1%', whiteSpace: 'nowrap' }}>실적</th>
+            <th scope="col" style={{ ...headCell, width: '1%', whiteSpace: 'nowrap' }}>판정</th>
           </tr>
         </thead>
         <tbody>
