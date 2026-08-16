@@ -154,4 +154,10 @@
   --editorial-row-gap: var(--space-4);
   --editorial-figure-pad-block: var(--space-5);
   --editorial-figure-pad-inline: var(--space-6);
+
+  /* Width policy — on a fixed canvas the table IS the content, so it takes
+     the content region's full width and the browser's table layout does the
+     distributing (COMPOSITION_PROPOSAL.md A). In flowing product prose the
+     editorial default (intrinsic width) stays. */
+  --editorial-table-width: 100%;
 }

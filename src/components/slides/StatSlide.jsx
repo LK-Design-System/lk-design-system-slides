@@ -43,7 +43,13 @@ export function StatSlide({ eyebrow, title, figures = [], source, style, ...rest
         }}
       >
         {resolved.map(({ id, ...figure }, index) => (
-          <KeyFigure key={id ?? index} {...figure} />
+          // Figures share the row's width instead of huddling at their
+          // intrinsic size — two figures take half the canvas each, four a
+          // quarter (COMPOSITION_PROPOSAL.md A). The 240px basis keeps the
+          // wrap behavior: a crowd of figures still breaks into rows instead
+          // of squeezing. The slide owns placement, so this is a direct
+          // call, not a seam variable.
+          <KeyFigure key={id ?? index} style={{ flex: '1 1 240px', minWidth: 0 }} {...figure} />
         ))}
       </div>
       {source && (

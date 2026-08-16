@@ -37,10 +37,10 @@ export function OptionAssessment({ criteria = [], options = [], recommendation, 
   return (
     <figure
       data-lds-option-assessment
-      style={{ margin: 0, display: 'inline-block', maxWidth: '100%', fontFamily: 'var(--font-sans)', ...style }}
+      style={{ margin: 0, display: 'inline-block', width: 'var(--editorial-table-width)', maxWidth: '100%', fontFamily: 'var(--font-sans)', ...style }}
       {...rest}
     >
-      <table style={{ borderCollapse: 'collapse' }}>
+      <table style={{ borderCollapse: 'collapse', width: 'var(--editorial-table-width)' }}>
         <thead>
           <tr>
             <th scope="col" style={headCell} aria-label="평가 기준" />

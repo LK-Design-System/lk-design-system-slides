@@ -70,4 +70,13 @@
   --editorial-row-gap: var(--space-3);
   --editorial-figure-pad-block: var(--space-4);
   --editorial-figure-pad-inline: var(--space-5);
+
+  /* Width policy — also the medium's call. In flowing product prose a table
+     takes its intrinsic width and no more; on a fixed canvas where the table
+     IS the content, intrinsic width is wasted canvas. The default is the
+     product answer; the slide surface re-points it to 100% and the browser's
+     table layout does the distributing — fewer columns, wider columns, which
+     is the space-adaptive behavior surveyed in
+     docs/references/SLIDE_SYSTEMS_COMPARISON.md (PowerPoint SmartArt). */
+  --editorial-table-width: auto;
 }

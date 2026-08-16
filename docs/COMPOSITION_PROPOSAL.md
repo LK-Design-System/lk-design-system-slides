@@ -1,0 +1,64 @@
+# 제안 — 슬라이드 구도: 허용된 공간을 쓰는 규칙 (레이아웃 층)
+
+상태: **부분 구현** (2026-08-16 작성. A 폭 분배 구현됨, B·C 미구현)
+근거: [references/SLIDE_SYSTEMS_COMPARISON.md](./references/SLIDE_SYSTEMS_COMPARISON.md),
+[SCALE_DENSITY_PROPOSAL.md](./SCALE_DENSITY_PROPOSAL.md)(토큰 층 — 구현 완료)
+
+토큰 층이 "얼마나 크게"를 고쳤다면, 이 문서는 "어디에 어떻게 놓는가"를
+다룬다. 촉발 사례: briefing CompareSlide에서 표가 고유 폭으로 좌상단에
+쪼그라들고 캔버스 우측 60%·하단 50%가 비는 화면 — 넘침(Fit·오버플로
+게이트)에는 정교한 계약이 있는데 **모자람에는 규칙이 하나도 없다.**
+
+업계의 답 세 가지가 조사에 있다: 폭 분배(PPT SmartArt — 항목이 적을수록
+크게 나눠 갖는다), 희소 슬라이드 전용 구도(Slidev fact/statement — 중앙 +
+점보 타입), 슬라이드 단위 구도 전환(Marp lead). 각각을 A·B·C로 옮긴다.
+
+## A. 폭 분배 — 표와 지표가 허용 폭을 나눠 갖는다 (구현됨)
+
+**문제.** editorial 표(OptionAssessment·StatusAssessment)는 `inline-block` +
+고유 폭이라 내용만큼만 차지한다. 제품 문서(팔 거리, 흐르는 본문)에서는 그게
+맞다 — 표가 본문 폭을 다 먹으면 안 된다. 슬라이드(고정 캔버스, 표가 곧
+내용)에서는 반대다 — 안 먹으면 낭비다. **폭 정책은 매체 소유다.** 타입
+seam·밀도 seam과 같은 구조로 폭 seam을 만든다:
+
+```css
+/* tokens/editorial.css — 기본값은 제품 매체: 고유 폭 */
+--editorial-table-width: auto;
+
+/* tokens/slides.css — :root [data-lds-slide-surface] */
+--editorial-table-width: 100%;   /* 슬라이드에서 표는 콘텐츠 영역을 가득 쓴다 */
+```
+
+컴포넌트 쪽은 figure와 table이 이 변수를 읽는다. 열 분배는 브라우저 테이블
+레이아웃이 알아서 한다 — 열이 적을수록 한 열이 넓어지는 것이 정확히
+SmartArt의 개수 적응이다.
+
+지표 행(StatSlide)은 seam이 필요 없다 — 슬라이드 소유 레이아웃이므로 지표
+카드에 `flex: 1 1 0`을 직접 준다. 지표가 2개면 반씩, 4개면 1/4씩 나눠 갖고,
+강조 카드의 배경면이 실제 면적을 갖게 된다.
+
+**하지 않는 것**: 세로 방향으로 표를 늘리는 것(행 높이 부풀리기는 밀도
+위반), 제품 매체의 표 폭 변경(기본값 auto 유지).
+
+## B. 희소 슬라이드 구도 — hero 소비 (미구현)
+
+Statement·Title·Section·End 계열이 [SCALE_DENSITY_PROPOSAL](./SCALE_DENSITY_PROPOSAL.md)의
+`--slides-hero-*`(캔버스 15.6%)를 소비하고, 가로 중앙 구도로 전환하는 것.
+Slidev fact/statement의 이식이다. 타입 승격 폭이 커서(StatementSlide 본문
+display→hero) 덱 전체 시각 리뷰와 ch 상한 재측정(22ch가 hero에서도 맞는
+가로 폭인지)이 필요하다 — 별도 작업으로 진행한다.
+
+## C. ContentSlide 세로 앵커 (미구현)
+
+워크호스 슬라이드의 상단 고정은 업계와 합치하므로 기본값은 유지하되,
+Marp `lead`처럼 슬라이드 단위로 `anchor="center"`를 옵트인하는 prop을
+검토한다. B와 함께 다룬다 — A(폭 분배)만으로 하단 공백의 체감이 얼마나
+줄어드는지 본 뒤에 결정해도 늦지 않다.
+
+## 검증 (A 기준)
+
+- 제품 매체 스토리(editorial-*)에서 표 폭이 고유 폭 그대로인지 (computed
+  width가 변경 전과 동일).
+- 슬라이드 스토리(compare·assessment)에서 표가 콘텐츠 영역 폭과 같은지.
+- 게이트 전량: style-ownership · 오버플로(폭이 넓어지면 줄바꿈이 줄어
+  높이는 같거나 줄어든다) · play 단언 · 카탈로그 · 덱 콘텐츠.
