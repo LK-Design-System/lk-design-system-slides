@@ -105,7 +105,19 @@ export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
             const { metric } = row;
             const status = STATUSES[metric.status];
             return (
-              <tr key={metric.id ?? metric.name}>
+              // The band is what lets a full-width row read as ONE row: with
+              // the label left and the measures pinned right, a hairline
+              // alone cannot carry the eye across the gutter between them.
+              // EVERY metric row wears the band — zebra was tried first and
+              // with three rows it read as emphasis, which color must never
+              // claim here (색은 이탈만 표시). The quietest fill on the ramp,
+              // so the verdict badges keep the only color; group headers
+              // stay bare and the bands alone say "data row".
+              <tr
+                key={metric.id ?? metric.name}
+                data-assessment-band
+                style={{ background: 'var(--color-semantic-fill-alternative)' }}
+              >
                 <th scope="row" style={{ ...bodyCell, fontWeight: 'var(--fw-regular)', textAlign: 'left' }}>
                   {metric.name}
                 </th>
