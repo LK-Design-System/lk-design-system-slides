@@ -83,4 +83,10 @@
      is the space-adaptive behavior surveyed in
      docs/references/SLIDE_SYSTEMS_COMPARISON.md (PowerPoint SmartArt). */
   --editorial-table-width: auto;
+  /* The exhibit's answer to the same question: an annotated figure in
+     flowing prose keeps its intrinsic width; on a fixed canvas the exhibit
+     IS the slide's content and takes the region, the annotation column
+     re-deriving its share from the measured body (the ratio contract
+     above). The drawing itself scales through its own viewBox. */
+  --editorial-figure-width: auto;
 }

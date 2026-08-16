@@ -47,7 +47,7 @@ const LatencyChart = () => (
     viewBox="-6 0 332 120"
     role="img"
     aria-label="선행 파일럿 주간 p95 지연 추이 데모 차트"
-    style={{ width: 420, display: 'block' }}
+    style={{ width: '100%', display: 'block' }}
   >
     <polyline
       points="0,30 40,34 80,32 120,44 160,48 200,72 240,78 280,88 320,92"

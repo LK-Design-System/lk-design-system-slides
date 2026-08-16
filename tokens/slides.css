@@ -161,4 +161,5 @@
      distributing (COMPOSITION_PROPOSAL.md A). In flowing product prose the
      editorial default (intrinsic width) stays. */
   --editorial-table-width: 100%;
+  --editorial-figure-width: 100%;
 }

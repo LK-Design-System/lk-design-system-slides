@@ -62,7 +62,14 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
             ? { mode: 'side', width: Math.round(minWidth), gap }
             : { mode: 'stacked', width: Math.round(bodyWidth), gap };
       setNotesLayout((previous) =>
-        previous && previous.mode === next.mode && previous.width === next.width && previous.gap === next.gap
+        // The 1px tolerance matters once the body flex-grows: notes width
+        // derives from the body, the body's share derives from the notes,
+        // and without slack a rounding parity can ping-pong the
+        // ResizeObserver forever.
+        previous
+        && previous.mode === next.mode
+        && Math.abs(previous.width - next.width) <= 1
+        && Math.abs(previous.gap - next.gap) <= 1
           ? previous
           : next,
       );
@@ -103,6 +110,10 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
         margin: 0,
         display: 'inline-flex',
         flexDirection: notesLayout?.mode === 'stacked' ? 'column' : 'row',
+        // Width policy is the medium's (--editorial-figure-width): auto in
+        // prose, 100% on a slide. The body's flex-grow only has room to act
+        // when the medium grants width, so one code path serves both.
+        width: 'var(--editorial-figure-width)',
         maxWidth: '100%',
         columnGap: notesLayout != null ? notesLayout.gap : 'var(--space-4)',
         rowGap: 'var(--editorial-row-gap)',
@@ -112,7 +123,7 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
       }}
       {...rest}
     >
-      <div ref={bodyRef} data-annotated-figure-body style={{ minWidth: 0, flex: '0 1 auto' }}>
+      <div ref={bodyRef} data-annotated-figure-body style={{ minWidth: 0, flex: '1 1 auto' }}>
         {children}
         {caption && (
           <figcaption
