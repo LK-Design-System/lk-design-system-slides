@@ -37,6 +37,14 @@ export const Default = {
     if (parseInt(cur.fontWeight, 10) <= parseInt(past.fontWeight, 10)) {
       throw new Error('Emphasis is spent on the current chapter only — the rest stay quiet.');
     }
+    // Contract added 2026-08-16 (full-deck review): the agenda is a sparse
+    // slide, and chapter names read at the scale chapters are titled. Body
+    // scale left three lines stranded in a corner of the canvas.
+    const surface = canvasElement.querySelector('[data-lds-agenda-slide]');
+    const titleSize = getComputedStyle(surface).getPropertyValue('--slides-title-size').trim();
+    if (getComputedStyle(items[0]).fontSize !== titleSize) {
+      throw new Error(`Agenda items must read at title scale (${titleSize}); got ${getComputedStyle(items[0]).fontSize}.`);
+    }
     for (const item of ITEMS) {
       if (/다\.$/.test(item)) {
         throw new Error('Agenda items are chapter titles — noun-ended, never sentences.');

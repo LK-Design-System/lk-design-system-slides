@@ -9,10 +9,17 @@ import { SlideSurface } from './SlideSurface.jsx';
  * belong to one deck. `current` (1-based, matching SectionSlide's `index`)
  * lets the deck reuse the agenda as a progress slide between chapters —
  * exactly one item may be current, and emphasis is spent only there.
+ *
+ * The agenda is a sparse slide: three to five chapter names own a whole
+ * canvas, and at body scale they read as a footnote in a corner (the
+ * full-deck review's worst offender). Items therefore read at TITLE scale —
+ * they are chapter titles, set at the scale chapters are titled — with the
+ * list block centred on the canvas while the list itself stays
+ * start-aligned, because a numbered list is read top-down along its rail.
  */
 export function AgendaSlide({ title = '목차', items = [], current, style, ...rest }) {
   return (
-    <SlideSurface data-lds-agenda-slide style={style} {...rest}>
+    <SlideSurface data-lds-agenda-slide style={{ alignItems: 'center', ...style }} {...rest}>
       <p
         data-slide-eyebrow
         style={{
@@ -34,7 +41,7 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
           padding: 0,
           listStyle: 'none',
           display: 'grid',
-          gap: 'var(--space-5)',
+          gap: 'var(--space-8)',
         }}
       >
         {items.map((item, i) => {
@@ -48,9 +55,9 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
                 display: 'flex',
                 gap: 'var(--space-6)',
                 alignItems: 'baseline',
-                fontSize: 'var(--slides-body-size)',
-                lineHeight: 'var(--slides-body-line)',
-                letterSpacing: 'var(--slides-body-spacing)',
+                fontSize: 'var(--slides-title-size)',
+                lineHeight: 'var(--slides-title-line)',
+                letterSpacing: 'var(--slides-title-spacing)',
                 fontWeight: isCurrent ? 'var(--fw-semibold)' : 'var(--fw-regular)',
                 color: isCurrent
                   ? 'var(--color-semantic-label-strong)'
