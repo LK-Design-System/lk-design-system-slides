@@ -44,6 +44,13 @@ export function StatSlide({ eyebrow, title, figures = [], source, style, ...rest
           // 2026-08-16). The figure-gap seam is the real knob.
           gap: 'var(--editorial-figure-gap)',
           alignItems: 'flex-start',
+          // The cards' inline padding is invisible on every card that is not
+          // spending emphasis (transparent background), so without this the
+          // whole row reads as indented for no reason relative to the
+          // header. Bleed the cards outward instead: numerals align with the
+          // title, and an emphasis surface extends past the text edge the
+          // way a hover surface does.
+          marginInline: 'calc(var(--editorial-figure-pad-inline) * -1)',
         }}
       >
         {resolved.map(({ id, ...figure }, index) => (

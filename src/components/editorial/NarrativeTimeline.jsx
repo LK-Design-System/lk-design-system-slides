@@ -87,9 +87,20 @@ export function NarrativeTimeline({ events = [], label, direction = 'column', st
               }}
             />
             {/* The rail segment stops before the last node: the chronology
-                ends there, and a line running off-canvas claims otherwise. */}
+                ends there, and a line running off-canvas claims otherwise.
+                The negative margin carries the line across the grid gap to
+                the next node — a rail interrupted at every gap reads as
+                three timelines, not one. */}
             {order < dated.length - 1 && (
-              <span aria-hidden="true" style={{ flex: 1, height: 1, background: 'var(--color-semantic-line-normal-normal)' }} />
+              <span
+                aria-hidden="true"
+                style={{
+                  flex: 1,
+                  height: 1,
+                  marginRight: 'calc(var(--editorial-figure-gap) * -1)',
+                  background: 'var(--color-semantic-line-normal-normal)',
+                }}
+              />
             )}
           </div>
           <time
