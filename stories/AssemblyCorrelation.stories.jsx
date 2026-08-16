@@ -51,7 +51,8 @@ export const Default = {
         <div data-small-multiples style={{ display: 'grid', gap: 'var(--space-4)', minWidth: 0 }}>
           {/* 추세(위치 부호화)를 말하는 선 차트라 0 강제 없이 축을 데이터에 맞춘다 —
               단, 선이 프레임에 닿지 않게 라운드 눈금으로 위아래 여유를 둔다.
-              EDITORIAL_METHODOLOGY 절차 5. 0 시작은 길이·면적 부호화(막대·픽토그램)의 규칙이다. */}
+              EDITORIAL_METHODOLOGY 절차 5(상류 lk-design-system docs/EDITORIAL_METHODOLOGY.md).
+              0 시작은 길이·면적 부호화(막대·픽토그램)의 규칙이다. */}
           <LineChart
             aria-label="주간 처리량"
             width={420}

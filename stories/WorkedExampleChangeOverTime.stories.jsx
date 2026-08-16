@@ -136,7 +136,8 @@ export const BeforeAfter = {
     }
 
     // 검증 체크리스트 — 이 차트는 배율 주장("18% 증가")을 하므로 0 기준선으로 배율을
-    // 정직하게 보여준다. 추세만 말하는 선 차트라면 0 강제가 아니다 (EDITORIAL_METHODOLOGY 절차 5).
+    // 정직하게 보여준다. 추세만 말하는 선 차트라면 0 강제가 아니다 — EDITORIAL_METHODOLOGY
+    // 절차 5(상류 lk-design-system docs/EDITORIAL_METHODOLOGY.md).
     const tickTexts = Array.from(compliant.querySelectorAll('svg text')).map((node) => node.textContent.trim());
     if (!tickTexts.includes('0')) {
       throw new Error('The compliant chart must keep a zero baseline on its value axis.');
