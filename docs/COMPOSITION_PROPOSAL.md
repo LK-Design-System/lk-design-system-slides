@@ -122,6 +122,17 @@ rest 전파로 같은 prop을 받는다. 짧은 표 하나짜리 슬라이드에
 - 잔여 소견: 로드맵 row의 시점 미상 각주가 1열 본문과 가까워 보일 수
   있으나 판독 혼동 수준은 아님 — 보류.
 
+8차 (사용자 문제 제기 — "그럴거면 LDS를 바꿔야 하지 않나"): 맞다.
+확인 결과 Product `Table`은 열 의도(width/truncate/align)와 공개 셀 스타일
+헬퍼까지 이미 갖고 있는데 StatusAssessment가 이를 우회해 `<table>`을 손으로
+말고 있었고, 7차의 열 정책·밴딩은 그 복제 위에 다시 발명된 것이다. 밴딩은
+업스트림에 없고 Table의 밀도·타입은 제품 고정이라 위임이 불가능한 상태 —
+둘을 함께 업스트림에 제안했다:
+`lk-design-system/docs/TABLE_MEDIUM_CONTRACT_PROPOSAL.md` (banded prop +
+셀 스타일의 변수 경유; 채택 시 StatusAssessment는 Table 위임으로 복귀).
+display0·Timeline orientation에 이어 세 번째 승격 제안이며, 세 건 모두
+"위성 실측이 확정한 문법을 본체 계약으로"라는 같은 경로다.
+
 7차 (사용자 발견): **전폭 표의 열 분배에 설계 의도가 없던 것** — 폭 100%를
 주자 auto 레이아웃이 잉여를 열들에 임의로 흩어 목표·실적 사이가 250px씩
 벌어졌다. StatusAssessment에 열 정책을 박음: 라벨 열이 잉여를 전부
