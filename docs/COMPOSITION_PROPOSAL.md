@@ -110,8 +110,11 @@ rest 전파로 같은 prop을 받는다. 짧은 표 하나짜리 슬라이드에
 
 - 간지 index(40px)·subtitle(티어 추종)·hero 제목: 정합. briefing 간지
   (80px + 32px)도 비율 유지.
-- Statement eyebrow·EndSlide contact·인용 attribution: 조용한 것이 강조
-  예산의 의도된 결과라 유지가 맞다고 재확인.
+- Statement eyebrow: 처음엔 "강조 예산의 의도된 조용함"으로 유지 판정했으나
+  **번복** (사용자 재지적) — 계약이 약속한 조용함의 수단은 색(label 톤)이지
+  크기가 아니고, 희소 캔버스의 유일한 라벨이라는 점에서 아젠다 라벨과 같은
+  경우다. caption→body 한 단 승급, 색 유지. EndSlide contact·인용
+  attribution은 라벨이 아니라 후속 정보(fine print)라 유지가 맞다.
 - **ImageSlide(contained)가 작아 보이는 것은 결함이 아니라 계약이다** —
   박스는 파일이 아니라 잔여 높이가 정하고(오버플로 게이트가 잡았던 사고의
   해법), 더 크게는 bleed의 몫. FigureSlide 차트 크기는 children 소유.
