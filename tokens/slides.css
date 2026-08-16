@@ -33,15 +33,14 @@
      whole slide. Every surveyed peer keeps such a tier at 10–17% of canvas
      height (Slidev `fact` 17.4%, reveal.js h1 15.0% — survey in
      docs/references/SLIDE_SYSTEMS_COMPARISON.md); the ramp topping out at
-     display (7.8%) is why sparse slides read as under-filled. The upstream
-     ramp has no rung above display1, so hero composes one: ×2 of the display
-     anchor keeps every value resolving THROUGH the upstream ramp — a Theme
-     that re-points display1 re-skins hero for free. If upstream ever grows a
-     display0 rung, hero re-points to it and nothing else moves
-     (SCALE_DENSITY_PROPOSAL.md owns that migration). */
-  --slides-hero-size: calc(var(--display1-size) * 2);
-  --slides-hero-line: calc(var(--display1-line) * 2);
-  --slides-hero-spacing: var(--display1-spacing);
+     display (7.8%) is why sparse slides read as under-filled. Upstream
+     adopted the rung as `display0` in rc.69.26 (value identical to the
+     calc(display1 × 2) this replaced — nothing rendered moved), so hero now
+     resolves through the ramp like every other step. History and adoption
+     case: SCALE_DENSITY_PROPOSAL.md / upstream TYPE_RAMP_DISPLAY0_PROPOSAL. */
+  --slides-hero-size: var(--display0-size);
+  --slides-hero-line: var(--display0-line);
+  --slides-hero-spacing: var(--display0-spacing);
   --slides-display-size: var(--display1-size);
   --slides-display-line: var(--display1-line);
   --slides-display-spacing: var(--display1-spacing);
@@ -86,6 +85,9 @@
   --slides-safe-x: 5%;
   --slides-safe-y: 6%;
 
+  /* briefing's hero keeps the one-rung-down anchor as a calc: the upstream
+     ramp has display0 for the keynote tier only, and a briefing display0
+     rung has no consumer beyond this line yet. */
   --slides-hero-size: calc(var(--display2-size) * 2);
   --slides-hero-line: calc(var(--display2-line) * 2);
   --slides-hero-spacing: var(--display2-spacing);
