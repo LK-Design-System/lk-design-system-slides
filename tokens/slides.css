@@ -53,6 +53,17 @@
   --slides-caption-size: var(--heading2-size);
   --slides-caption-line: var(--heading2-line);
   --slides-caption-spacing: var(--heading2-spacing);
+  /* `overline` is the eyebrow family's one size — the kicker over a title,
+     the agenda's label, the statement's context line. These read as the SAME
+     element while a deck is flipped, so they must not change size from page
+     to page (user-flagged: per-slide promotions had scattered them across
+     caption and body). One rung, deck-wide; prominence differs by COLOR
+     (accent vs label tone), never by size. Sits between caption and body:
+     large enough to anchor a sparse slide alone, small enough to stay a
+     kicker under a 40px title. */
+  --slides-overline-size: var(--heading1-size);
+  --slides-overline-line: var(--heading1-line);
+  --slides-overline-spacing: var(--heading1-spacing);
   /* `fine` is the floor rung: sources, legends, annotation bodies. Nothing on a
      slide may be smaller than this, which is why it stops one rung under caption
      rather than continuing down the product ramp. The rung sits at headline1
@@ -100,6 +111,9 @@
   --slides-caption-size: var(--body2-size);
   --slides-caption-line: var(--body2-line);
   --slides-caption-spacing: var(--body2-spacing);
+  --slides-overline-size: var(--heading2-size);
+  --slides-overline-line: var(--heading2-line);
+  --slides-overline-spacing: var(--heading2-spacing);
   --slides-fine-size: var(--label1-size);
   --slides-fine-line: var(--label1-line);
   --slides-fine-spacing: var(--label1-spacing);

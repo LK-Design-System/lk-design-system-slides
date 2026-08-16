@@ -24,15 +24,14 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
         data-slide-eyebrow
         style={{
           margin: '0 0 var(--space-8)',
-          // Body, not caption: on every other layout the eyebrow is a kicker
-          // riding directly above a title, but here it is the slide's ONLY
-          // header, floating a space-8 above the list — and the list itself
-          // was promoted to title scale. A label at the caption rung under
-          // that promotion reads as a stray footnote (deck review follow-up,
-          // 2026-08-16). One rung up keeps it subordinate to the items
-          // (≥1.6:1) while letting it anchor the slide.
-          fontSize: 'var(--slides-body-size)',
-          lineHeight: 'var(--slides-body-line)',
+          // The overline step — the eyebrow family's ONE deck-wide size.
+          // This label was first promoted to body as a sole-label anchor,
+          // then folded into the shared overline rung when flipping the deck
+          // showed eyebrow-class elements jittering between sizes
+          // (user-flagged, 2026-08-17). Anchoring stays; the size is now the
+          // family's, not this slide's.
+          fontSize: 'var(--slides-overline-size)',
+          lineHeight: 'var(--slides-overline-line)',
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
           fontWeight: 'var(--fw-semibold)',

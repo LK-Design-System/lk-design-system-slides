@@ -40,13 +40,12 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
           data-slide-eyebrow
           style={{
             margin: '0 0 var(--space-5)',
-            // Body, not caption — the same sole-label rule as the agenda:
-            // on a sparse canvas this is the only context label, and the
-            // quietness the docblock promises is carried by COLOR (label
-            // tone instead of the accent), not by shrinking. At caption it
-            // sat under the projection floor on briefing decks.
-            fontSize: 'var(--slides-body-size)',
-            lineHeight: 'var(--slides-body-line)',
+            // The overline step — one size for the whole eyebrow family,
+            // deck-wide (see slides.css). Quietness stays a COLOR decision:
+            // this one wears the label tone because the statement owns the
+            // slide's only accent.
+            fontSize: 'var(--slides-overline-size)',
+            lineHeight: 'var(--slides-overline-line)',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             fontWeight: 'var(--fw-semibold)',

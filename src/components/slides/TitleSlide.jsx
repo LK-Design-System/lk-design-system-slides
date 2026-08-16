@@ -16,8 +16,8 @@ export function TitleSlide({ eyebrow, title, subtitle, style, ...rest }) {
           data-slide-eyebrow
           style={{
             margin: '0 0 var(--space-4)',
-            fontSize: 'var(--slides-caption-size)',
-            lineHeight: 'var(--slides-caption-line)',
+            fontSize: 'var(--slides-overline-size)',
+            lineHeight: 'var(--slides-overline-line)',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             fontWeight: 'var(--fw-semibold)',
