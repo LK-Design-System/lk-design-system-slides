@@ -1,6 +1,7 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
 import { phrased } from './phrasing.jsx';
+import { sparseScale, SPARSE_TYPE } from './sparseScale.js';
 
 /**
  * LDS Slides — SectionSlide
@@ -14,8 +15,16 @@ export function SectionSlide({ index, title, subtitle, style, ...rest }) {
   const formatted =
     typeof index === 'number' ? String(index).padStart(2, '0') : index;
 
+  // A chapter name is usually a short noun label, so the divider mostly
+  // rides the hero tier — a breathing slide earns a loud title. Centred like
+  // the rest of the sparse family (COMPOSITION_PROPOSAL.md B).
+  const scale = sparseScale(title);
   return (
-    <SlideSurface data-lds-section-slide style={style} {...rest}>
+    <SlideSurface
+      data-lds-section-slide
+      style={{ alignItems: 'center', textAlign: 'center', ...style }}
+      {...rest}
+    >
       {formatted != null && (
         <p
           data-slide-index
@@ -34,11 +43,10 @@ export function SectionSlide({ index, title, subtitle, style, ...rest }) {
       )}
       <h2
         data-slide-title
+        data-slide-scale={scale}
         style={{
           margin: 0,
-          fontSize: 'var(--slides-display-size)',
-          lineHeight: 'var(--slides-display-line)',
-          letterSpacing: 'var(--slides-display-spacing)',
+          ...SPARSE_TYPE[scale],
           fontWeight: 'var(--fw-bold)',
           color: 'var(--color-semantic-label-strong)',
           maxWidth: '18ch',

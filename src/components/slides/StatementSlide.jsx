@@ -1,6 +1,7 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
 import { phrased } from './phrasing.jsx';
+import { sparseScale, SPARSE_TYPE } from './sparseScale.js';
 
 /**
  * LDS Slides — StatementSlide
@@ -19,8 +20,21 @@ import { phrased } from './phrasing.jsx';
  * scale, measure, and position; the wording is the deck's.
  */
 export function StatementSlide({ eyebrow, statement, attribution, style, ...rest }) {
+  // Length decides the tier (COMPOSITION_PROPOSAL.md B): a short claim
+  // carries hero, a sentence stays at display. Centred either way — the
+  // sparse family composes to the middle of the canvas, per every surveyed
+  // peer's statement/fact layout.
+  const scale = sparseScale(statement);
   return (
-    <SlideSurface style={{ justifyContent: 'center', ...style }} {...rest}>
+    <SlideSurface
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        ...style,
+      }}
+      {...rest}
+    >
       {eyebrow && (
         <p
           data-slide-eyebrow
@@ -39,11 +53,10 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
       )}
       <p
         data-slide-statement
+        data-slide-scale={scale}
         style={{
           margin: 0,
-          fontSize: 'var(--slides-display-size)',
-          lineHeight: 'var(--slides-display-line)',
-          letterSpacing: 'var(--slides-display-spacing)',
+          ...SPARSE_TYPE[scale],
           fontWeight: 'var(--fw-bold)',
           color: 'var(--color-semantic-label-strong)',
           // A statement that runs the full canvas width stops reading as one

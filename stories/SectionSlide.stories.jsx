@@ -39,11 +39,23 @@ export const Default = {
     if (!(index.compareDocumentPosition(title) & Node.DOCUMENT_POSITION_FOLLOWING)) {
       throw new Error('The index must precede the chapter title in reading order.');
     }
-    const displaySize = parseFloat(
-      getComputedStyle(surface).getPropertyValue('--slides-display-size')
-    );
-    if (parseFloat(getComputedStyle(title).fontSize) !== displaySize) {
-      throw new Error('The chapter title must read at display scale — a divider is read, not studied.');
+    // Contract revised 2026-08-16 (COMPOSITION_PROPOSAL.md B): the earlier
+    // rule pinned the divider to display scale ("read, not studied"). A
+    // breathing slide carrying four glyphs can afford to be loud — every
+    // surveyed peer sets its section tier ABOVE the content tier — so the
+    // title now rides the tier its length warrants and must render exactly
+    // what it declared. This story's short chapter name warrants hero.
+    const scale = title.getAttribute('data-slide-scale');
+    if (scale !== 'hero') {
+      throw new Error(`A short chapter name rides the hero tier; declared "${scale}".`);
+    }
+    const probe = document.createElement('span');
+    probe.style.fontSize = `var(--slides-${scale}-size)`;
+    surface.append(probe);
+    const expected = parseFloat(getComputedStyle(probe).fontSize);
+    probe.remove();
+    if (parseFloat(getComputedStyle(title).fontSize) !== expected) {
+      throw new Error(`The chapter title must render at its declared ${scale} scale.`);
     }
     if (/다\.$/.test(title.textContent.trim())) {
       throw new Error('The chapter title ends with a noun — sentences belong to governing messages.');

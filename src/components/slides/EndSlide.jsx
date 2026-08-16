@@ -1,6 +1,7 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
 import { phrased } from './phrasing.jsx';
+import { sparseScale, SPARSE_TYPE } from './sparseScale.js';
 
 /**
  * LDS Slides — EndSlide
@@ -12,15 +13,22 @@ import { phrased } from './phrasing.jsx';
  * arrived late.
  */
 export function EndSlide({ message, contact, style, ...rest }) {
+  // "감사합니다" carries hero; a takeaway sentence stays at display
+  // (COMPOSITION_PROPOSAL.md B). Centred — the room stares at this slide
+  // through Q&A, and a residue line belongs in the middle of the wall.
+  const scale = sparseScale(message);
   return (
-    <SlideSurface data-lds-end-slide style={style} {...rest}>
+    <SlideSurface
+      data-lds-end-slide
+      style={{ alignItems: 'center', textAlign: 'center', ...style }}
+      {...rest}
+    >
       <p
         data-slide-message
+        data-slide-scale={scale}
         style={{
           margin: 0,
-          fontSize: 'var(--slides-display-size)',
-          lineHeight: 'var(--slides-display-line)',
-          letterSpacing: 'var(--slides-display-spacing)',
+          ...SPARSE_TYPE[scale],
           fontWeight: 'var(--fw-bold)',
           color: 'var(--color-semantic-label-strong)',
           maxWidth: '18ch',

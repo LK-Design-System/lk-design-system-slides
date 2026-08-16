@@ -33,10 +33,23 @@ export const Default = {
     if (statements.length !== 1) {
       throw new Error(`A statement slide carries exactly one claim; found ${statements.length}.`);
     }
-    const style = getComputedStyle(surface);
-    const rendered = getComputedStyle(statements[0]).fontSize;
-    if (rendered !== style.getPropertyValue('--slides-display-size').trim()) {
-      throw new Error(`The statement must be set at display scale; got ${rendered}.`);
+    // Length decides the tier: a full sentence rides display, a short claim
+    // rides hero (sparseScale.js). The slide declares its decision and must
+    // render exactly what it declared — resolved through a probe, because a
+    // calc-composed hero never string-matches a computed fontSize.
+    const statement = statements[0];
+    const scale = statement.getAttribute('data-slide-scale');
+    if (scale !== 'display') {
+      throw new Error(`A full-sentence statement stays at display scale; declared "${scale}".`);
+    }
+    const probe = document.createElement('span');
+    probe.style.fontSize = `var(--slides-${scale}-size)`;
+    surface.append(probe);
+    const expected = getComputedStyle(probe).fontSize;
+    probe.remove();
+    const rendered = getComputedStyle(statement).fontSize;
+    if (rendered !== expected) {
+      throw new Error(`The statement must render at its declared ${scale} scale (${expected}); got ${rendered}.`);
     }
   },
 };

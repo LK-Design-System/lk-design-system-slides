@@ -30,11 +30,19 @@ export const Default = {
     const message = canvasElement.querySelector('[data-slide-message]');
     const contact = canvasElement.querySelector('[data-slide-contact]');
     if (!surface || !message) throw new Error('EndSlide must render its message region.');
-    const displaySize = parseFloat(
-      getComputedStyle(surface).getPropertyValue('--slides-display-size')
-    );
-    if (parseFloat(getComputedStyle(message).fontSize) !== displaySize) {
-      throw new Error('The closing message must read at display scale — it stays up through Q&A.');
+    // A takeaway sentence rides display; only a short residue ("감사합니다")
+    // rides hero (sparseScale.js). Declared tier and rendered size must agree.
+    const scale = message.getAttribute('data-slide-scale');
+    if (scale !== 'display') {
+      throw new Error(`A sentence-length message stays at display scale; declared "${scale}".`);
+    }
+    const probe = document.createElement('span');
+    probe.style.fontSize = `var(--slides-${scale}-size)`;
+    surface.append(probe);
+    const expected = parseFloat(getComputedStyle(probe).fontSize);
+    probe.remove();
+    if (parseFloat(getComputedStyle(message).fontSize) !== expected) {
+      throw new Error('The closing message must render at its declared scale — it stays up through Q&A.');
     }
     if (!contact) throw new Error('When given, contact must render as the fine-print region.');
     if (!(message.compareDocumentPosition(contact) & Node.DOCUMENT_POSITION_FOLLOWING)) {

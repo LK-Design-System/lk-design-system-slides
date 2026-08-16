@@ -113,10 +113,15 @@
           "name": "governing"
         },
         {
+          "name": "anchor",
+          "default": "'top'"
+        },
+        {
           "name": "children"
         }
       ],
       "dataAttributes": [
+        "data-slide-anchor",
         "data-slide-content",
         "data-slide-eyebrow",
         "data-slide-governing",
@@ -142,6 +147,7 @@
       "dataAttributes": [
         "data-lds-section-slide",
         "data-slide-index",
+        "data-slide-scale",
         "data-slide-subtitle",
         "data-slide-title"
       ]
@@ -213,6 +219,7 @@
       "dataAttributes": [
         "data-slide-attribution",
         "data-slide-eyebrow",
+        "data-slide-scale",
         "data-slide-statement"
       ]
     },
@@ -473,7 +480,8 @@
       "dataAttributes": [
         "data-lds-end-slide",
         "data-slide-contact",
-        "data-slide-message"
+        "data-slide-message",
+        "data-slide-scale"
       ]
     }
   ],

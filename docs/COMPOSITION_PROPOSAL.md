@@ -1,6 +1,6 @@
 # 제안 — 슬라이드 구도: 허용된 공간을 쓰는 규칙 (레이아웃 층)
 
-상태: **부분 구현** (2026-08-16 작성. A 폭 분배 구현됨, B·C 미구현)
+상태: **구현됨** (2026-08-16 작성, 같은 날 A·B·C 전부 구현)
 근거: [references/SLIDE_SYSTEMS_COMPARISON.md](./references/SLIDE_SYSTEMS_COMPARISON.md),
 [SCALE_DENSITY_PROPOSAL.md](./SCALE_DENSITY_PROPOSAL.md)(토큰 층 — 구현 완료)
 
@@ -40,20 +40,32 @@ SmartArt의 개수 적응이다.
 **하지 않는 것**: 세로 방향으로 표를 늘리는 것(행 높이 부풀리기는 밀도
 위반), 제품 매체의 표 폭 변경(기본값 auto 유지).
 
-## B. 희소 슬라이드 구도 — hero 소비 (미구현)
+## B. 희소 슬라이드 구도 — 분량이 단을 정한다 (구현됨)
 
-Statement·Title·Section·End 계열이 [SCALE_DENSITY_PROPOSAL](./SCALE_DENSITY_PROPOSAL.md)의
-`--slides-hero-*`(캔버스 15.6%)를 소비하고, 가로 중앙 구도로 전환하는 것.
-Slidev fact/statement의 이식이다. 타입 승격 폭이 커서(StatementSlide 본문
-display→hero) 덱 전체 시각 리뷰와 ch 상한 재측정(22ch가 hero에서도 맞는
-가로 폭인지)이 필요하다 — 별도 작업으로 진행한다.
+Statement·Section·End가 가로 중앙 구도로 전환하고, **텍스트 분량이 타입
+단을 정한다** (`src/components/slides/sparseScale.js`): 공백 제외 12자
+이하의 짧은 발화("집행", "감사합니다", 챕터명)는 hero(112px, 캔버스 15.6%),
+문장은 display(56px) 유지. prop의 순수 함수라 결정론적이고(모션 렌더 안전),
+`data-slide-scale`로 선언되어 play가 단언한다.
 
-## C. ContentSlide 세로 앵커 (미구현)
+당초안("hero 소비 + 중앙")에서 조정된 것 두 가지, 근거와 함께:
 
-워크호스 슬라이드의 상단 고정은 업계와 합치하므로 기본값은 유지하되,
-Marp `lead`처럼 슬라이드 단위로 `anchor="center"`를 옵트인하는 prop을
-검토한다. B와 함께 다룬다 — A(폭 분배)만으로 하단 공백의 체감이 얼마나
-줄어드는지 본 뒤에 결정해도 늦지 않다.
+- **일괄 hero가 아니라 분량 적응.** 실덱 측정 결과 StatementSlide·EndSlide의
+  실제 내용은 문장이다("잔향 한 줄이 막지의 전부입니다."). 문장을 112px로
+  올리면 9.8자/행으로 여러 줄의 벽이 된다 — Slidev도 fact(8xl)와
+  statement(6xl)를 나눈다. 분량 적응이 그 구분의 우리식 표현이고,
+  "허용된 공간에 따라 동적으로"라는 원래 문제의식과도 정합한다.
+- **TitleSlide 제외.** 표지 제목은 eyebrow·subtitle을 거느린 위계라 좌측
+  시작 정렬이 맞고, 스케일도 PPT 표지(8.1%)와 동급(7.8%)이라 격차가 없다.
+  조사 기준표가 근거다.
+
+## C. ContentSlide 세로 앵커 (구현됨)
+
+`anchor="center"` 옵트인 prop. 기본값 `top`(업계 워크호스 표준, 시각 변화 0),
+`center`면 헤더는 그대로 두고 **잔여 공간 안에서 콘텐츠 블록만 세로 중앙**.
+Marp `lead`의 이식이다. ContentSlide를 감싸는 Stat·Compare·Assessment 계열은
+rest 전파로 같은 prop을 받는다. 짧은 표 하나짜리 슬라이드에서 하단 절반이
+죽는 화면(이 문서의 촉발 사례)에 덱 작성자가 쓰는 도구다.
 
 ## 검증 (A 기준)
 

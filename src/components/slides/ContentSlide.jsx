@@ -13,8 +13,15 @@ import { phrased } from './phrasing.jsx';
  * The title stays a noun-ended label; the governing message is where the
  * sentence lives. The slide owns its position and type — one claim, between
  * title and content, at body scale — not its wording.
+ *
+ * `anchor` places the content inside the region the header leaves over:
+ * `'top'` (default) is the workhorse contract every surveyed system keeps
+ * for dense slides; `'center'` opts a short body — one table, one figure —
+ * into the middle of the remaining space instead of leaving the bottom half
+ * of the canvas dead (COMPOSITION_PROPOSAL.md C, the Marp `lead` shape).
+ * The header does not move either way.
  */
-export function ContentSlide({ eyebrow, title, governing, children, style, ...rest }) {
+export function ContentSlide({ eyebrow, title, governing, anchor = 'top', children, style, ...rest }) {
   return (
     <SlideSurface style={{ justifyContent: 'flex-start', ...style }} {...rest}>
       <header data-slide-header style={{ marginBottom: 'var(--space-8)' }}>
@@ -68,9 +75,13 @@ export function ContentSlide({ eyebrow, title, governing, children, style, ...re
       </header>
       <div
         data-slide-content
+        data-slide-anchor={anchor === 'center' ? 'center' : undefined}
         style={{
           flex: 1,
           minHeight: 0,
+          ...(anchor === 'center'
+            ? { display: 'flex', flexDirection: 'column', justifyContent: 'center' }
+            : {}),
           fontSize: 'var(--slides-body-size)',
           lineHeight: 'var(--slides-body-line)',
           letterSpacing: 'var(--slides-body-spacing)',
