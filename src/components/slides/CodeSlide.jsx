@@ -38,7 +38,20 @@ export function CodeSlide({
 
   return (
     <ContentSlide eyebrow={eyebrow} title={title} governing={governing} style={style} {...rest}>
-      <figure data-lds-code style={{ margin: 0, display: 'grid', gap: 'var(--space-3)' }}>
+      <figure
+        data-lds-code
+        style={{
+          margin: 0,
+          display: 'grid',
+          gap: 'var(--space-3)',
+          // The listing is width-capped by its measure, so on a canvas the
+          // capped block centres — a snippet hugging the left rail with the
+          // right half dead is document inertia, the same class as the
+          // intrinsic-width table. The code inside stays left: reading
+          // anchors are the text's, placement is the canvas's.
+          justifyItems: 'center',
+        }}
+      >
         <pre
           data-code-listing
           data-code-columns={MAX_COLUMNS}

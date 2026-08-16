@@ -189,7 +189,12 @@ export function ImageSlide({
           display: 'grid',
           gridTemplateRows: 'minmax(0, 1fr) auto',
           gap: 'var(--space-4)',
-          justifyItems: 'start',
+          // Centre, not start: the contained photo's width comes from the
+          // region's height, so it rarely spans the canvas — and an exhibit
+          // parked on the left rail with the right half dead is document
+          // inertia. The credit block rides centred with its exhibit; its
+          // text stays left-set inside its own box.
+          justifyItems: 'center',
         }}
       >
         <Image src={src} alt={alt} fit={fit} aspect={aspect} />

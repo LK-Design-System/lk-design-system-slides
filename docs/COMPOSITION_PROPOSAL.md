@@ -122,6 +122,23 @@ rest 전파로 같은 prop을 받는다. 짧은 표 하나짜리 슬라이드에
 - 잔여 소견: 로드맵 row의 시점 미상 각주가 1열 본문과 가까워 보일 수
   있으나 판독 혼동 수준은 아님 — 보류.
 
+6차 (렌즈 전수 재검토 — "매체 관용구 vs 문서·제품 관성"): 15개 레이아웃
+전부를 이 렌즈 하나로 재판정했다.
+
+- **수정 2건**: CodeSlide — 측정 폭(72ch)으로 캡된 코드 블록이 좌측 레일에
+  붙어 있던 것을 캔버스 중앙 배치로(블록은 중앙, 코드 텍스트는 좌측 유지);
+  ImageSlide(contained) — `justifyItems: 'start'`로 명시 고정돼 있던 사진을
+  크레딧 블록과 함께 중앙 배치로.
+- **작성 지침 1건**: SplitSlide pane 헤더는 슬라이드가 소유하지 않는 영역
+  (pane 내용은 덱의 것) — "본문 크기 볼드 대신 eyebrow 문법" 지침을 스킬로.
+- **현행 유지 판정, 근거와 함께**: TitleSlide 좌측 시작 정렬(표지 위계 +
+  PPT 표지 스케일 동급 — 조사 기준표), ContentSlide 상단 고정(업계 워크호스
+  표준, 모자랄 때는 anchor), EndSlide contact·인용 attribution(fine print),
+  CodeSlide의 코드 caption 스케일("mono는 같은 공칭 크기에서 크게 읽힌다"는
+  기존 근거 유효), RoadmapSlide 시점 미상 각주(콘텐츠 부속), CompareSlide
+  평가 기준 캡션(전시물 캡션은 전시물을 따른다 — ImageSlide 크레딧과 동일
+  관용구).
+
 5차 (사용자 발견): **도판이 고유 폭에 묶여 있던 것** — 2차 리뷰에서 "차트
 크기는 children 소유"로 넘겼던 판정의 번복이다. 표에 세운 규칙(폭은 매체
 소유)이 도판이라고 다를 이유가 없다: `--editorial-figure-width` seam 신설
