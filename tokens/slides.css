@@ -147,13 +147,20 @@
   --editorial-claim-line: var(--slides-body-line);
   --editorial-claim-spacing: var(--slides-body-spacing);
 
-  --editorial-note-size: var(--slides-caption-size);
-  --editorial-note-line: var(--slides-caption-line);
-  --editorial-note-spacing: var(--slides-caption-spacing);
+  /* note/note-body sit one rung HIGHER than the first cut of this seam
+     (note→caption, note-body→fine). On a slide the editorial exhibit is
+     usually the content, not a sidebar: surveyed peers set table body text
+     at 4.4–6% of canvas, and the old mapping pinned it at 2.5–2.8%
+     (user-flagged three times, on tables and the roadmap alike). claim and
+     note now converge on body the way note-body and caption converge at
+     the floor — at a ramp's edges, rank is carried by weight and color. */
+  --editorial-note-size: var(--slides-body-size);
+  --editorial-note-line: var(--slides-body-line);
+  --editorial-note-spacing: var(--slides-body-spacing);
 
-  --editorial-note-body-size: var(--slides-fine-size);
-  --editorial-note-body-line: var(--slides-fine-line);
-  --editorial-note-body-spacing: var(--slides-fine-spacing);
+  --editorial-note-body-size: var(--slides-caption-size);
+  --editorial-note-body-line: var(--slides-caption-line);
+  --editorial-note-body-spacing: var(--slides-caption-spacing);
 
   --editorial-caption-size: var(--slides-fine-size);
   --editorial-caption-line: var(--slides-fine-line);

@@ -95,9 +95,14 @@ export function OptionAssessment({ criteria = [], options = [], recommendation, 
                     data-assessment-verdict={option.verdicts?.[row]}
                     style={{
                       padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)',
-                      fontSize: 'var(--editorial-note-body-size)',
-                      lineHeight: 'var(--editorial-note-body-line)',
-                      letterSpacing: 'var(--editorial-note-body-spacing)',
+                      // The verdict is this component's payload — the
+                      // judgment the room came to read — so it carries the
+                      // note rank, not the note-body fine print. Header and
+                      // cell share a size; weight and the glyph carry the
+                      // hierarchy, as tables conventionally do.
+                      fontSize: 'var(--editorial-note-size)',
+                      lineHeight: 'var(--editorial-note-line)',
+                      letterSpacing: 'var(--editorial-note-spacing)',
                       color: 'var(--color-semantic-label-neutral)',
                       background: isRecommended ? 'var(--editorial-emphasis-surface)' : undefined,
                       borderBottom: '1px solid var(--color-semantic-line-normal-neutral, var(--color-semantic-line-normal-normal))',

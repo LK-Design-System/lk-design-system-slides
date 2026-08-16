@@ -33,9 +33,12 @@ export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
   };
   const bodyCell = {
     padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)',
-    fontSize: 'var(--editorial-note-body-size)',
-    lineHeight: 'var(--editorial-note-body-line)',
-    letterSpacing: 'var(--editorial-note-body-spacing)',
+    // Metric names and measures are the report's payload, so data cells
+    // carry the note rank alongside the headers; weight alone separates
+    // the header row, the table convention.
+    fontSize: 'var(--editorial-note-size)',
+    lineHeight: 'var(--editorial-note-line)',
+    letterSpacing: 'var(--editorial-note-spacing)',
     color: 'var(--color-semantic-label-neutral)',
     borderBottom: '1px solid var(--color-semantic-line-normal-neutral, var(--color-semantic-line-normal-normal))',
   };
