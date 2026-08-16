@@ -41,6 +41,15 @@
   --slides-hero-size: var(--display0-size);
   --slides-hero-line: var(--display0-line);
   --slides-hero-spacing: var(--display0-spacing);
+  /* `spot` is the middle rung of the sparse ladder — the one-sentence
+     takeaway that cannot break into two hero lines but deserves more than
+     display (Slidev statement 10.9%, reveal.js h2 9.6% live exactly here).
+     Composed like briefing's hero: ×2 of the next display anchor. The
+     sparse ladder is 15.6% / 11.1% / 7.8% of canvas — the surveyed band,
+     no rung invented above or between. */
+  --slides-spot-size: calc(var(--display2-size) * 2);
+  --slides-spot-line: calc(var(--display2-line) * 2);
+  --slides-spot-spacing: var(--display2-spacing);
   --slides-display-size: var(--display1-size);
   --slides-display-line: var(--display1-line);
   --slides-display-spacing: var(--display1-spacing);
@@ -102,6 +111,9 @@
   --slides-hero-size: calc(var(--display2-size) * 2);
   --slides-hero-line: calc(var(--display2-line) * 2);
   --slides-hero-spacing: var(--display2-spacing);
+  --slides-spot-size: calc(var(--display3-size) * 2);
+  --slides-spot-line: calc(var(--display3-line) * 2);
+  --slides-spot-spacing: var(--display3-spacing);
   --slides-title-size: var(--title1-size);
   --slides-title-line: var(--title1-line);
   --slides-title-spacing: var(--title1-spacing);

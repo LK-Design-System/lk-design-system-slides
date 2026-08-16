@@ -33,8 +33,8 @@ export const Default = {
     // A takeaway sentence rides display; only a short residue ("감사합니다")
     // rides hero (sparseScale.js). Declared tier and rendered size must agree.
     const scale = message.getAttribute('data-slide-scale');
-    if (scale !== 'display') {
-      throw new Error(`A sentence-length message stays at display scale; declared "${scale}".`);
+    if (scale !== 'spot') {
+      throw new Error(`A one-sentence takeaway rides the spot rung under the fit rule; declared "${scale}".`);
     }
     const probe = document.createElement('span');
     probe.style.fontSize = `var(--slides-${scale}-size)`;

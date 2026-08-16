@@ -39,8 +39,8 @@ export const Default = {
     // calc-composed hero never string-matches a computed fontSize.
     const statement = statements[0];
     const scale = statement.getAttribute('data-slide-scale');
-    if (scale !== 'display') {
-      throw new Error(`A full-sentence statement stays at display scale; declared "${scale}".`);
+    if (scale !== 'spot') {
+      throw new Error(`This sentence breaks into two spot lines, so the fit rule grades it spot; declared "${scale}".`);
     }
     const probe = document.createElement('span');
     probe.style.fontSize = `var(--slides-${scale}-size)`;
