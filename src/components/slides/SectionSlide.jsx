@@ -60,9 +60,14 @@ export function SectionSlide({ index, title, subtitle, style, ...rest }) {
           data-slide-subtitle
           style={{
             margin: 'var(--space-5) 0 0',
-            fontSize: 'var(--slides-body-size)',
-            lineHeight: 'var(--slides-body-line)',
-            letterSpacing: 'var(--slides-body-spacing)',
+            // The orienting line keeps step with the title's tier: under a
+            // hero title, body scale reads as a caption that wandered in
+            // (4.7:1 — the full-deck review's ratio complaint), so it rises
+            // to title scale (2.8:1); under a display title, body already
+            // sits at 2.3:1 and stays.
+            fontSize: scale === 'hero' ? 'var(--slides-title-size)' : 'var(--slides-body-size)',
+            lineHeight: scale === 'hero' ? 'var(--slides-title-line)' : 'var(--slides-body-line)',
+            letterSpacing: scale === 'hero' ? 'var(--slides-title-spacing)' : 'var(--slides-body-spacing)',
             color: 'var(--color-semantic-label-neutral)',
             maxWidth: '36ch',
           }}
