@@ -73,14 +73,17 @@ Editorial 컴포넌트는 업스트림 램프를 직접 참조하지 않고 `--e
 
 ## 상태
 
-`0.1.0-alpha.1` — 최소 골격. Storybook 포트는 **6009**
-(사다리: Core 6006 · 3D 6007 · Robotics 6008 · Slides 6009 · Editorial 6010 — 새 자매는 6011부터).
+`0.1.0-alpha.6` — 구도 개편 세대. 투영 램프가 hero 단(업스트림 `display0` 경유,
+112px)을 갖고, 분량이 희소 슬라이드의 단을 정하며(12자 규칙), 표·도판은 매체
+폭 정책을 따르고, 출처는 캔버스 하단 크롬에 고정된다. **Core/Theme/Product
+`>=0.1.0-rc.69.26` 필수** — `--display0-*`가 그 릴리스에서 생겼고, 구 코어에서는
+없는 토큰이 조용히 무너진다(함정 2). Storybook 포트는 **6009**
+(사다리: Core 6006 · 3D 6007 · Robotics 6008 · Slides 6009 — 새 자매는 6011부터).
 
-Core/Theme/Product는 Robotics·Editorial과 같은 `0.1.0-rc.3`을 소비한다. Editorial의
-Core/Product는 `peerDependencies`라 트리에 Core는 정확히 하나만 존재한다 — 토큰 층이
-두 벌이 되면 `--color-*`의 승자가 로드 순서로 정해지기 때문이다. 알파 부트스트랩 동안은
-`vendor/`의 tarball을 `file:` 의존성으로 설치하며, 레지스트리 인증이 준비되면 Robotics처럼
-semver 고정(캐럿 없음)으로 전환한다.
+Core/Product/Theme은 `peerDependencies`라 트리에 Core는 정확히 하나만 존재한다 —
+토큰 층이 두 벌이 되면 `--color-*`의 승자가 로드 순서로 정해지기 때문이다. 알파
+부트스트랩 동안은 `vendor/`의 tarball을 `file:` 의존성으로 설치하며, 레지스트리
+인증이 준비되면 Robotics처럼 semver 고정(캐럿 없음)으로 전환한다.
 
 ```bash
 npm run check:storybook   # 소유권 검사 + 빌드 + 모든 play 단언을 headless Chromium에서 실행
