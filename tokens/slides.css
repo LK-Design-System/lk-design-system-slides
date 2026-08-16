@@ -29,6 +29,19 @@
   --slides-safe-y: 8%;
 
   /* Projection type scale — display/title/body/caption for a projected room. */
+  /* `hero` is the sparse-slide tier: one statement or one number carrying a
+     whole slide. Every surveyed peer keeps such a tier at 10–17% of canvas
+     height (Slidev `fact` 17.4%, reveal.js h1 15.0% — survey in
+     docs/references/SLIDE_SYSTEMS_COMPARISON.md); the ramp topping out at
+     display (7.8%) is why sparse slides read as under-filled. The upstream
+     ramp has no rung above display1, so hero composes one: ×2 of the display
+     anchor keeps every value resolving THROUGH the upstream ramp — a Theme
+     that re-points display1 re-skins hero for free. If upstream ever grows a
+     display0 rung, hero re-points to it and nothing else moves
+     (SCALE_DENSITY_PROPOSAL.md owns that migration). */
+  --slides-hero-size: calc(var(--display1-size) * 2);
+  --slides-hero-line: calc(var(--display1-line) * 2);
+  --slides-hero-spacing: var(--display1-spacing);
   --slides-display-size: var(--display1-size);
   --slides-display-line: var(--display1-line);
   --slides-display-spacing: var(--display1-spacing);
@@ -38,15 +51,20 @@
   --slides-body-size: var(--title3-size);
   --slides-body-line: var(--title3-line);
   --slides-body-spacing: var(--title3-spacing);
-  --slides-caption-size: var(--headline1-size);
-  --slides-caption-line: var(--headline1-line);
-  --slides-caption-spacing: var(--headline1-spacing);
+  --slides-caption-size: var(--heading2-size);
+  --slides-caption-line: var(--heading2-line);
+  --slides-caption-spacing: var(--heading2-spacing);
   /* `fine` is the floor rung: sources, legends, annotation bodies. Nothing on a
      slide may be smaller than this, which is why it stops one rung under caption
-     rather than continuing down the product ramp. */
-  --slides-fine-size: var(--body1-size);
-  --slides-fine-line: var(--body1-line);
-  --slides-fine-spacing: var(--body1-spacing);
+     rather than continuing down the product ramp. The rung sits at headline1
+     (18px, 2.5% of the canvas) — the measured industry minimum (Marp and
+     Slidev's smallest projected type; survey in
+     docs/references/SLIDE_SYSTEMS_COMPARISON.md). One rung lower (body1) put
+     the floor at 2.2%, under every surveyed peer and a third below the 18pt
+     projection floor the keynote preset promises for body. */
+  --slides-fine-size: var(--headline1-size);
+  --slides-fine-line: var(--headline1-line);
+  --slides-fine-spacing: var(--headline1-spacing);
   /* How far `Fit` may shrink over-full content before the shrinking is itself
      a lie about legibility. Unset on purpose: Fit derives it from the ramp
      (fine ÷ body — body type may fall to the smallest sanctioned step and no
@@ -68,6 +86,9 @@
   --slides-safe-x: 5%;
   --slides-safe-y: 6%;
 
+  --slides-hero-size: calc(var(--display2-size) * 2);
+  --slides-hero-line: calc(var(--display2-line) * 2);
+  --slides-hero-spacing: var(--display2-spacing);
   --slides-title-size: var(--title1-size);
   --slides-title-line: var(--title1-line);
   --slides-title-spacing: var(--title1-spacing);
@@ -121,4 +142,16 @@
   --editorial-caption-size: var(--slides-fine-size);
   --editorial-caption-line: var(--slides-fine-line);
   --editorial-caption-spacing: var(--slides-fine-spacing);
+
+  /* Density seam — the spacing half of the same answer. The type above says
+     how large editorial reads on a slide; these say how much room it takes.
+     Product-density cell pads (8×16) read as a shrunken dashboard on a
+     projected canvas, so the medium re-points each density step one rung up
+     the SAME upstream space ramp — re-pointing, never redefining, so the
+     ownership contract holds and a future preset may re-point differently. */
+  --editorial-cell-pad-block: var(--space-3);
+  --editorial-cell-pad-inline: var(--space-6);
+  --editorial-row-gap: var(--space-4);
+  --editorial-figure-pad-block: var(--space-5);
+  --editorial-figure-pad-inline: var(--space-6);
 }

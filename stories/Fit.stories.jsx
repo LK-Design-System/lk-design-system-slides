@@ -51,8 +51,11 @@ export const WithinTheFrame = {
 export const BorrowsRoom = {
   name: '자리를 빌린다',
   render: () => (
+    // 분량은 바닥에 캘리브레이션되어 있다: "조금 넘쳐서 Fit이 흡수할 수 있는"
+    // 개수는 바닥이 정한다. 바닥이 0.66×(fine=body1)일 때는 13개였고,
+    // 0.75×(fine=headline1, SCALE_DENSITY_PROPOSAL 2단계)로 오르며 10개가 됐다.
     <ContentSlide eyebrow="현황" title="조금 넘치는 경우">
-      <Fit><List items={bullets(13)} /></Fit>
+      <Fit><List items={bullets(10)} /></Fit>
     </ContentSlide>
   ),
   play: async ({ canvasElement }) => {
