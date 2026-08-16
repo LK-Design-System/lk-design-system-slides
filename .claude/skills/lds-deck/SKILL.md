@@ -115,6 +115,10 @@ export const Deck = {
 - 표(OptionAssessment·StatusAssessment)와 지표·로드맵 행은 슬라이드에서
   자동으로 전폭을 나눠 갖는다. 좁은 표를 원한다고 폭을 죽이는 스타일을
   덧대지 않는다 — 열이 적으면 넓게 읽히는 것이 슬라이드의 관용구다.
+- ImageSlide(contained)의 사진 폭은 **잔여 높이 × 종횡비**로 정해진다
+  (파일 크기가 아니라). 헤더·캡션이 다 있는 슬라이드에서 사진이 작아
+  보이면 그건 계약이 일한 것이다 — 더 크게 원하면 `bleed`를 쓰거나
+  헤더를 줄인다. FigureSlide의 차트 크기는 차트(children) 소유다.
 
 ### 5단계 — QA
 
