@@ -1,6 +1,6 @@
 # 제안 — 헤더 체계: 한 문법, 세 기하
 
-상태: **제안** (2026-08-18 작성, 미구현)
+상태: **구현됨** (2026-08-18 작성, 같은 날 R1-R4 전부 구현 — 0fdf445·13a720b·4e4f4f7)
 근거: [references/SLIDE_SYSTEMS_COMPARISON.md](./references/SLIDE_SYSTEMS_COMPARISON.md) §6,
 크롬 밴드 개편(2026-08-18, 43d7a3f)에서 드러난 동형 결함
 
