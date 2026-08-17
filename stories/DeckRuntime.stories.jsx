@@ -64,6 +64,21 @@ export const Runtime = {
       throw new Error(`An external hash change must move the deck; progress reads "${progress}".`);
     }
 
+    // A STALE ADDRESS IS NOT A POSITION. Storybook keeps the hash when you move
+    // between stories, so a reader who walks a 16-slide deck to #9 and clicks
+    // into this 4-slide one arrives carrying #9. The first cut clamped it and
+    // opened the deck at its LAST page; an out-of-range address is ignored
+    // instead, and the write direction then corrects the bar.
+    window.location.hash = '#99';
+    await new Promise((resolve) => { setTimeout(resolve, 150); });
+    const afterStale = deck.querySelector('[data-deck-progress]').textContent;
+    if (!afterStale.startsWith('4 /')) {
+      throw new Error(`An out-of-range hash must not move the deck; it went to "${afterStale}".`);
+    }
+    if (window.location.hash !== '#4') {
+      throw new Error(`The address bar must be corrected to the real position, got "${window.location.hash}".`);
+    }
+
     // OVERVIEW: one tile per slide, the current one marked, and choosing a tile
     // navigates. Tiles are live slides — assert that, or a future thumbnail
     // cache could quietly replace them.

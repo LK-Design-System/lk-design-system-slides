@@ -64,10 +64,21 @@ export function formatDeckHash(index, step) {
   return `#${index + 1}${step > 0 ? `.${step}` : ''}`;
 }
 
-export function useHashPosition({ enabled, index, step, count, onAdopt }) {
+export function useHashPosition({
+  enabled, index, step, count, onAdopt,
+}) {
   const writtenRef = React.useRef(null);
   const onAdoptRef = React.useRef(onAdopt);
   onAdoptRef.current = onAdopt;
+  // Read inside the listener, so a hash arriving later is judged against the
+  // deck that is mounted now rather than the one mounted when the effect ran.
+  const countRef = React.useRef(count);
+  countRef.current = count;
+  // Where the deck actually is, for correcting the bar when a stale address is
+  // rejected. The write effect below cannot do it: its dependencies did not
+  // change — that is the whole situation — so it never re-runs.
+  const positionRef = React.useRef({ index, step });
+  positionRef.current = { index, step };
 
   // Read: on mount and on every external change.
   React.useEffect(() => {
@@ -77,6 +88,25 @@ export function useHashPosition({ enabled, index, step, count, onAdopt }) {
       if (hash === writtenRef.current) return;
       const position = parseDeckHash(hash);
       if (!position) return;
+      // An address outside this deck is not a position in it — it is a STALE
+      // address, and the only honest thing to do with one is refuse it.
+      // Clamping was the first cut and it was wrong in a way that shows up
+      // constantly: carrying `#9` from a 16-slide deck into a 4-slide one
+      // opened the second deck at 4/4, its last page (measured). Nobody who
+      // follows a link means "wherever this lands".
+      //
+      // Refusing is only half of it — the bar still shows the dead address, and
+      // a reader who copies it passes the lie on. So the bar is corrected here
+      // rather than by the write effect, which cannot help: its dependencies
+      // did not change, and that is precisely the situation.
+      if (position.index < 0 || position.index >= countRef.current) {
+        if (countRef.current > 0) {
+          const truthful = formatDeckHash(positionRef.current.index, positionRef.current.step);
+          writtenRef.current = truthful;
+          window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${truthful}`);
+        }
+        return;
+      }
       onAdoptRef.current?.(position);
     };
     adopt();
