@@ -1,6 +1,7 @@
 import React from 'react';
 import { KeyFigure } from '../editorial/KeyFigure.jsx';
 import { ContentSlide } from './ContentSlide.jsx';
+import { DeckMediumContext, resolveAutoAnchor } from './deckMedium.js';
 
 /**
  * LDS Slides — StatSlide
@@ -16,7 +17,13 @@ import { ContentSlide } from './ContentSlide.jsx';
  * demoted, and a slide that spends emphasis on a figure drops the accented
  * eyebrow rather than letting two accents argue.
  */
-export function StatSlide({ eyebrow, title, figures = [], source, style, ...rest }) {
+export function StatSlide({ eyebrow, title, figures = [], source, anchor, style, ...rest }) {
+  // A figure row is one band — by rule it sits in the middle of the region
+  // the header leaves over, never nailed to the top (measured: the manual
+  // anchor repairs all chose center). A read deck resolves to top: pages
+  // read as documents. Explicit anchor wins (ADAPTIVE_CONTRACTS_PROPOSAL 변경 2).
+  const medium = React.useContext(DeckMediumContext);
+  const resolvedAnchor = anchor ?? resolveAutoAnchor('center', medium);
   let emphasisTaken = false;
   const resolved = figures.map((figure) => {
     const granted = Boolean(figure.emphasis) && !emphasisTaken;
@@ -31,12 +38,30 @@ export function StatSlide({ eyebrow, title, figures = [], source, style, ...rest
       data-lds-stat-slide
       data-emphasis-spent={emphasisTaken ? 'figure' : undefined}
       source={source}
+      anchor={resolvedAnchor}
       style={style}
       {...rest}
     >
       <div
         data-stat-slide-figures
+        data-stat-count-tier={resolved.length <= 2 ? 'roomy' : undefined}
         style={{
+          // Count adaptation (SmartArt의 절반만): two figures own the canvas,
+          // so the numeral rides one rung up (title → display) — a RANK
+          // re-point through Core Stat's --lk-stat-* hooks (born upstream as
+          // the fourth instance of the Table/Timeline contract), never an
+          // arbitrary size, so preset switches keep propagating. Until the
+          // core release carrying the hooks is consumed here, the fallback
+          // keeps today's size — the wiring activates on the pin bump alone.
+          // No downward tier: the ramp has no rung between title and body,
+          // and flexWrap already absorbs crowded rows (변경 3).
+          ...(resolved.length <= 2
+            ? {
+              '--lk-stat-value-size': 'var(--slides-display-size)',
+              '--lk-stat-value-line': 'var(--slides-display-line)',
+              '--lk-stat-value-spacing': 'var(--slides-display-spacing)',
+            }
+            : undefined),
           display: 'flex',
           flexWrap: 'wrap',
           // Was `var(--space-9)` — a step the 4px ramp never had, so the gap

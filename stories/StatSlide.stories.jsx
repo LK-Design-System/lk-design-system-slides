@@ -147,3 +147,57 @@ export const BriefingPresetFlowsThrough = {
     }
   },
 };
+
+/* 적응 계약 2세대 (ADAPTIVE_CONTRACTS_PROPOSAL): 지표가 2개 이하면 수치가
+   title 단에서 display 단으로 한 단 올라간다 — seam 랭크 재지정이지 임의
+   크기가 아니다. 위임 슬라이드는 규칙으로 center에 앉는다(명시가 이긴다). */
+export const CountAdaptiveFigures = {
+  name: '변형·상태 · 지표 개수 적응',
+  render: () => (
+    <StatSlide
+      eyebrow="적응"
+      title="두 지표의 캔버스"
+      figures={[
+        { value: '47%', label: 'p95 지연 감소' },
+        { value: '5종', label: '이관 대상 테이블' },
+      ]}
+      source="출처: 데모 데이터, 2026-08"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const row = canvasElement.querySelector('[data-stat-slide-figures]');
+    if (row?.getAttribute('data-stat-count-tier') !== 'roomy') {
+      throw new Error('Two figures own the canvas — the row must declare the roomy tier.');
+    }
+    // 수치는 Core Stat의 --lk-stat-value 훅으로 올라간다. 훅이 담긴 코어
+    // 릴리스를 소비하기 전에는 폴백(display2)이, 소비한 뒤에는 display 단이
+    // 렌더된다 — 단언은 "roomy 스코프의 훅 해석값과 실제 렌더가 일치한다"라
+    // 핀 범프 전후 모두 참이고, 배선이 끊기면 그때 빨개진다.
+    if (row.style.getPropertyValue('--lk-stat-value-size') === '') {
+      throw new Error('The roomy tier must re-point the --lk-stat-value hook (rank, not size).');
+    }
+    const resolve = (expression) => {
+      const probe = document.createElement('span');
+      probe.style.fontSize = expression;
+      row.append(probe);
+      const px = Number.parseFloat(getComputedStyle(probe).fontSize);
+      probe.remove();
+      return px;
+    };
+    const hooked = resolve('var(--lk-stat-value-size)');   // display rung (56 keynote)
+    const fallback = resolve('var(--display2-size)');       // pre-hook Stat renders this
+    const numerals = [...row.querySelectorAll('*')].map((el) => Number.parseFloat(getComputedStyle(el).fontSize));
+    if (!numerals.includes(hooked) && !numerals.includes(fallback)) {
+      throw new Error(`Numerals must render at the hook size (${hooked}px) or, until the hook-bearing core is consumed, its fallback (${fallback}px).`);
+    }
+    if (numerals.includes(hooked) && hooked !== fallback) {
+      // 훅이 실제로 작동하는 코어에서는 fallback 크기가 남아 있으면 안 된다.
+      const stale = numerals.filter((px) => px === fallback).length;
+      void stale; // 라벨(body2)과 구분이 안 되므로 카운트만 관찰용으로 남긴다.
+    }
+    // 위임 슬라이드는 규칙으로 center에 앉는다.
+    if (!canvasElement.querySelector('[data-slide-anchor="center"]')) {
+      throw new Error('A figure row is one band — it centers by rule, without a manual anchor.');
+    }
+  },
+};

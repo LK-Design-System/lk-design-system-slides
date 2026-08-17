@@ -61,7 +61,8 @@ references/`) — 사본을 만들지 말 것, 규칙이 두 벌이 되는 순�
 - `keynote` (기본): 강당 발표. 본문 24px 투사 하한.
 - `briefing`: 배포·회람용 보고서 덱. 각 단계가 한 눈금 내려가고 세이프 존이 좁아진다.
 
-프리셋은 `DeckViewer` 안 각 슬라이드에 `preset="briefing"`으로 전달한다.
+프리셋은 `DeckViewer preset="briefing"`으로 덱에 한 번 선언한다 — 슬라이드의
+`preset`은 오버라이드다 (kind와 축 대칭, ADAPTIVE_CONTRACTS_PROPOSAL 변경 1).
 
 ### 3단계 — 개요 작성과 고스트 덱 테스트
 
@@ -121,11 +122,12 @@ export const Deck = {
 문서처럼 위에서 아래로 읽혀 본문이 제목에 붙는다; 가운데 정렬은 읽기
 단절이다):
 
-- 본문이 짧을 때 — 표 하나, 지표 행 하나, 불릿 서너 줄 — 는
-  `anchor="center"`를 준다 (`ContentSlide`와 그걸 감싸는
-  Stat/Compare/Assessment/Roadmap 계열 전부 받는다). 헤더는 그대로 상단,
-  본문 블록만 잔여 공간의 세로 중앙에 놓인다. 본문이 영역을 2/3 이상
-  채우면 기본값(top)을 유지한다.
+- **위임 슬라이드(Stat/Roadmap/Assessment/Compare)의 center는 자동이다**
+  (ADAPTIVE_CONTRACTS_PROPOSAL 변경 2): 지표 행·가로 레일은 항상, 표는 행
+  ≤4일 때 규칙으로 center에 앉고, read 덱에서는 top으로 해소된다. 손으로
+  `anchor`를 주는 것은 규칙을 뒤집을 때뿐이다. `ContentSlide` 자유
+  마크업만 수동이 남는다 — 본문이 짧으면(불릿 서너 줄) `anchor="center"`,
+  영역을 2/3 이상 채우면 기본값(top). 헤더는 어느 쪽이든 상단 고정.
 - 희소 슬라이드(Statement·Section·End)의 타입 단은 **분량이 자동으로
   정한다**(공백 제외 12자 이하 → hero 112px). 짧은 발화를 hero로 만들려고
   스타일을 만지지 말고, 문장을 hero로 키우려고 자르지도 말 것 — 규칙이

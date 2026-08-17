@@ -23,7 +23,7 @@ const WEEKS = ['8월 2주차', '8월 3주차'];
 export const Deck = {
   name: '주간 업무현황 (열람 파일럿)',
   render: () => (
-    <DeckViewer label="8월 2주차 LKR 업무현황" kind="read">
+    <DeckViewer label="8월 2주차 LKR 업무현황" kind="read" preset="briefing">
       <TitleSlide
         eyebrow="LKR 플랫폼"
         title="8월 2주차 업무현황"
@@ -32,7 +32,6 @@ export const Deck = {
         notes="열람 덱 파일럿: 회람용이라 발표자 서사 없이 페이지 단위로 완결된다. 표지는 제목·소속·보고자·주차로 완결 — 내용 요약 부제는 발표 문법이라 쓰지 않는다."
       />
       <ContentSlide
-        preset="briefing"
         eyebrow="업무 현황 · 장진혁"
         title="업무 현황 및 이슈"
         foot={FOOT}
@@ -55,7 +54,6 @@ export const Deck = {
         />
       </ContentSlide>
       <ContentSlide
-        preset="briefing"
         eyebrow="업무 현황 상세"
         title="시뮬레이션 기반 검증"
         foot={FOOT}
@@ -90,7 +88,6 @@ export const Deck = {
         </div>
       </ContentSlide>
       <ContentSlide
-        preset="briefing"
         eyebrow="업무 계획"
         title="향후 업무 계획"
         foot={FOOT}

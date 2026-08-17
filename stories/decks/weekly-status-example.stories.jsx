@@ -22,7 +22,7 @@ const WEEKS = ['8월 3주차', '8월 4주차', '9월 1주차'];
 export const Deck = {
   name: '주간 업무현황 (열람 예시 2호)',
   render: () => (
-    <DeckViewer label="8월 3주차 LKR 업무현황" kind="read">
+    <DeckViewer label="8월 3주차 LKR 업무현황" kind="read" preset="briefing">
       <TitleSlide
         eyebrow="LKR 플랫폼"
         title="8월 3주차 업무현황"
@@ -31,7 +31,6 @@ export const Deck = {
         notes="열람 덱 표지 관용구: 제목·소속·보고자·주차로 완결."
       />
       <ContentSlide
-        preset="briefing"
         eyebrow="업무 현황 · 장진혁"
         title="업무 현황 및 이슈"
         foot={FOOT}
@@ -57,7 +56,6 @@ export const Deck = {
         />
       </ContentSlide>
       <AssessmentSlide
-        preset="briefing"
         eyebrow="검증 지표"
         title="쓰러짐 검출 실환경 검증 현황"
         metrics={[
@@ -71,7 +69,6 @@ export const Deck = {
         notes="기존 위임 어휘가 read 덱에서 그대로 성립하는지 보는 페이지 — 거버닝 없이 제목+표로 완결."
       />
       <ContentSlide
-        preset="briefing"
         eyebrow="업무 현황 상세"
         title="반사광 오탐 분석"
         foot={FOOT}
@@ -99,7 +96,6 @@ export const Deck = {
         </div>
       </ContentSlide>
       <ContentSlide
-        preset="briefing"
         eyebrow="업무 계획"
         title="향후 업무 계획"
         foot={FOOT}

@@ -19,12 +19,23 @@ import React from 'react';
  * scanned, and a caption that wraps is a paragraph asking to be prose.
  */
 export function ExhibitRow({ exhibits = [], style, ...rest }) {
+  // Count-adaptive grid (ADAPTIVE_CONTRACTS_PROPOSAL 변경 4): the exhibits
+  // decide their own rows — 1~3 stay one row, 4 folds to 2×2, 5~6 fold to
+  // three columns over two rows. Seven or more is outside the contract:
+  // captions stop being readable at that density, so the page splits
+  // instead. Every row shares the granted height equally, so the
+  // remaining-height contract holds however many rows the count opens.
+  const count = Math.max(exhibits.length, 1);
+  const columns = count <= 3 ? count : Math.ceil(count / 2);
+  const rows = Math.ceil(count / columns);
   return (
     <div
       data-lds-exhibit-row
+      data-exhibit-rows={rows}
       style={{
         display: 'grid',
-        gridTemplateColumns: `repeat(${Math.max(exhibits.length, 1)}, minmax(0, 1fr))`,
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+        gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
         gap: 'var(--editorial-figure-gap)',
         minHeight: 0,
         fontFamily: 'var(--font-sans)',

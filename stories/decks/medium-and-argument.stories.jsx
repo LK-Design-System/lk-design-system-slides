@@ -210,7 +210,6 @@ export const Deck = {
         eyebrow="게이트"
         title="배포 전 관문 · 정적"
         governing="계약은 문서가 아니라 게이트가 지킨다."
-        anchor="center"
         metrics={[
           { id: 'own', name: '스타일 소유권', target: '램프 직참조 0', actual: '0', status: 'met' },
           { id: 'cat', name: '카탈로그 일치', target: '소스와 동일', actual: '동일', status: 'met' },
@@ -225,7 +224,6 @@ export const Deck = {
         eyebrow="게이트"
         title="배포 전 관문 · 실행"
         governing="정적이 못 잡는 결함은 실행 관문이 렌더된 캔버스에서 잡는다."
-        anchor="center"
         metrics={[
           { id: 'play', name: 'play 단언', target: '전건 통과', actual: '35 / 35', status: 'met' },
           { id: 'fit', name: '캔버스 초과', target: '0건', actual: '0 / 35', status: 'met' },

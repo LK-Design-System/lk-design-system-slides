@@ -1,5 +1,6 @@
 import React from 'react';
 import { DeckPositionContext } from './deckPosition.js';
+import { DeckMediumContext } from './deckMedium.js';
 
 const pad = (value) => String(value ?? '').padStart(2, '0');
 
@@ -57,6 +58,8 @@ export function SlideSurface({
   style,
   ...rest
 }) {
+  const medium = React.useContext(DeckMediumContext);
+  const effectivePreset = preset ?? medium?.preset;
   const frameRef = React.useRef(null);
   const [scale, setScale] = React.useState(null);
   const position = React.useContext(DeckPositionContext);
@@ -102,7 +105,7 @@ export function SlideSurface({
     >
       <section
         data-lds-slide-surface
-        data-slides-preset={preset}
+        data-slides-preset={effectivePreset}
         style={{
           boxSizing: 'border-box',
           position: 'absolute',

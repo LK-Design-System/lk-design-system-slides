@@ -1,6 +1,7 @@
 import React from 'react';
 import { NarrativeTimeline } from '../editorial/NarrativeTimeline.jsx';
 import { ContentSlide } from './ContentSlide.jsx';
+import { DeckMediumContext, resolveAutoAnchor } from './deckMedium.js';
 
 /**
  * LDS Slides — RoadmapSlide
@@ -13,8 +14,12 @@ import { ContentSlide } from './ContentSlide.jsx';
  * spent emphasis, so the accented eyebrow is dropped, same as the other
  * figure-bearing slides.
  */
-export function RoadmapSlide({ eyebrow, title, governing, phases = [], source, style, ...rest }) {
+export function RoadmapSlide({ eyebrow, title, governing, phases = [], source, anchor, style, ...rest }) {
   const emphasisSpent = phases.some((phase) => Boolean(phase.emphasis));
+  // A horizontal rail is one band — it centers by rule (measured: the manual
+  // repair chose center); a read deck resolves to top. Explicit anchor wins.
+  const medium = React.useContext(DeckMediumContext);
+  const resolvedAnchor = anchor ?? resolveAutoAnchor('center', medium);
 
   return (
     <ContentSlide
@@ -24,6 +29,7 @@ export function RoadmapSlide({ eyebrow, title, governing, phases = [], source, s
       data-lds-roadmap-slide
       source={source}
       data-emphasis-spent={emphasisSpent ? 'phase' : undefined}
+      anchor={resolvedAnchor}
       style={style}
       {...rest}
     >

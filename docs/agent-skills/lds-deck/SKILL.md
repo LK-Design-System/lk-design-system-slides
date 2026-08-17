@@ -60,7 +60,8 @@ description: "@lk-design-system/lds-slides-ui 컴포넌트로 발표·열람 덱
 
 `preset`은 토큰 축이지 레이아웃 축이 아니다. `keynote`(기본)는 강당 발표, 본문
 24px 투사 하한. `briefing`은 배포·회람용이라 각 단계가 한 눈금 내려가고 세이프
-존이 좁아진다. `DeckViewer` 안 각 슬라이드에 `preset="briefing"`으로 전달한다.
+존이 좁아진다. `DeckViewer preset="briefing"`으로 덱에 한 번 선언한다 —
+슬라이드의 `preset`은 오버라이드다.
 
 ### 3단계 — 개요와 고스트 덱 테스트
 
@@ -112,8 +113,10 @@ export function QuarterlyDeck() {
 **구도 — present 전용 규칙** (열람 페이지는 문서처럼 위에서 아래로 읽히므로
 본문이 제목에 붙는다; 가운데 정렬은 읽기 단절이다):
 
-- 본문이 짧을 때(표 하나, 지표 행 하나, 불릿 서너 줄)는 `anchor="center"`.
-  본문이 영역을 2/3 이상 채우면 기본값(top) 유지.
+- **위임 슬라이드(Stat/Roadmap/Assessment/Compare)의 center는 자동이다**:
+  지표 행·가로 레일은 항상, 표는 행 ≤4일 때 규칙으로 center에 앉고, read
+  덱에서는 top으로 해소된다. `ContentSlide` 자유 마크업만 수동 — 본문이
+  짧으면(불릿 서너 줄) `anchor="center"`, 2/3 이상 채우면 top.
 - 희소 슬라이드(Statement·Section·End)의 타입 단은 **분량이 자동으로 정한다**
   (공백 제외 12자 이하 → hero). 짧은 발화를 키우려고 스타일을 만지지 않는다.
 - 표·지표·로드맵 행은 자동으로 전폭을 나눠 갖는다. 좁게 만들려고 폭을 죽이지

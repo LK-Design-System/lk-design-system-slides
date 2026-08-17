@@ -58,3 +58,37 @@ export const Default = {
     }
   },
 };
+
+/* 다행 적응(ADAPTIVE_CONTRACTS_PROPOSAL 변경 4): 4장은 2×2로 접힌다.
+   7장 이상은 계약 밖 — 캡션이 읽히는 밀도가 아니므로 페이지를 쪼갠다. */
+export const FourFold = {
+  name: '변형·상태 · 4장 2×2',
+  render: () => (
+    <div style={{ height: 420, display: 'grid', gridTemplateRows: 'minmax(0, 1fr)' }}>
+      <ExhibitRow
+        exhibits={[
+          { src: photo, caption: '현장 A' },
+          { src: photo, caption: '현장 B' },
+          { src: photo, caption: '현장 C' },
+          { src: photo, caption: '현장 D' },
+        ]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const row = canvasElement.querySelector('[data-lds-exhibit-row]');
+    if (row?.getAttribute('data-exhibit-rows') !== '2') {
+      throw new Error('Four exhibits fold to two rows — the count decides, not the caller.');
+    }
+    const columns = getComputedStyle(row).gridTemplateColumns.split(' ').length;
+    if (columns !== 2) throw new Error('Four exhibits sit on a 2×2 grid.');
+    // 다행에서도 잔여 높이 계약: 두 행이 부여 높이를 등분한다.
+    const figures = [...row.querySelectorAll('[data-exhibit]')];
+    const tops = new Set(figures.map((figure) => Math.round(figure.getBoundingClientRect().top)));
+    if (tops.size !== 2) throw new Error('The four figures must occupy exactly two rows.');
+    const rowRect = row.getBoundingClientRect();
+    if (figures.some((figure) => figure.getBoundingClientRect().bottom > rowRect.bottom + 1)) {
+      throw new Error('Folded rows must stay inside the granted height — the remaining-height contract holds.');
+    }
+  },
+};

@@ -2,6 +2,7 @@ import React from 'react';
 import { DeckStepContext } from './stepContext.js';
 import { DeckPositionContext } from './deckPosition.js';
 import { useDeck } from './useDeck.js';
+import { DeckMediumContext } from './deckMedium.js';
 
 /**
  * LDS Slides — DeckViewer
@@ -40,6 +41,7 @@ export function DeckViewer({
   initial = 0,
   channel,
   kind = 'present',
+  preset,
   label = '슬라이드 덱',
   notesLabel = '발표자 노트',
   style,
@@ -53,6 +55,9 @@ export function DeckViewer({
   // Memoised so a step reveal does not hand the slide a new position object
   // and re-render every layout that reads the page number.
   const positionValue = React.useMemo(() => ({ page: index + 1, total: count }), [index, count]);
+  // The deck's medium axes flow to every slide: preset as an overridable
+  // default, kind for the adaptive anchor rules (ADAPTIVE_CONTRACTS_PROPOSAL).
+  const mediumValue = React.useMemo(() => ({ preset, kind }), [preset, kind]);
 
   const onKeyDown = (event) => {
     const handlers = {
@@ -79,9 +84,11 @@ export function DeckViewer({
       {...rest}
     >
       <div data-deck-slide ref={slideRef}>
+        <DeckMediumContext.Provider value={mediumValue}>
         <DeckPositionContext.Provider value={positionValue}>
             <DeckStepContext.Provider value={step}>{slides[index]}</DeckStepContext.Provider>
           </DeckPositionContext.Provider>
+        </DeckMediumContext.Provider>
       </div>
       <footer
         data-deck-chrome

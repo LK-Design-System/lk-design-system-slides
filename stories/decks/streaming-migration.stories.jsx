@@ -195,7 +195,6 @@ export const Deck = {
         eyebrow="일정"
         title="실행 로드맵"
         governing="8월 1차 이관을 시작으로 분기 안에 확대 여부를 결정합니다."
-        anchor="center"
         phases={[
           { id: 'pilot', date: '2026-08', label: '1차: 지연 민감 테이블 이관', body: '주문·텔레메트리 5개 테이블', emphasis: true },
           { id: 'verify', date: '2026-10', label: '2차: 운영 검증', body: 'p95 지연·비용 이중 추적' },
@@ -210,7 +209,6 @@ export const Deck = {
         eyebrow="기대 효과"
         title="파일럿 기대 효과"
         governing="이관 구간에서 지연은 절반으로, 비용 증가는 12% 이내로 관리합니다."
-        anchor="center"
         figures={[
           { value: 47, unit: '%', label: 'p95 지연 감소', claim: '셰도우 전환 구간 실측 기준.', emphasis: true },
           { value: 5, unit: '종', label: '이관 대상 테이블', claim: '주문·텔레메트리 우선.' },

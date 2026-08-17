@@ -1,5 +1,5 @@
 import React from 'react';
-import { ContentSlide, DeckViewer, EndSlide, TitleSlide } from '../src/index.js';
+import { AssessmentSlide, ContentSlide, DeckViewer, EndSlide, TitleSlide } from '../src/index.js';
 
 const meta = {
   title: 'Slides/Deck Viewer',
@@ -127,6 +127,47 @@ export const SpeakerNotes = {
     await press('ArrowRight');
     if (canvasElement.querySelector('[data-deck-notes-toggle]')) {
       throw new Error('A slide with no notes must not offer a notes toggle.');
+    }
+  },
+};
+
+/* 덱 매체 축(ADAPTIVE_CONTRACTS_PROPOSAL 변경 1·2): preset은 덱이 한 번
+   선언하고 슬라이드가 오버라이드하며, read kind에서는 위임 슬라이드의
+   auto-center가 top으로 해소된다(열람 페이지는 문서 흐름 — 마찰 6). */
+export const DeckMediumAxes = {
+  name: '계약 · 덱 매체 축 (preset·kind)',
+  render: () => (
+    <DeckViewer label="매체 축 데모" kind="read" preset="briefing">
+      <AssessmentSlide
+        eyebrow="지표"
+        title="열람 표 페이지"
+        metrics={[
+          { id: 'a', name: '재현율', target: '95%', actual: '96%', status: 'met' },
+          { id: 'b', name: '오탐', target: '2건', actual: '2건', status: 'watch' },
+        ]}
+        caption="데모"
+        source="출처: 데모, 2026-08"
+      />
+      <ContentSlide title="키노트 오버라이드" governing="슬라이드의 preset이 덱 기본값을 이긴다." preset="keynote">
+        <p style={{ margin: 0 }}>오버라이드 확인용.</p>
+      </ContentSlide>
+    </DeckViewer>
+  ),
+  play: async ({ canvasElement }) => {
+    const surface = () => canvasElement.querySelector('[data-lds-slide-surface]');
+    // 1장: 덱 preset이 슬라이드에 흘러든다.
+    if (surface()?.getAttribute('data-slides-preset') !== 'briefing') {
+      throw new Error("The deck's preset must flow to a slide that names none.");
+    }
+    // read kind: 위임 auto는 top — center 규칙이 열람 문서 흐름을 이기면 안 된다.
+    if (canvasElement.querySelector('[data-slide-anchor="center"]')) {
+      throw new Error('On a read deck the auto anchor resolves to top — pages read as documents.');
+    }
+    // 2장: 슬라이드의 명시 preset이 덱 기본값을 이긴다.
+    canvasElement.querySelector('[data-deck-next]').click();
+    await new Promise((resolve) => { setTimeout(resolve, 60); });
+    if (surface()?.getAttribute('data-slides-preset') !== 'keynote') {
+      throw new Error("A slide's own preset must override the deck default.");
     }
   },
 };

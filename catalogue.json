@@ -196,11 +196,15 @@
         },
         {
           "name": "source"
+        },
+        {
+          "name": "anchor"
         }
       ],
       "dataAttributes": [
         "data-emphasis-spent",
         "data-lds-stat-slide",
+        "data-stat-count-tier",
         "data-stat-slide-figures"
       ]
     },
@@ -401,6 +405,9 @@
         },
         {
           "name": "source"
+        },
+        {
+          "name": "anchor"
         }
       ],
       "dataAttributes": [
@@ -428,6 +435,9 @@
         },
         {
           "name": "source"
+        },
+        {
+          "name": "anchor"
         }
       ],
       "dataAttributes": [
@@ -458,6 +468,9 @@
         },
         {
           "name": "source"
+        },
+        {
+          "name": "anchor"
         }
       ],
       "dataAttributes": [
@@ -540,6 +553,9 @@
         {
           "name": "kind",
           "default": "'present'"
+        },
+        {
+          "name": "preset"
         },
         {
           "name": "label",
