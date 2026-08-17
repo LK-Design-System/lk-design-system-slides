@@ -47,9 +47,23 @@ const LatencyChart = () => (
   <svg
     viewBox="-6 0 332 120"
     role="img"
-    aria-label="선행 파일럿 주간 p95 지연 추이 데모 차트"
+    aria-label="선행 파일럿 주간 p95 지연 추이 데모 차트 — 곡선이 목표 20분 점선 아래로 내려온다"
     style={{ width: '100%', display: 'block' }}
   >
+    {/* 목표선 — 거버닝이 "절반으로"를 주장하니 기준이 그림에 있어야 한다
+        (TrendChart referenceLines의 시각 언어 그대로: cautionary 점선).
+        라벨은 캡션이 진다 — 이 SVG는 viewBox 스케일이라 안에 글자를 넣으면
+        확대되어 text-scale 규칙 위반이고, 기하만 스케일을 타는 것이 계약이다.
+        y=87 ≈ 20분 (41분 y30 → 18분 y92 선형). */}
+    <line
+      x1="0"
+      y1="87"
+      x2="320"
+      y2="87"
+      stroke="var(--color-semantic-status-cautionary)"
+      strokeWidth="1"
+      strokeDasharray="3 3"
+    />
     <polyline
       points="0,30 40,34 80,32 120,44 160,48 200,72 240,78 280,88 320,92"
       fill="none"
@@ -131,7 +145,7 @@ export const Deck = {
         eyebrow="선행 파일럿"
         title="셰도우 전환 구간 지연 추이"
         governing="셰도우 전환 구간에서 p95 지연이 절반으로 내려왔습니다."
-        caption="주간 p95 지연, 6월–7월 (데모 데이터)"
+        caption="주간 p95 지연, 6월–7월 (데모 데이터) · 점선: 목표 20분"
         source="출처: 파이프라인 텔레메트리, 2026-07 집계"
         annotations={[
           {
