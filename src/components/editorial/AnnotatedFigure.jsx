@@ -6,7 +6,9 @@ import React from 'react';
  * contract. The anchor decides the seat (ANNOTATION_REDESIGN_PROPOSAL):
  *
  * - An annotation WITH an `anchor` is a CALLOUT: it renders ON the canvas
- *   beside its data element, tied to it by a short leader line and an anchor
+ *   above or below its data element — never beside it, because a chart runs
+ *   left to right and "beside the point" lands on the mark — tied to it by a
+ *   short leader line and an anchor
  *   dot — "put the note where the action is" (FT/Datawrapper practice, and
  *   content-rules §3: 청중이 찾게 하지 않는다). Overlap with data is answered
  *   by a text halo, not by exiling the note off-canvas. The figure marks the
@@ -30,7 +32,12 @@ import React from 'react';
  */
 const CALLOUT_RATIO = 0.30;
 const CALLOUT_MIN = 170;
-const CALLOUT_GAP = 12;
+const CALLOUT_GAP = 14;
+// Which half a callout escapes into. An anchor below this line is annotated
+// from ABOVE, one above it from BELOW — the note goes into the emptier half of
+// the canvas. Slightly above centre because figures are usually bottom-weighted
+// by their axis.
+const CALLOUT_FLIP = 0.45;
 
 export function AnnotatedFigure({ children, annotations = [], caption, style, ...rest }) {
   let emphasisTaken = false;
@@ -53,8 +60,18 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
     const body = bodyRef.current;
     if (!body) return;
     const bodyRect = body.getBoundingClientRect();
-    if (bodyRect.width === 0) return;
-    const calloutWidth = Math.max(Math.round(bodyRect.width * CALLOUT_RATIO), CALLOUT_MIN);
+    if (bodyRect.width === 0 || body.offsetWidth === 0) return;
+    // getBoundingClientRect reports SCREEN px, but a seat is written back as
+    // ordinary CSS px inside the body — and a slide surface scales its canvas
+    // with a transform, so the two spaces differ by that factor. Divide it out
+    // or every callout lands short of its anchor (measured 439 → 354 at 0.81
+    // scale). ResizeObserver cannot see this: a transform changes no layout
+    // box, which is also why the drift survived the observer.
+    const scale = bodyRect.width / body.offsetWidth;
+    const toLocal = (value) => value / scale;
+    const bodyWidth = toLocal(bodyRect.width);
+    const bodyHeight = toLocal(bodyRect.height);
+    const calloutWidth = Math.max(Math.round(bodyWidth * CALLOUT_RATIO), CALLOUT_MIN);
     const next = {};
     resolved.forEach((annotation, index) => {
       if (!annotation.anchor) return;
@@ -66,25 +83,31 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
       }
       target.setAttribute('aria-details', `${listId}-${index}`);
       const rect = target.getBoundingClientRect();
-      const cx = rect.left - bodyRect.left + rect.width / 2;
-      const cy = rect.top - bodyRect.top + rect.height / 2;
-      // Prefer the right of the anchor; fall back to the left when the right
-      // edge would leave the canvas. Clamp vertically so the callout stays on
-      // the figure. (One or two callouts per figure by budget — inter-callout
-      // collision is the author's composition, reported by eyes and snapshot.)
-      const fitsRight = cx + CALLOUT_GAP + calloutWidth <= bodyRect.width;
-      const left = fitsRight ? cx + CALLOUT_GAP : Math.max(cx - CALLOUT_GAP - calloutWidth, 0);
-      const top = Math.min(Math.max(cy - 14, 0), Math.max(bodyRect.height - 48, 0));
+      const cx = toLocal(rect.left - bodyRect.left + rect.width / 2);
+      const cy = toLocal(rect.top - bodyRect.top + rect.height / 2);
+      // A callout escapes VERTICALLY, not sideways. Seating it beside the
+      // anchor puts it exactly where the data is on the commonest subject we
+      // annotate — a line chart runs left to right, so "next to the point" is
+      // "on the line", and the first cut duly printed a note through the curve
+      // (user-flagged, 2026-08-17). Going into the emptier half clears the
+      // mark, and the leader that ties them then runs ACROSS the data's
+      // direction instead of along it, which is what makes it readable.
+      const above = cy > bodyHeight * CALLOUT_FLIP;
+      // Anchored to the anchor's x and clamped inside the canvas; the seat is
+      // expressed from whichever edge the callout grows away from, so its own
+      // height never needs measuring.
+      const left = Math.min(Math.max(cx - CALLOUT_GAP, 0), Math.max(bodyWidth - calloutWidth, 0));
       next[annotation.anchor] = {
         status: 'linked',
-        side: fitsRight ? 'right' : 'left',
+        side: above ? 'above' : 'below',
         left,
-        top,
+        top: above ? undefined : cy + CALLOUT_GAP,
+        bottom: above ? Math.max(bodyHeight - (cy - CALLOUT_GAP), 0) : undefined,
         width: calloutWidth,
         anchorX: cx,
         anchorY: cy,
-        bodyWidth: bodyRect.width,
-        bodyHeight: bodyRect.height,
+        bodyWidth,
+        bodyHeight,
       };
     });
     setSeats((previous) => (JSON.stringify(previous) === JSON.stringify(next) ? previous : next));
@@ -164,10 +187,12 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
           >
             {callouts.map(({ annotation, seat }) => {
               const stroke = annotation.emphasis ? 'var(--editorial-emphasis)' : 'var(--color-semantic-label-alternative)';
-              const toX = seat.side === 'right' ? seat.left - 2 : seat.left + seat.width + 2;
+              // Straight down or straight up from the dot to the callout's near
+              // edge — short, and crossing the data rather than following it.
+              const toY = seat.side === 'above' ? seat.anchorY - CALLOUT_GAP : seat.anchorY + CALLOUT_GAP;
               return (
                 <g key={annotation.anchor}>
-                  <line x1={seat.anchorX} y1={seat.anchorY} x2={toX} y2={seat.top + 9} stroke={stroke} strokeWidth="1.5" />
+                  <line x1={seat.anchorX} y1={seat.anchorY} x2={seat.anchorX} y2={toY} stroke={stroke} strokeWidth="1.5" />
                   <circle cx={seat.anchorX} cy={seat.anchorY} r="3.5" fill={stroke} />
                 </g>
               );
@@ -186,9 +211,9 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
               position: 'absolute',
               left: seat.left,
               top: seat.top,
+              bottom: seat.bottom,
               width: seat.width,
               maxWidth: '100%',
-              textAlign: seat.side === 'right' ? 'left' : 'right',
               textShadow: haloShadow,
               pointerEvents: 'none',
             }}

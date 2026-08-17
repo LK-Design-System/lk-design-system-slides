@@ -69,6 +69,15 @@ export const Default = {
       throw new Error('The callout must stay inside the figure canvas.');
     }
 
+    // 콜아웃은 앵커의 위나 아래로 비켜 앉는다. 옆에 앉으면 차트가 좌우로
+    // 흐르는 탓에 곧 데이터 위다 — 첫 판이 실제로 곡선을 관통했다.
+    const anchorEl = figure.querySelector('[data-annotation-anchor="deploy-week"]');
+    const anchorRect = anchorEl.getBoundingClientRect();
+    const anchorY = anchorRect.top + anchorRect.height / 2;
+    if (calloutRect.top <= anchorY && calloutRect.bottom >= anchorY) {
+      throw new Error('A callout escapes above or below its anchor — beside it is on the data.');
+    }
+
     // 지시선 + 앵커 점이 콜아웃과 지점을 잇는다 — 독자가 찾게 하지 않는다.
     const leaders = figure.querySelector('[data-annotation-leaders]');
     if (!leaders || leaders.querySelectorAll('line').length !== 1 || leaders.querySelectorAll('circle').length !== 1) {

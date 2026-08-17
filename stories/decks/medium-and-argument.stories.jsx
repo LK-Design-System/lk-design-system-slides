@@ -59,54 +59,96 @@ const BEFORE = `// Editorial — KeyFigure (이전)
 </figcaption>`;
 
 // 도판은 화면 해상도에서 다시 그린다 — 캡처를 붙이지 않는다.
-// 폭은 매체 폭 정책을 따른다: 도판이 콘텐츠 폭을 가득 쓰고 스케일은
-// viewBox가 맡는다 — 고정 420px였던 첫 판은 주석 레일과의 사이를 텅 비웠다
-// (시각 리뷰 지적). 확대되며 선·글자가 비례로 굵어지는 것이 투영의 관용구다.
-const SeamDiagram = () => (
-  // viewBox 높이는 실제 그림의 끝(마지막 행 하단 159)에 맞춘다 — 캔버스
-  // 아래 빈 여백은 전폭 확대에서 실높이가 되어 크롬 밴드를 침범한다
-  // (가드가 2px 침범으로 검출, 첫 실전 어획).
-  <svg viewBox="0 0 420 168" style={{ width: '100%', height: 'auto', display: 'block' }} role="img" aria-label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조">
-    <text x="0" y="14" fill="var(--color-semantic-label-alternative)" style={{ fontSize: 'var(--slides-fine-size)' }}>
-      Editorial — 순위
-    </text>
-    <text x="270" y="14" fill="var(--color-semantic-label-alternative)" style={{ fontSize: 'var(--slides-fine-size)' }}>
-      매체 — 거리
-    </text>
-    {['value', 'claim', 'note', 'note-body', 'caption'].map((step, order) => {
-      const y = 40 + order * 28;
-      const lit = step === 'claim';
-      return (
-        <g key={step}>
-          <rect
-            x="0"
-            y={y - 15}
-            width="150"
-            height="22"
-            rx="4"
-            fill={lit ? 'var(--editorial-emphasis-surface)' : 'var(--color-semantic-fill-normal)'}
-          />
-          <text x="10" y={y} fill="var(--color-semantic-label-neutral)" style={{ fontSize: 'var(--slides-fine-size)' }}>
-            {step}
-          </text>
-          <line
-            x1="155"
-            y1={y - 4}
-            x2="265"
-            y2={y - 4}
-            stroke={lit ? 'var(--editorial-emphasis)' : 'var(--color-semantic-line-normal-normal)'}
-            strokeWidth={lit ? 2 : 1}
-          />
-          {lit && <circle data-annotation-anchor="claim-step" cx="210" cy={y - 4} r="4" fill="var(--editorial-emphasis)" />}
-          <rect x="270" y={y - 15} width="150" height="22" rx="4" fill="var(--color-semantic-fill-normal)" />
-          <text x="280" y={y} fill="var(--color-semantic-label-neutral)" style={{ fontSize: 'var(--slides-fine-size)' }}>
-            {['slides-title', 'slides-body', 'slides-caption', 'slides-fine', 'slides-fine'][order]}
-          </text>
-        </g>
-      );
-    })}
-  </svg>
-);
+//
+// 이 도판은 HTML/CSS다. 한 번은 viewBox SVG를 width:100%로 늘려 폭을
+// 채웠는데, 그러면 채워지는 것이 배치가 아니라 배율이다: 부여 폭 대비
+// viewBox가 ×1.97이라 --slides-fine-size(18px)로 지정한 라벨이 35px로,
+// 즉 이 슬라이드의 주장 문장(24px)보다 크게 찍혔다. 도판의 곁다리 라벨이
+// 슬라이드에서 가장 큰 글자가 되는 순위 역전이고, 하필 "거리는 매체가
+// 지정한다"고 주장하는 바로 그 슬라이드에서 도판이 매체의 램프를
+// 덮어쓴 것이다 (사용자 지적, 2026-08-17).
+//
+// 그래서 규칙: 도판은 넓어져서 폭을 채우고(칸이 늘어난다), 확대되어
+// 채우지 않는다. 글자가 있는 도판에서 확대는 폭 미달의 해법이 아니다 —
+// 다이어그램의 글자는 매체의 램프에 그대로 앉아야 한다. 순수한 도형
+// (차트 곡선, 픽토그램)은 여전히 viewBox 확대가 맞다.
+// check:figure-fill이 이제 이 역전을 기계로 잡는다.
+const SEAM_ROWS = [
+  ['value', 'slides-title'],
+  ['claim', 'slides-body'],
+  ['note', 'slides-caption'],
+  ['note-body', 'slides-fine'],
+  ['caption', 'slides-fine'],
+];
+const SeamDiagram = () => {
+  const head = {
+    fontSize: 'var(--slides-fine-size)',
+    lineHeight: 'var(--slides-fine-line)',
+    letterSpacing: 'var(--slides-fine-spacing)',
+    color: 'var(--color-semantic-label-alternative)',
+    paddingBottom: 'var(--space-2)',
+  };
+  const cell = (lit) => ({
+    padding: 'var(--space-2) var(--space-3)',
+    borderRadius: 'var(--radius-2, 4px)',
+    background: lit ? 'var(--editorial-emphasis-surface)' : 'var(--color-semantic-fill-normal)',
+    color: lit ? 'var(--color-semantic-label-strong)' : 'var(--color-semantic-label-neutral)',
+    fontWeight: lit ? 'var(--fw-semibold)' : 'var(--fw-regular)',
+    fontSize: 'var(--slides-fine-size)',
+    lineHeight: 'var(--slides-fine-line)',
+    letterSpacing: 'var(--slides-fine-spacing)',
+  });
+  return (
+    <div
+      role="img"
+      aria-label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조"
+      style={{
+        display: 'grid',
+        // 재지정 통로는 고정 폭이 아니라 남는 폭을 받는다 — 넓은 캔버스에서
+        // 늘어나는 것이 통로이고, 칸은 내용 폭을 지킨다.
+        gridTemplateColumns: 'minmax(0, 1fr) minmax(64px, 0.6fr) minmax(0, 1fr)',
+        rowGap: 'var(--space-2)',
+        alignItems: 'center',
+      }}
+    >
+      <div style={head}>Editorial — 순위</div>
+      <div />
+      <div style={head}>매체 — 거리</div>
+      {SEAM_ROWS.map(([step, distance]) => {
+        const lit = step === 'claim';
+        return (
+          <React.Fragment key={step}>
+            <div style={cell(lit)}>{step}</div>
+            <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center' }}>
+              <span
+                style={{
+                  flex: 1,
+                  height: lit ? 2 : 1,
+                  background: lit ? 'var(--editorial-emphasis)' : 'var(--color-semantic-line-normal-normal)',
+                }}
+              />
+              {lit && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: 'var(--editorial-emphasis)',
+                  }}
+                />
+              )}
+            </div>
+            <div style={cell(false)}>{distance}</div>
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+};
 
 export const Deck = {
   name: '매체와 논증의 분리',
