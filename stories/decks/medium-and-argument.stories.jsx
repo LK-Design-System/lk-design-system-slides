@@ -59,8 +59,11 @@ const BEFORE = `// Editorial — KeyFigure (이전)
 </figcaption>`;
 
 // 도판은 화면 해상도에서 다시 그린다 — 캡처를 붙이지 않는다.
+// 폭은 매체 폭 정책을 따른다: 도판이 콘텐츠 폭을 가득 쓰고 스케일은
+// viewBox가 맡는다 — 고정 420px였던 첫 판은 주석 레일과의 사이를 텅 비웠다
+// (시각 리뷰 지적). 확대되며 선·글자가 비례로 굵어지는 것이 투영의 관용구다.
 const SeamDiagram = () => (
-  <svg viewBox="0 0 420 190" width="420" height="190" role="img" aria-label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조">
+  <svg viewBox="0 0 420 190" style={{ width: '100%', height: 'auto', display: 'block' }} role="img" aria-label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조">
     <text x="0" y="14" fill="var(--color-semantic-label-alternative)" style={{ fontSize: 'var(--slides-fine-size)' }}>
       Editorial — 순위
     </text>
