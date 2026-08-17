@@ -27,7 +27,8 @@ import {
  *  6. 매체 단계를 경유해 매핑했으므로 프리셋 전환이 Editorial까지 전파된다.
  *  7. 캔버스가 고정 논리 크기라 모든 px가 표시 크기와 무관한 설계 px다.
  *  8. 계약은 문서가 아니라 게이트가 지킨다.
- *  9. 다음 확장은 어휘가 아니라 실제 덱에서 나온 수요를 따른다.
+ *  9. 정적이 못 잡는 결함은 실행 관문이 렌더된 캔버스에서 잡는다.
+ * 10. 다음 확장은 어휘가 아니라 실제 덱에서 나온 수요를 따른다.
  */
 
 const meta = {
@@ -37,7 +38,7 @@ const meta = {
       description: {
         component:
           'LDS Slides와 Editorial의 경계를 어떻게 다시 그었는지에 대한 내부 기술 공유 덱입니다. '
-          + '`keynote` 프리셋, 14장, 약 10분 분량.',
+          + '`keynote` 프리셋, 15장, 약 10분 분량.',
       },
     },
   },
@@ -207,18 +208,32 @@ export const Deck = {
 
       <AssessmentSlide
         eyebrow="게이트"
-        title="배포 전 관문"
+        title="배포 전 관문 · 정적"
         governing="계약은 문서가 아니라 게이트가 지킨다."
+        anchor="center"
         metrics={[
-          { id: 'own', group: '정적', name: '스타일 소유권', target: '램프 직참조 0', actual: '0', status: 'met' },
-          { id: 'cat', group: '정적', name: '카탈로그 일치', target: '소스와 동일', actual: '동일', status: 'met' },
-          { id: 'play', group: '실행', name: 'play 단언', target: '전건 통과', actual: '35 / 35', status: 'met' },
-          { id: 'fit', group: '실행', name: '캔버스 초과', target: '0건', actual: '0 / 35', status: 'met' },
+          { id: 'own', name: '스타일 소유권', target: '램프 직참조 0', actual: '0', status: 'met' },
+          { id: 'cat', name: '카탈로그 일치', target: '소스와 동일', actual: '동일', status: 'met' },
+        ]}
+        caption="정적 두 관문은 빌드 전에, 소스 트리 위에서 선다"
+        source="출처: lk-design-system-slides CI 실행 기록, 2026-07"
+        foot="LDS 플랫폼 · 2026 Q3"
+        notes="정적 둘. 소유권 검사는 램프 직참조를 0으로 강제하고, 카탈로그 검사는 문서와 소스의 표류를 막는다. [~1분]"
+      />
+
+      <AssessmentSlide
+        eyebrow="게이트"
+        title="배포 전 관문 · 실행"
+        governing="정적이 못 잡는 결함은 실행 관문이 렌더된 캔버스에서 잡는다."
+        anchor="center"
+        metrics={[
+          { id: 'play', name: 'play 단언', target: '전건 통과', actual: '35 / 35', status: 'met' },
+          { id: 'fit', name: '캔버스 초과', target: '0건', actual: '0 / 35', status: 'met' },
         ]}
         caption="네 관문 모두 Pages 배포 이전에 선다"
         source="출처: lk-design-system-slides CI 실행 기록, 2026-07"
         foot="LDS 플랫폼 · 2026 Q3"
-        notes="정적 둘, 실행 둘. 초과 검사는 play가 못 잡는 걸 잡는다 — 잘린 슬라이드도 렌더는 멀쩡하고 단언도 통과하기 때문이다. [~2분]"
+        notes="실행 둘. 초과 검사는 play가 못 잡는 걸 잡는다 — 잘린 슬라이드도 렌더는 멀쩡하고 단언도 통과하기 때문이다. [~1분]"
       />
 
       <RoadmapSlide
