@@ -52,7 +52,7 @@
   /* Readability floor: below this the note column wraps into shreds, so the
      ratio is clamped up to it; a figure narrower than the floor stacks its
      notes underneath instead (Datawrapper's mobile behavior). */
-  --editorial-annotation-min-width: 200px;
+  --editorial-annotation-min-width: 240px;
 
   /* Pictogram — unit geometry. */
   --editorial-unit-size: 16px;

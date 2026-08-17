@@ -182,7 +182,9 @@ export const Deck = {
         annotations={[
           {
             id: 'claim',
-            anchor: 'claim-step',
+            // 밀집 다이어그램은 콜아웃이 앉을 여백이 없다 — 도판 자신이 claim
+            // 행을 색·굵기로 강조하므로 주석은 앵커 없이 레일에 선다
+            // (ANNOTATION_REDESIGN_PROPOSAL의 밀집 도판 규칙).
             title: '주장 단계',
             body: '매체가 --slides-body로 재지정하면 컴포넌트는 아무것도 모른 채 따라간다.',
             emphasis: true,
