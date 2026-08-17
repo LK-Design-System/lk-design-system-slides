@@ -30,14 +30,14 @@
     "qa": "node qa/run.mjs"
   },
   "peerDependencies": {
-    "@lk-design-system/lds-core": ">=0.1.0-rc.69.26 <0.2.0",
-    "@lk-design-system/lds-product": ">=0.1.0-rc.69.26 <0.2.0",
-    "@lk-design-system/lds-theme": ">=0.1.0-rc.69.26 <0.2.0",
+    "@lk-design-system/lds-core": ">=0.1.0-rc.69.27 <0.2.0",
+    "@lk-design-system/lds-product": ">=0.1.0-rc.69.27 <0.2.0",
+    "@lk-design-system/lds-theme": ">=0.1.0-rc.69.27 <0.2.0",
     "react": ">=18 <20",
     "react-dom": ">=18 <20"
   },
   "devDependencies": {
-    "@lk-design-system/lds-theme": "file:vendor/lk-design-system-lds-theme-0.1.0-rc.69.26.tgz",
+    "@lk-design-system/lds-theme": "file:vendor/lk-design-system-lds-theme-0.1.0-rc.69.27.tgz",
     "@playwright/test": "1.61.1",
     "@storybook/addon-a11y": "10.4.6",
     "@storybook/addon-docs": "10.4.6",
@@ -46,8 +46,8 @@
     "react-dom": "^19.2.0",
     "storybook": "10.4.6",
     "vite": "8.1.3",
-    "@lk-design-system/lds-core": "file:vendor/lk-design-system-lds-core-0.1.0-rc.69.26.tgz",
-    "@lk-design-system/lds-product": "file:vendor/lk-design-system-lds-product-0.1.0-rc.69.26.tgz"
+    "@lk-design-system/lds-core": "file:vendor/lk-design-system-lds-core-0.1.0-rc.69.27.tgz",
+    "@lk-design-system/lds-product": "file:vendor/lk-design-system-lds-product-0.1.0-rc.69.27.tgz"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",

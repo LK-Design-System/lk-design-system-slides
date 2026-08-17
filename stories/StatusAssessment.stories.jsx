@@ -55,12 +55,18 @@ export const Default = {
     ) {
       throw new Error('Deviations must carry their status tint (watch → cautionary, missed → negative).');
     }
-    // 그룹 헤더는 연속 구간당 한 번, 표 의미론은 유지된다.
-    if (frame.querySelectorAll('[data-assessment-group]').length !== 2) {
+    // 그룹 헤더는 연속 구간당 한 번, 표 의미론은 유지된다. 표 자체는 Core의
+    // Table이 소유하므로(rc.69.27의 groupKey 위임) 마커도 업스트림 것이다 —
+    // 이 층이 단언하는 것은 판정 어휘와 위임이 실제로 서 있다는 사실이다.
+    if (frame.querySelectorAll('[data-table-group]').length !== 2) {
       throw new Error('Each contiguous group must render exactly one group header.');
     }
     if (frame.querySelectorAll('th[scope="row"]').length !== 4) {
       throw new Error('Metric names must remain row headers for assistive tech.');
+    }
+    // 밴드는 전 데이터 행 — 위임 후에도 넓은 표의 행 결속은 유지된다.
+    if (frame.querySelectorAll('tbody tr[data-banded]').length !== 4) {
+      throw new Error('Every data row keeps its band after delegating the table upstream.');
     }
   },
 };

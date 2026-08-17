@@ -13,13 +13,14 @@ import { Timeline } from '@lk-design-system/lds-core';
  * duration claim belongs in a chart, not here.
  *
  * `direction` is the medium's call, like reading distance: a flowing
- * document reads a chronology top-down ('column', the default — Core's
- * Timeline), a fixed canvas reads it left-to-right ('row'). Core has no
- * horizontal rail yet, so the row branch renders its own ol/time markup
- * with the same resolved events — one narrative contract, two rails. When
- * upstream grows a Timeline orientation (proposed:
- * lk-design-system/docs/TIMELINE_ORIENTATION_PROPOSAL.md), the row branch
- * collapses back into one delegation.
+ * document reads a chronology top-down ('column'), a fixed canvas reads it
+ * left-to-right ('row'). BOTH delegate to Core's Timeline — the row branch's
+ * hand-rolled ol/time markup was retired once upstream grew
+ * `orientation="horizontal"` and the `--lk-timeline-*` type hooks
+ * (lk-design-system/docs/TIMELINE_ORIENTATION_PROPOSAL.md, rc.69.27). Rail
+ * geometry is upstream's; this layer keeps only what it owns: the narrative
+ * contract above, and the medium's type ranks, re-pointed through the hooks
+ * so the chronology reads at editorial rank instead of product rank.
  */
 export function NarrativeTimeline({ events = [], label, direction = 'column', style, ...rest }) {
   let emphasisTaken = false;
@@ -56,109 +57,28 @@ export function NarrativeTimeline({ events = [], label, direction = 'column', st
     description: event.body,
   }));
 
-  const rail = direction === 'row' ? (
-    <ol
-      data-timeline-rail-row
-      aria-label={railLabel}
+  /* One delegation, two orientations. The medium re-points Core's type hooks
+     to its own ranks — what moves is rank, not size: stamp at caption,
+     event label at note, body at note-body, exactly the ranks the hand-rolled
+     rail used to hard-code. */
+  const rail = (
+    <Timeline
+      label={railLabel}
+      items={items}
+      orientation={direction === 'row' ? 'horizontal' : 'vertical'}
       style={{
-        margin: 0,
-        padding: 0,
-        listStyle: 'none',
-        display: 'grid',
-        gridAutoFlow: 'column',
-        gridAutoColumns: 'minmax(0, 1fr)',
-        gap: 'var(--editorial-figure-gap)',
-        width: '100%',
+        '--lk-timeline-time-size': 'var(--editorial-caption-size)',
+        '--lk-timeline-time-line': 'var(--editorial-caption-line)',
+        '--lk-timeline-time-spacing': 'var(--editorial-caption-spacing)',
+        '--lk-timeline-title-size': 'var(--editorial-note-size)',
+        '--lk-timeline-title-line': 'var(--editorial-note-line)',
+        '--lk-timeline-title-spacing': 'var(--editorial-note-spacing)',
+        '--lk-timeline-desc-size': 'var(--editorial-note-body-size)',
+        '--lk-timeline-desc-line': 'var(--editorial-note-body-line)',
+        '--lk-timeline-desc-spacing': 'var(--editorial-note-body-spacing)',
       }}
-    >
-      {dated.map((event, order) => (
-        <li key={event.id ?? `${event.date}-${event.label}`} style={{ minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-3)' }}>
-            <span
-              aria-hidden="true"
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: '50%',
-                flex: 'none',
-                background: event.emphasis
-                  ? 'var(--color-semantic-primary-normal)'
-                  : 'var(--color-semantic-label-alternative)',
-              }}
-            />
-            {/* The rail segment stops before the last node: the chronology
-                ends there, and a line running off-canvas claims otherwise.
-                The negative margin carries the line across the grid gap to
-                the next node — a rail interrupted at every gap reads as
-                three timelines, not one. */}
-            {order < dated.length - 1 && (
-              <span
-                aria-hidden="true"
-                style={{
-                  flex: 1,
-                  height: 1,
-                  marginRight: 'calc(var(--editorial-figure-gap) * -1)',
-                  background: 'var(--color-semantic-line-normal-normal)',
-                }}
-              />
-            )}
-          </div>
-          <time
-            dateTime={event.date}
-            style={{
-              display: 'block',
-              fontSize: 'var(--editorial-caption-size)',
-              lineHeight: 'var(--editorial-caption-line)',
-              letterSpacing: 'var(--editorial-caption-spacing)',
-              fontVariantNumeric: 'tabular-nums',
-              color: 'var(--color-semantic-label-alternative)',
-            }}
-          >
-            {event.date}
-          </time>
-          {/* Orthodox ranks (label=note, body=note-body): a first cut
-              promoted these to claim/note when the medium seam still read
-              note at caption scale; the seam now maps note to body, which
-              lifts every sparse exhibit uniformly, so the timeline keeps
-              plain timeline ranks and renders the same sizes. */}
-          <span
-            data-timeline-event
-            data-event-emphasis={event.emphasis ? 'true' : undefined}
-            style={{
-              display: 'block',
-              marginTop: 'var(--space-1)',
-              fontSize: 'var(--editorial-note-size)',
-              lineHeight: 'var(--editorial-note-line)',
-              letterSpacing: 'var(--editorial-note-spacing)',
-              fontWeight: 'var(--fw-semibold)',
-              color: event.emphasis
-                ? 'var(--color-semantic-primary-strong)'
-                : 'var(--color-semantic-label-strong)',
-            }}
-          >
-            {event.label}
-          </span>
-          {event.body && (
-            <span
-              style={{
-                display: 'block',
-                marginTop: 'var(--space-1)',
-                fontSize: 'var(--editorial-note-body-size)',
-                lineHeight: 'var(--editorial-note-body-line)',
-                letterSpacing: 'var(--editorial-note-body-spacing)',
-                color: 'var(--color-semantic-label-neutral)',
-              }}
-            >
-              {event.body}
-            </span>
-          )}
-        </li>
-      ))}
-    </ol>
-  ) : (
-    <Timeline label={railLabel} items={items} />
+    />
   );
-
   return (
     <div data-lds-narrative-timeline data-timeline-direction={direction === 'row' ? 'row' : undefined} style={{ display: 'grid', gap: 'var(--space-3)', fontFamily: 'var(--font-sans)', ...style }} {...rest}>
       {rail}
