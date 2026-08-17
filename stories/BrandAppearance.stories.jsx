@@ -27,7 +27,11 @@ export const BrandCover = {
       lockup={<Lockup variant="inline" tone="white" height={30} />}
       eyebrow="대외 발표"
       title="자율 물류 플랫폼 도입 제안"
-      subtitle="LK ROBOTICS · 2026 3분기"
+      // The mark above already says whose deck this is, so the subtitle
+      // carries only what it does not — the date. A cover that sets the
+      // organisation in type UNDER its own logo is the habit this slot
+      // exists to end.
+      subtitle="2026 3분기"
       foot="LK ROBOTICS"
     />
   ),
@@ -99,8 +103,9 @@ export const SparseFamily = {
       />
       <EndSlide
         appearance="brand"
+        lockup={<Lockup variant="inline" tone="white" height={24} />}
         message="다음 단계는 파일럿 한 동입니다."
-        contact="LK ROBOTICS · platform@example.com"
+        contact="platform@example.com"
         foot="LK ROBOTICS"
       />
     </div>
@@ -116,6 +121,21 @@ export const SparseFamily = {
       if ((0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < 0.7) {
         throw new Error(`Sparse text on brand must be inverse ink, measured ${colour}.`);
       }
+    }
+
+    // The closing slide names the sender with the MARK, not with the
+    // organisation typed into the contact line. Both halves are asserted: a
+    // lockup that renders, and a contact line that has stopped duplicating it.
+    const end = canvasElement.querySelector('[data-lds-end-slide]');
+    const lockup = end.querySelector('[data-slide-lockup] svg');
+    if (!lockup) throw new Error('The closing slide must be able to carry the brand mark.');
+    const message = end.querySelector('[data-slide-message]');
+    const contact = end.querySelector('[data-slide-contact]');
+    if (lockup.getBoundingClientRect().top < message.getBoundingClientRect().bottom) {
+      throw new Error('The mark sits between the residue line and the contact line.');
+    }
+    if (/LK\s*ROBOTICS/i.test(contact.textContent)) {
+      throw new Error('The mark already says whose deck this is — the contact line carries only the address.');
     }
   },
 };

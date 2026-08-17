@@ -564,11 +564,15 @@
         },
         {
           "name": "contact"
+        },
+        {
+          "name": "lockup"
         }
       ],
       "dataAttributes": [
         "data-lds-end-slide",
         "data-slide-contact",
+        "data-slide-lockup",
         "data-slide-message",
         "data-slide-scale"
       ]

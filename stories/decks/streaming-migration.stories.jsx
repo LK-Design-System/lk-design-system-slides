@@ -276,6 +276,7 @@ export const Deck = {
       <EndSlide
         preset="briefing"
         appearance="brand"
+        lockup={<Lockup variant="inline" tone="white" height={24} />}
         message="지연에 민감한 것부터, 8월에 시작합니다."
         contact="플랫폼팀 · jinhyuk2me@gmail.com"
         notes="Q&A 동안 이 화면을 유지한다."

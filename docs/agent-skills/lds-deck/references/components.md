@@ -19,8 +19,12 @@
 ```jsx
 import { Lockup } from '@lk-design-system/lds-theme';
 <TitleSlide appearance="brand" lockup={<Lockup variant="inline" tone="white" height={30} />}
-  eyebrow="대외 발표" title="자율 물류 플랫폼 도입 제안" subtitle="LK ROBOTICS · 2026 3분기" />
+  eyebrow="대외 발표" title="자율 물류 플랫폼 도입 제안" subtitle="2026 3분기" />
 ```
+**조직 이름은 마크가 말한다 — 글자로 또 치지 않는다.** `lockup`을 준 표지의
+subtitle에 "LK ROBOTICS"를 다시 넣으면 로고 바로 밑에서 같은 말을 두 번 하는
+것이다. 날짜·구분처럼 마크가 말하지 못하는 것만 남긴다. 막지도 같다 —
+`contact`는 주소만 지고 발신자는 `lockup`이 진다.
 표면이 브랜드 네이비로, 활자가 반전 잉크로 함께 넘어간다(표면이 `--slides-ink-*`를
 자기 스코프에서 재지정하므로 레이아웃은 아무것도 모른다). **희소 레이아웃 전용** —
 `TitleSlide`·`SectionSlide`·`StatementSlide`·`EndSlide`. 네이비 위의 표나 차트는
@@ -43,7 +47,12 @@ import { Lockup } from '@lk-design-system/lds-theme';
 ### EndSlide — 막지
 ```jsx
 <EndSlide message="다음 분기, 두 배로" contact="jinhyuk2me@gmail.com · 플랫폼팀" />
+<EndSlide appearance="brand" lockup={<Lockup variant="inline" tone="white" height={24} />}
+  message="다음 단계는 파일럿 한 동입니다." contact="platform@example.com" />
 ```
+`lockup`은 표지와 같은 슬롯이고 메시지와 연락처 **사이**에 앉는다. 연락처 줄 안에
+인라인으로 엮지 않는다 — 인라인 락업은 최소 슬롯 폭 156px에 최소 높이 20px이라
+caption 활자 옆에서는 안 들어가거나 글자를 압도한다.
 `message`는 Q&A 동안 화면에 남는 한 줄(display 스케일). 논증하는 막지는 늦게 도착한
 콘텐츠 슬라이드다 — 주장 잔향 또는 감사, 덱이 결정.
 
