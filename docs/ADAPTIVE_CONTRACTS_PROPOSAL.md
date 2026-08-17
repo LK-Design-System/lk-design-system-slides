@@ -55,9 +55,12 @@ Stat의 `--lk-stat-*` 훅은 업스트림 main에 심었고(75b9e3b2, Table·Tim
 지표가 2개 이하면 수치가 한 단 올라간다: value가 title 단(40px) →
 **display 단(56px)**. 3개 이상은 현행 유지.
 
-- 구현은 seam 오버라이드다: figures 컨테이너 스코프에서
-  `--editorial-value-*`를 `--slides-display-*`로 재지정 — 랭크 재지정이지
-  임의 크기가 아니므로 프리셋 전환이 그대로 전파된다.
+- 구현은 훅 재지정이다: figures 컨테이너 스코프에서 Core Stat의
+  `--lk-stat-value-*`를 `--slides-display-*`로 재지정 — 랭크 재지정이지
+  임의 크기가 아니므로 프리셋 전환이 그대로 전파된다. (첫 시도는
+  `--editorial-value-*`였는데, 그 seam은 KeyFigure의 수치에 닿지 않는다 —
+  수치는 Core Stat이 그리고 Stat은 display2 직결이었다. 그래서 훅이
+  업스트림에 필요했고, 이것이 네 번째 반복이 된 경위다.)
 - **하향 단은 만들지 않는다**: title(40)과 body(24) 사이에 램프 단이 없고,
   5개 이상은 flexWrap이 이미 흡수한다. 임의 calc 크기는 램프 밖이라 기각.
 - SmartArt("2개면 크게")의 절반만 채택하는 셈이며, 이는 램프 규율이 우선이기
