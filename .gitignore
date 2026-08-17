@@ -2,3 +2,6 @@ node_modules
 storybook-static
 *.log
 qa/out
+
+# Visual snapshot diffs are build output; the baselines themselves are committed.
+.visual-diff/

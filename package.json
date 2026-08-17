@@ -22,13 +22,16 @@
     "build:storybook": "storybook build",
     "check:story-play": "node scripts/check-story-play.mjs",
     "check:style-ownership": "node scripts/check-style-ownership.mjs",
-    "check:storybook": "npm run check:style-ownership && npm run check:skill-shipping && npm run check:catalogue && npm run build:storybook && npm run check:story-play && npm run check:slide-overflow && npm run check:deck-content",
+    "check:storybook": "npm run check:style-ownership && npm run check:skill-shipping && npm run check:catalogue && npm run build:storybook && npm run check:story-play && npm run check:slide-overflow && npm run check:deck-content && npm run check:figure-fill && npm run check:visual-snapshot",
     "check:slide-overflow": "node scripts/check-slide-overflow.mjs",
     "generate:catalogue": "node scripts/generate-catalogue.mjs",
     "check:catalogue": "node scripts/generate-catalogue.mjs --check",
     "check:deck-content": "node scripts/check-deck-content.mjs",
     "qa": "node qa/run.mjs",
-    "check:skill-shipping": "node scripts/check-skill-shipping.mjs"
+    "check:skill-shipping": "node scripts/check-skill-shipping.mjs",
+    "check:figure-fill": "node scripts/check-figure-fill.mjs",
+    "check:visual-snapshot": "node scripts/check-visual-snapshot.mjs",
+    "update:visual-snapshot": "node scripts/check-visual-snapshot.mjs --update"
   },
   "peerDependencies": {
     "@lk-design-system/lds-core": ">=0.1.0-rc.69.27 <0.2.0",
@@ -38,17 +41,19 @@
     "react-dom": ">=18 <20"
   },
   "devDependencies": {
+    "@lk-design-system/lds-core": "file:vendor/lk-design-system-lds-core-0.1.0-rc.69.27.tgz",
+    "@lk-design-system/lds-product": "file:vendor/lk-design-system-lds-product-0.1.0-rc.69.27.tgz",
     "@lk-design-system/lds-theme": "file:vendor/lk-design-system-lds-theme-0.1.0-rc.69.27.tgz",
     "@playwright/test": "1.61.1",
     "@storybook/addon-a11y": "10.4.6",
     "@storybook/addon-docs": "10.4.6",
     "@storybook/react-vite": "10.4.6",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "storybook": "10.4.6",
-    "vite": "8.1.3",
-    "@lk-design-system/lds-core": "file:vendor/lk-design-system-lds-core-0.1.0-rc.69.27.tgz",
-    "@lk-design-system/lds-product": "file:vendor/lk-design-system-lds-product-0.1.0-rc.69.27.tgz"
+    "vite": "8.1.3"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",

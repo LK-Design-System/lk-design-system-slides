@@ -133,6 +133,9 @@ make-slide에서 가져와 이 시스템의 계약에 맞게 번안했다. 둘 �
 ✓ StatementSlide는 덱에 최대 2장                    (check:deck-content)
 ✓ 막지 message가 감사가 아니라 잔향이다               (check:deck-content)
 ✓ 캔버스를 넘치는 슬라이드가 없다 (덱 전 장 순회)      (check:slide-overflow)
+✓ 콘텐츠가 하단 크롬 밴드를 침범하지 않는다            (check:deck-content)
+✓ FigureSlide 도판이 부여 폭의 70% 이상을 그린다        (check:figure-fill)
+✓ 대표 슬라이드 렌더가 베이스라인과 일치한다           (check:visual-snapshot)
 ✓ (저장소 안에서 저작할 때) npm run check:storybook 통과 — 위 전부 포함
 ```
 
