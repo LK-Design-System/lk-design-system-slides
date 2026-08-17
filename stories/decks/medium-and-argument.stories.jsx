@@ -230,7 +230,7 @@ export const Deck = {
           { id: 'play', name: 'play 단언', target: '전건 통과', actual: '35 / 35', status: 'met' },
           { id: 'fit', name: '캔버스 초과', target: '0건', actual: '0 / 35', status: 'met' },
         ]}
-        caption="네 관문 모두 Pages 배포 이전에 선다"
+        caption="실행 두 관문은 headless Chromium이 렌더한 캔버스 위에서 선다"
         source="출처: lk-design-system-slides CI 실행 기록, 2026-07"
         foot="LDS 플랫폼 · 2026 Q3"
         notes="실행 둘. 초과 검사는 play가 못 잡는 걸 잡는다 — 잘린 슬라이드도 렌더는 멀쩡하고 단언도 통과하기 때문이다. [~1분]"
