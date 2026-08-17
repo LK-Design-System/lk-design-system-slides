@@ -25,7 +25,7 @@ import { ContentSlide } from './ContentSlide.jsx';
  */
 const PANEL_COUNT = 3;
 
-export function TriptychSlide({ panels = [], style, ...rest }) {
+export function TriptychSlide({ panels = [], anchor, style, ...rest }) {
   const resolved = panels.slice(0, PANEL_COUNT);
   let emphasisTaken = false;
   const marked = resolved.map((panel) => {
@@ -35,7 +35,7 @@ export function TriptychSlide({ panels = [], style, ...rest }) {
   });
 
   return (
-    <ContentSlide data-lds-triptych-slide data-panel-count={marked.length} style={style} {...rest}>
+    <ContentSlide data-lds-triptych-slide data-panel-count={marked.length} anchor={anchor} style={style} {...rest}>
       <div
         data-slide-triptych
         style={{
@@ -45,6 +45,10 @@ export function TriptychSlide({ panels = [], style, ...rest }) {
           height: '100%',
           minHeight: 0,
           alignItems: 'start',
+          // Same as SplitSlide: a filling grid leaves the region's centring
+          // nothing to move, so the row track is what rides down. Panels keep
+          // their shared top line.
+          alignContent: anchor === 'center' ? 'center' : 'stretch',
         }}
       >
         {marked.map((panel, order) => (

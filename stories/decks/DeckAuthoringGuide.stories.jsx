@@ -146,6 +146,10 @@ export const HeaderContract = {
       eyebrow="운영 지표"
       title="복구 시간 절반 단축"
       governing="평균 복구 시간이 작년 동기 대비 절반으로 줄었다."
+      // Two bullets under a header leave most of the region dead at top
+      // anchor. The example authors copy should not be the one modelling
+      // the defect dead-bottom was written to catch.
+      anchor="center"
     >
       <ul style={{ margin: 0, paddingLeft: '1.2em', display: 'grid', gap: 'var(--space-4)' }}>
         <li>자동 롤백 도입 — 수동 개입 구간 제거</li>

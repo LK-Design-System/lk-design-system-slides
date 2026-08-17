@@ -36,7 +36,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
-import { closeServer, startStaticServer } from './_storybook-static.mjs';
+import { closeServer, loadStoryIndex, openStorybook } from './_storybook-static.mjs';
 
 const root = process.cwd();
 const staticDir = path.join(root, 'storybook-static');
@@ -141,7 +141,7 @@ async function auditDeck(page, origin, id) {
 }
 
 async function main(origin) {
-  const index = JSON.parse(await readFile(path.join(staticDir, 'index.json'), 'utf8'));
+  const index = await loadStoryIndex(origin, staticDir);
   const decks = Object.values(index.entries)
     .filter((entry) => entry.type === 'story' && entry.id.startsWith('decks-'))
     .map((entry) => entry.id)
@@ -176,7 +176,7 @@ async function main(origin) {
   }
 }
 
-const staticServer = await startStaticServer(staticDir);
+const staticServer = await openStorybook(staticDir);
 try {
   await main(staticServer.origin);
 } finally {

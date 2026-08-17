@@ -222,6 +222,7 @@ export const Deck = {
         eyebrow="결론"
         title="결론 및 요청 사항"
         governing="지연 민감 테이블 5종의 부분 이관 파일럿 승인을 요청드립니다."
+        anchor="center"
         ratio="1:1"
         left={
           <div>

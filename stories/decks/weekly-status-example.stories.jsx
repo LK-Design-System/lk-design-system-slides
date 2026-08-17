@@ -17,7 +17,10 @@ const meta = { title: 'Decks/주간 업무현황 예시' };
 export default meta;
 
 const FOOT = 'LKR 플랫폼 · 8월 3주차';
-const WEEKS = ['8월 3주차', '8월 4주차', '9월 1주차'];
+// 상위 헤더가 생기면서 열 라벨에서 달을 뺀다 — 가장 좁은 열에 가장 많이
+// 반복되는 단어를 쓰고 있던 것이 B3의 실물 근거였다.
+const WEEKS = ['3주차', '4주차', '1주차'];
+const WEEK_GROUPS = [{ label: '8월', span: 2 }, { label: '9월', span: 1 }];
 
 export const Deck = {
   name: '주간 업무현황 (열람 예시 2호)',
@@ -104,6 +107,7 @@ export const Deck = {
         <WeekSpanRows
           label="향후 업무 계획"
           weeks={WEEKS}
+          groups={WEEK_GROUPS}
           rows={[
             { name: '화재 검출', work: '데이터셋 라벨링 및 1차 학습', from: 0, to: 2, continues: true },
             { name: '쓰러짐 검출', work: '반사광 보완 재검증 및 종료', from: 0, to: 1, continues: false },

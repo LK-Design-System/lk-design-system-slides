@@ -57,3 +57,41 @@ export async function closeServer(server) {
   if (!server) return;
   await new Promise((resolve) => server.close(resolve));
 }
+
+/*
+ * One seam that turns every runtime gate into a consumer tool
+ * (COMPLETENESS_AUDIT G1).
+ *
+ * The gates measure a RENDERED deck, not a source tree, so nothing about them
+ * requires the Storybook to be local — only the origin they fetch from. With
+ * `LDS_SLIDES_ORIGIN` set, they skip the static server and audit whatever is at
+ * that URL: a colleague's deployed Pages site, a preview build, a consumer
+ * repository's own Storybook. `bin/lds-slides-check.mjs` is a thin wrapper over
+ * exactly that.
+ *
+ * The alternative was a CLI that reimplemented the rules, which is how a rule
+ * and its copy start disagreeing — the thing this repository spends its
+ * duplication budget avoiding everywhere else.
+ */
+export async function openStorybook(staticDir) {
+  const external = process.env.LDS_SLIDES_ORIGIN;
+  if (external) {
+    return { server: null, origin: external.replace(/\/+$/, ''), external: true };
+  }
+  return { ...await startStaticServer(staticDir), external: false };
+}
+
+export async function loadStoryIndex(origin, staticDir) {
+  if (process.env.LDS_SLIDES_ORIGIN) {
+    const response = await fetch(`${origin}/index.json`);
+    if (!response.ok) {
+      throw new Error(
+        `${origin}/index.json is not reachable (${response.status}). `
+        + 'Point LDS_SLIDES_ORIGIN at the root of a built Storybook.',
+      );
+    }
+    return response.json();
+  }
+  const { readFile } = await import('node:fs/promises');
+  return JSON.parse(await readFile(path.join(staticDir, 'index.json'), 'utf8'));
+}

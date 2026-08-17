@@ -276,6 +276,35 @@ PDF가 필요한 사람 앞에 있는 것이 소스 파일이 아니라 URL이�
 Storybook 데코레이터), 컴포넌트는 조상의 패딩을 되돌릴 수 없으므로 그것만은
 계약이고 `check:print-sheet`가 집행한다.
 
+## 덱 하나를 보내기 — 공유 URL
+
+덱은 배포된 Storybook 안의 **한 스토리**이고, 주소는 세 가지다:
+
+```
+<storybook>/iframe.html?id=<deck-story-id>                 덱만 (크롬 없는 캔버스)
+<storybook>/iframe.html?id=<deck-story-id>#7               7장부터
+<storybook>/iframe.html?id=<deck-story-id>&lds-print=1     인쇄 시트
+```
+
+`iframe.html`인 이유는 그것이 **덱만** 담기 때문이다 — `?path=/story/...`는 Storybook
+매니저(사이드바·툴바)를 함께 열어서, 받는 사람에게 덱이 아니라 카탈로그를 보내게 된다.
+`#7`은 슬라이드가 인쇄하는 페이지 번호와 같은 1-기반이라 "13페이지 봐주세요"가 그대로
+링크가 된다.
+
+## 소비 레포에서 게이트 돌리기
+
+게이트는 소스 트리가 아니라 **렌더된 덱**을 잰다. 로컬일 필요가 없다는 뜻이다:
+
+```bash
+npx lds-slides-check https://acme.github.io/decks
+```
+
+URL은 스토리 주소가 아니라 빌드된 Storybook의 루트(`index.json`이 있는 곳)다.
+`--only=overflow,content`로 골라 돌린다. CLI가 규칙을 다시 구현하지 않는 것이 핵심이다 —
+`LDS_SLIDES_ORIGIN`이 이 저장소의 게이트 스크립트를 그대로 남의 Storybook에 겨눈다.
+규칙과 그 사본이 갈라질 자리가 없다. Chromium이 필요하므로 Playwright는 optional
+dependency이고, 없으면 설치 방법을 알려주고 멈춘다.
+
 ## 다음 단계
 
 - 레이아웃 어휘: mckinsey-pptx 카탈로그의 주요 패턴은 매핑 완료(구조·stat·도판·비교·

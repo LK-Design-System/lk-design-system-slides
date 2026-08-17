@@ -46,6 +46,10 @@ export function SlideSurface({
   // in this element's own scope, so every layout reading those follows without
   // knowing it moved (COMPLETENESS_AUDIT D1).
   appearance,
+  // Document grade ("대외비", "내부용") and a standing brand mark. Usually set
+  // once on the deck; these props are the per-slide override.
+  classification,
+  mark,
   scale: scaleMode = 'auto',
   // Speaker notes ride on the slide element so DeckViewer can read them off
   // its own children, but they must never reach the canvas: the surface the
@@ -67,6 +71,13 @@ export function SlideSurface({
 }) {
   const medium = React.useContext(DeckMediumContext);
   const effectivePreset = preset ?? medium?.preset;
+  // Document grade and standing mark are DECK properties that print on every
+  // page (COMPLETENESS_AUDIT D2). Set per slide they would eventually be
+  // missing from one, and a classification missing from one page is the whole
+  // marking failing — so the deck states them once and every surface obeys,
+  // with a per-slide override only as an escape hatch.
+  const resolvedClassification = classification ?? medium?.classification;
+  const resolvedMark = mark ?? medium?.mark;
   const frameRef = React.useRef(null);
   const [scale, setScale] = React.useState(null);
   const position = React.useContext(DeckPositionContext);
@@ -167,6 +178,29 @@ export function SlideSurface({
             {source}
           </p>
         )}
+        {resolvedClassification && (
+          // Top-right, out of flow like every other piece of chrome. A grade
+          // marking sits at the top because that is where a reader checks it
+          // before reading, and it is set in cautionary tone rather than as a
+          // decorative badge — this is the one label on the canvas that must
+          // not be mistaken for content or for a status pill.
+          <p
+            data-slide-classification
+            style={{
+              position: 'absolute',
+              top: 'var(--space-6)',
+              right: 'var(--slides-safe-x)',
+              margin: 0,
+              fontSize: 'var(--slides-fine-size)',
+              lineHeight: 'var(--slides-fine-line)',
+              letterSpacing: '0.08em',
+              fontWeight: 'var(--fw-semibold)',
+              color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
+            }}
+          >
+            {resolvedClassification}
+          </p>
+        )}
         {showFooter && (
           // Out of flow on purpose. The footer sits in the bottom safe-area
           // band, below where content stops, so adding it re-flows nothing and
@@ -194,7 +228,17 @@ export function SlideSurface({
               color: 'var(--color-semantic-label-alternative)',
             }}
           >
-            <span data-slide-foot-label>{foot}</span>
+            <span
+              data-slide-foot-label
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}
+            >
+              {/* A standing mark in the chrome — the logo a Korean report
+                  carries on every page. It comes from the deck, not the slide:
+                  a mark set per slide is a mark that will be missing on one.
+                  The slot takes a node, so the mark stays Theme's. */}
+              {resolvedMark && <span data-slide-mark style={{ display: 'inline-flex' }}>{resolvedMark}</span>}
+              {foot}
+            </span>
             {position && (
               <span data-slide-page style={{ fontVariantNumeric: 'tabular-nums' }}>
                 <span data-slide-page-current>{pad(position.page)}</span>

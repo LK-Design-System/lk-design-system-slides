@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
-import { closeServer, startStaticServer } from './_storybook-static.mjs';
+import { closeServer, loadStoryIndex, openStorybook } from './_storybook-static.mjs';
 
 // Content discipline, mechanised — the layer of content-rules.md a machine can
 // hold. The ghost-deck test (does the governing chain argue?) and layout-fit
@@ -17,6 +17,14 @@ import { closeServer, startStaticServer } from './_storybook-static.mjs';
 //   title-noun-final   Titles are noun-ended labels; the sentence lives in
 //                      `governing`. (한국 장표 규약; enforced repo-wide since the
 //                      Editorial worked examples.)
+//   title-rule-unenforced
+//                      A title with no Hangul in it. The noun-final rule is a
+//                      Korean one and cannot judge English, so the deck is told
+//                      the rule did not run rather than passing in silence —
+//                      unenforced must never read as compliant
+//                      (COMPLETENESS_AUDIT E3). An English deck profile is a
+//                      judgement nobody has made yet; when one is wanted this
+//                      is the pin that will be removed.
 //   governing-required A content slide with no claim is a slide with no reason.
 //                      (content-rules.md §2; Alley's assertion-evidence: every
 //                      body slide opens with a sentence-assertion headline.)
@@ -83,6 +91,25 @@ import { closeServer, startStaticServer } from './_storybook-static.mjs';
 //                      footer is excluded (out-of-flow chrome), and layouts
 //                      without a content region (Title/Section/Statement/End)
 //                      are exempt: their whitespace is the design.
+//   dead-bottom        A top-anchored slide leaving more than 40% of its
+//                      CONTENT REGION empty below the painted content. The
+//                      sibling of canvas-under-fill and deliberately not a
+//                      knob on it: that rule scores from the canvas top, so
+//                      the header pads the number and a slide painting a
+//                      fifth of its region measured 54% and passed. It also
+//                      asks a different question — canvas-under-fill asks
+//                      whether the DECK has enough to say (cure: merge
+//                      slides, so it needs three to fire), this asks whether
+//                      one slide is using the region it was granted (cure:
+//                      anchor="center", so one is enough). Threshold from the
+//                      committed decks, not taste: healthy top-anchored
+//                      slides leave 10–24% dead, the two offenders left 64%
+//                      and 79%. Centred slides are exempt by construction —
+//                      their dead space is split top and bottom on purpose,
+//                      and the largest measured 37% below, which is the rule
+//                      working rather than a violation. Read decks are exempt
+//                      with the rest of the fill discipline: a top-heavy page
+//                      is document flow.
 //
 // Scope: stories under Decks/ only. Component stories demonstrate contracts —
 // sometimes by violating them on purpose — so the discipline binds the decks,
@@ -142,26 +169,29 @@ async function auditStory(page, origin, id) {
     // a flex:1 region stretches to the safe area however empty it is. The
     // chrome band (footer + source line) is out-of-flow and excluded — it is
     // the thing content is measured AGAINST, not content itself.
-    const paintedBottomOf = (surface) => {
+    const paintedBoundsOf = (root) => {
+      let top = null;
       let bottom = null;
-      const walker = document.createTreeWalker(surface, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+      const take = (rect) => {
+        if (rect.height <= 0) return;
+        top = Math.min(top ?? Infinity, rect.top);
+        bottom = Math.max(bottom ?? -Infinity, rect.bottom);
+      };
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
       for (let node = walker.currentNode; node; node = walker.nextNode()) {
         if (node.nodeType === 1) {
           if (node.closest('[data-slide-foot], [data-slide-source]')) continue;
-          if (/^(svg|IMG|CANVAS|VIDEO)$/i.test(node.tagName)) {
-            const rect = node.getBoundingClientRect();
-            if (rect.height > 0) bottom = Math.max(bottom ?? -Infinity, rect.bottom);
-          }
+          if (/^(svg|IMG|CANVAS|VIDEO)$/i.test(node.tagName)) take(node.getBoundingClientRect());
           continue;
         }
         if (!node.textContent.trim() || node.parentElement?.closest('[data-slide-foot], [data-slide-source]')) continue;
         const range = document.createRange();
         range.selectNodeContents(node);
-        const rect = range.getBoundingClientRect();
-        if (rect.height > 0) bottom = Math.max(bottom ?? -Infinity, rect.bottom);
+        take(range.getBoundingClientRect());
       }
-      return bottom;
+      return bottom === null ? null : { top, bottom };
     };
+    const paintedBottomOf = (surface) => paintedBoundsOf(surface)?.bottom ?? null;
     const paintedFill = (surface) => {
       const surfaceRect = surface.getBoundingClientRect();
       const bottom = paintedBottomOf(surface);
@@ -174,8 +204,18 @@ async function auditStory(page, origin, id) {
 
       // title-noun-final — a title ending in a Korean predicate is a sentence
       // wearing a label's clothes; the sentence belongs in governing.
+      //
+      // The rule is Korean, and until now that meant an English deck passed it
+      // in SILENCE — unenforced reads exactly like compliant, which is the one
+      // thing a gate must never do (COMPLETENESS_AUDIT E3). A title with no
+      // Hangul in it is now reported as unenforced instead: the deck still
+      // builds, but nobody can mistake "no findings" for "checked".
       for (const node of surface.querySelectorAll('[data-slide-title]')) {
         const title = clean(node.textContent);
+        if (!/[가-힣]/.test(title)) {
+          if (title) flag('title-rule-unenforced', `"${title}" — 한국어 규칙이 적용되지 않는 제목이다 (영어 덱 프로파일 미정)`);
+          continue;
+        }
         if (/(?:[다요])\s*[.!?]?$/.test(title)) {
           flag('title-noun-final', `"${title}" — 명사형으로 닫아야 한다`);
         }
@@ -215,11 +255,39 @@ async function auditStory(page, origin, id) {
 
       // canvas-under-fill — counted per slide here, judged per deck below:
       // one sparse slide is a breathing beat, three are a pattern.
-      if (content && profile.underFill) {
+      if (content && profile.fillDiscipline) {
         const fill = paintedFill(surface);
         if (fill < 0.5) {
           const title = clean(surface.querySelector('[data-slide-title]')?.textContent ?? '(무제)');
           underFilled.push(`${at} "${title}" (${Math.round(fill * 100)}%)`);
+        }
+      }
+
+      // dead-bottom — the SAME measurement, framed against the content region
+      // instead of the canvas, and judged per slide. The two are not one rule
+      // with two knobs: canvas-under-fill asks "does this deck have enough to
+      // say" and is cured by merging slides, while this asks "is the content
+      // region being used" and is cured by one prop. Measuring from the canvas
+      // top folds the header into the score, which is why a slide painting a
+      // fifth of its region still scored 54% and passed.
+      //
+      // The exemption is the OUTCOME, not the declaration: emptiness split top
+      // and bottom is a centred slide, emptiness piled at the bottom is not —
+      // whatever the anchor prop says. Reading `data-slide-anchor` instead cost
+      // us this exact bug: `anchor="center"` on a SplitSlide is a no-op (its
+      // pane grid already fills the region), so the prop silenced the gate
+      // while the dead band stayed on the canvas. A gate a one-line prop can
+      // switch off is a gate that certifies the defect.
+      if (content && profile.fillDiscipline) {
+        const region = content.getBoundingClientRect();
+        const painted = paintedBoundsOf(content);
+        if (painted && region.height > 0) {
+          const deadBottom = (region.bottom - painted.bottom) / region.height;
+          const deadTop = (painted.top - region.top) / region.height;
+          if (deadBottom > 0.4 && deadBottom > deadTop * 2) {
+            const title = clean(surface.querySelector('[data-slide-title]')?.textContent ?? '(무제)');
+            flag('dead-bottom', `"${title}" — 콘텐츠 영역 아래 ${Math.round(deadBottom * 100)}%가 빈 채로 쏠림 (위 ${Math.round(deadTop * 100)}%) — 본문을 세로 중앙에 두거나 더 채운다`);
+          }
         }
       }
 
@@ -328,8 +396,8 @@ async function auditStory(page, origin, id) {
     // pages are document flow, not a defect).
     const kind = deck?.getAttribute('data-lds-deck-kind') ?? 'present';
     const profile = kind === 'read'
-      ? { governingRequired: false, bodyCap: 300, underFill: false }
-      : { governingRequired: true, bodyCap: 140, underFill: true };
+      ? { governingRequired: false, bodyCap: 300, fillDiscipline: false }
+      : { governingRequired: true, bodyCap: 140, fillDiscipline: true };
     const surfacesNow = () => [...document.querySelectorAll('[data-lds-slide-surface]')]
       .filter((node) => !node.closest('[data-presenter-next-slide]'));
 
@@ -382,7 +450,7 @@ async function loadKnown() {
 }
 
 async function main(origin) {
-  const index = JSON.parse(await readFile(path.join(staticDir, 'index.json'), 'utf8'));
+  const index = await loadStoryIndex(origin, staticDir);
   const stories = Object.values(index.entries)
     .filter((entry) => entry.type === 'story')
     // The discipline binds decks; component stories may violate on purpose.
@@ -482,7 +550,7 @@ async function main(origin) {
   if (problems.length > 0) throw new Error(problems.join('\n\n'));
 }
 
-const staticServer = await startStaticServer(staticDir);
+const staticServer = await openStorybook(staticDir);
 try {
   await main(staticServer.origin);
 } catch (error) {

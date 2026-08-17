@@ -98,6 +98,7 @@ export const Deck = {
         eyebrow="확장 방식"
         title="자매 저장소 패턴"
         governing="LDS는 도메인마다 독립 저장소를 두고 고정된 Core를 소비하는 방식으로 확장해 왔다."
+        anchor="center"
         foot="LDS 플랫폼 · 2026 Q3"
         notes="Robotics가 이 패턴의 첫 사례였다. 3D, Slides, Editorial이 같은 틀을 따랐다. 핵심은 Core를 고정 버전으로 소비한다는 점 — 그래서 상류 변경이 하류를 조용히 흔들지 않는다. [~1분 30초]"
       >
@@ -174,6 +175,7 @@ export const Deck = {
         eyebrow="캔버스"
         title="설계 픽셀"
         governing="캔버스가 고정 논리 크기라 모든 px가 표시 크기와 무관한 설계 px다."
+        anchor="center"
         foot="LDS 플랫폼 · 2026 Q3"
         notes="유동 박스였을 때는 박스만 줄고 타입은 고정이라, 토큰이 약속한 투사 하한이 정확히 한 폭에서만 참이었다. 지금은 캔버스를 통째로 스케일한다. 작성자가 본 구성이 강당에서 나오는 구성이다. [~1분 30초]"
       >

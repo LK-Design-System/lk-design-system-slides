@@ -91,6 +91,12 @@ jobs:
       - name: Check deck print sheets
         run: npm run check:print-sheet
 
+      # Deck assets: resolution floor, weight ceiling, no orphans. Static and
+      # cheap, and every failure it catches is one a fast laptop with a warm
+      # cache hides from the author.
+      - name: Check deck assets
+        run: npm run check:deck-assets
+
       # The cheap net over everything the measuring gates do not know to look
       # for. Baselines are committed; a diff here means someone must look.
       - name: Check visual snapshots

@@ -60,6 +60,12 @@
           "name": "appearance"
         },
         {
+          "name": "classification"
+        },
+        {
+          "name": "mark"
+        },
+        {
           "name": "notes"
         },
         {
@@ -76,8 +82,10 @@
       "dataAttributes": [
         "data-lds-slide-frame",
         "data-lds-slide-surface",
+        "data-slide-classification",
         "data-slide-foot",
         "data-slide-foot-label",
+        "data-slide-mark",
         "data-slide-page",
         "data-slide-page-current",
         "data-slide-source",
@@ -174,6 +182,9 @@
           "default": "'1:1'"
         },
         {
+          "name": "anchor"
+        },
+        {
           "name": "left"
         },
         {
@@ -195,6 +206,9 @@
         {
           "name": "panels",
           "default": "[]"
+        },
+        {
+          "name": "anchor"
         }
       ],
       "dataAttributes": [
@@ -627,6 +641,12 @@
           "name": "deepLink"
         },
         {
+          "name": "classification"
+        },
+        {
+          "name": "mark"
+        },
+        {
           "name": "label",
           "default": "'슬라이드 덱'"
         },
@@ -713,6 +733,12 @@
         },
         {
           "name": "preset"
+        },
+        {
+          "name": "classification"
+        },
+        {
+          "name": "mark"
         },
         {
           "name": "label",

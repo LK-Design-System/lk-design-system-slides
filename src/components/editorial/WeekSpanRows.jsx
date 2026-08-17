@@ -27,7 +27,10 @@ import React from 'react';
 const SHAFT = 10;
 const HEAD_HALF = 10;
 const HEAD_LENGTH = 16;
-export function WeekSpanRows({ weeks = [], rows = [], label, style, ...rest }) {
+export function WeekSpanRows({
+  weeks = [], groups = [], rows = [], label, style, ...rest
+}) {
+  const headerRow = groups.length > 0 ? 2 : 1;
   const cellPad = 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)';
   const band = 'var(--color-semantic-fill-alternative)';
   const tick = '1px solid var(--color-semantic-line-normal-neutral, var(--color-semantic-line-normal-normal))';
@@ -47,12 +50,66 @@ export function WeekSpanRows({ weeks = [], rows = [], label, style, ...rest }) {
       }}
       {...rest}
     >
+      {/* Optional super-header over the week columns: 8월 | 9월 above 3주차 |
+          4주차 | 1주차. Korean report tables carry this constantly, and the
+          alternative is what the pilot deck actually did — repeat the month in
+          every column label, spending the narrowest columns on the most
+          repeated word (COMPLETENESS_AUDIT B3). Spans are DECLARED, not derived
+          from label prefixes: parsing "8월 3주차" would be a guess that breaks
+          the first time a period is named differently, and a wrong span is a
+          table that lies about when work happened. A group whose spans do not
+          cover the axis is reported rather than silently short-drawn. */}
+      {groups.length > 0 && (() => {
+        const spanned = groups.reduce((sum, group) => sum + Math.max(Number(group.span) || 0, 0), 0);
+        const cells = groups.map((group, order) => {
+          const start = groups.slice(0, order).reduce((sum, previous) => sum + (Number(previous.span) || 0), 0);
+          return (
+            <div
+              key={group.id ?? group.label ?? order}
+              role="columnheader"
+              data-week-group={order + 1}
+              style={{
+                gridRow: 1,
+                gridColumn: `${start + 3} / span ${Math.max(Number(group.span) || 0, 1)}`,
+                padding: '0 var(--editorial-cell-pad-inline) var(--space-1)',
+                textAlign: 'center',
+                fontSize: 'var(--editorial-caption-size)',
+                lineHeight: 'var(--editorial-caption-line)',
+                letterSpacing: 'var(--editorial-caption-spacing)',
+                color: 'var(--color-semantic-label-alternative)',
+                borderLeft: tick,
+              }}
+            >
+              {group.label}
+            </div>
+          );
+        });
+        if (spanned !== weeks.length) {
+          cells.push(
+            <div
+              key="group-mismatch"
+              data-week-group-mismatch
+              style={{
+                gridRow: 1,
+                gridColumn: '1 / 3',
+                padding: '0 var(--editorial-cell-pad-inline) var(--space-1)',
+                fontSize: 'var(--editorial-caption-size)',
+                lineHeight: 'var(--editorial-caption-line)',
+                color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
+              }}
+            >
+              구간 합 {spanned} ≠ 기간 {weeks.length}
+            </div>,
+          );
+        }
+        return cells;
+      })()}
       {['프로젝트', '업무 내용', ...weeks].map((head, column) => (
         <div
           key={head}
           role="columnheader"
           style={{
-            gridRow: 1,
+            gridRow: headerRow,
             gridColumn: column + 1,
             padding: cellPad,
             fontWeight: 'var(--fw-semibold)',
@@ -67,24 +124,24 @@ export function WeekSpanRows({ weeks = [], rows = [], label, style, ...rest }) {
       ))}
       {rows.map(({ name, work, from, to, continues }, row) => (
         <React.Fragment key={name}>
-          <div role="rowheader" style={{ gridRow: row + 2, gridColumn: 1, padding: cellPad, background: band, fontWeight: 'var(--fw-semibold)', color: 'var(--color-semantic-label-strong)' }}>
+          <div role="rowheader" style={{ gridRow: row + headerRow + 1, gridColumn: 1, padding: cellPad, background: band, fontWeight: 'var(--fw-semibold)', color: 'var(--color-semantic-label-strong)' }}>
             {name}
           </div>
-          <div role="cell" style={{ gridRow: row + 2, gridColumn: 2, padding: cellPad, background: band, color: 'var(--color-semantic-label-neutral)' }}>
+          <div role="cell" style={{ gridRow: row + headerRow + 1, gridColumn: 2, padding: cellPad, background: band, color: 'var(--color-semantic-label-neutral)' }}>
             {work}
           </div>
           {weeks.map((week, order) => (
             <div
               key={week}
               role="cell"
-              style={{ gridRow: row + 2, gridColumn: order + 3, background: band, borderLeft: tick }}
+              style={{ gridRow: row + headerRow + 1, gridColumn: order + 3, background: band, borderLeft: tick }}
             />
           ))}
           <div
             data-span-bar
             aria-label={`${weeks[from]}부터 ${continues ? `${weeks[to]} 이후까지 계속` : `${weeks[to]}까지`} 진행`}
             style={{
-              gridRow: row + 2,
+              gridRow: row + headerRow + 1,
               gridColumn: `${from + 3} / ${to + 4}`,
               alignSelf: 'center',
               display: 'flex',

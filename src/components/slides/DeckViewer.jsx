@@ -65,6 +65,10 @@ export function DeckViewer({
   // Runtime-only props are destructured here so the print branch does not
   // forward them onto a DOM node — paper has no fullscreen.
   deepLink,
+  // Deck-wide chrome, on BOTH branches: a printed page needs its grade marking
+  // more than a screen does, since paper is what leaves the building.
+  classification,
+  mark,
   label = '슬라이드 덱',
   notesLabel = '발표자 노트',
   overviewLabel,
@@ -78,7 +82,15 @@ export function DeckViewer({
   const [urlPrint] = React.useState(printModeFromLocation);
   if (print ?? urlPrint) {
     return (
-      <DeckPrintSheet kind={kind} preset={preset} label={label} style={style} {...rest}>
+      <DeckPrintSheet
+        kind={kind}
+        preset={preset}
+        classification={classification}
+        mark={mark}
+        label={label}
+        style={style}
+        {...rest}
+      >
         {children}
       </DeckPrintSheet>
     );
@@ -90,6 +102,8 @@ export function DeckViewer({
       kind={kind}
       preset={preset}
       deepLink={deepLink}
+      classification={classification}
+      mark={mark}
       label={label}
       notesLabel={notesLabel}
       overviewLabel={overviewLabel}
@@ -109,6 +123,11 @@ function DeckViewerRuntime({
   channel,
   kind = 'present',
   preset,
+  // Deck-wide chrome: a grade marking and a standing mark print on every page
+  // (COMPLETENESS_AUDIT D2). Stated once here so no slide can be the one that
+  // is missing them.
+  classification,
+  mark,
   deepLink = true,
   label = '슬라이드 덱',
   notesLabel = '발표자 노트',
@@ -144,7 +163,12 @@ function DeckViewerRuntime({
   const positionValue = React.useMemo(() => ({ page: index + 1, total: count }), [index, count]);
   // The deck's medium axes flow to every slide: preset as an overridable
   // default, kind for the adaptive anchor rules (ADAPTIVE_CONTRACTS_PROPOSAL).
-  const mediumValue = React.useMemo(() => ({ preset, kind }), [preset, kind]);
+  const mediumValue = React.useMemo(
+    () => ({
+      preset, kind, classification, mark,
+    }),
+    [preset, kind, classification, mark],
+  );
 
   const onKeyDown = (event) => {
     const toggleOverview = () => setShowOverview((visible) => !visible);

@@ -11,7 +11,9 @@
     "styles.css",
     "tokens",
     "catalogue.json",
-    "docs"
+    "docs",
+    "bin",
+    "scripts"
   ],
   "sideEffects": [
     "*.css",
@@ -22,7 +24,7 @@
     "build:storybook": "storybook build",
     "check:story-play": "node scripts/check-story-play.mjs",
     "check:style-ownership": "node scripts/check-style-ownership.mjs",
-    "check:storybook": "npm run check:style-ownership && npm run check:skill-shipping && npm run check:catalogue && npm run build:storybook && npm run check:story-play && npm run check:slide-overflow && npm run check:deck-content && npm run check:figure-fill && npm run check:visual-snapshot",
+    "check:storybook": "npm run check:style-ownership && npm run check:skill-shipping && npm run check:catalogue && npm run build:storybook && npm run check:story-play && npm run check:slide-overflow && npm run check:deck-content && npm run check:figure-fill && npm run check:deck-assets && npm run check:visual-snapshot",
     "check:slide-overflow": "node scripts/check-slide-overflow.mjs",
     "generate:catalogue": "node scripts/generate-catalogue.mjs",
     "check:catalogue": "node scripts/generate-catalogue.mjs --check",
@@ -33,7 +35,8 @@
     "check:visual-snapshot": "node scripts/check-visual-snapshot.mjs",
     "update:visual-snapshot": "node scripts/check-visual-snapshot.mjs --update",
     "export:pdf": "node scripts/export-pdf.mjs",
-    "check:print-sheet": "node scripts/check-print-sheet.mjs"
+    "check:print-sheet": "node scripts/check-print-sheet.mjs",
+    "check:deck-assets": "node scripts/check-deck-assets.mjs"
   },
   "peerDependencies": {
     "@lk-design-system/lds-core": ">=0.1.0-rc.69.28 <0.2.0",
@@ -63,5 +66,11 @@
   },
   "allowScripts": {
     "esbuild@0.28.1": true
+  },
+  "bin": {
+    "lds-slides-check": "./bin/lds-slides-check.mjs"
+  },
+  "optionalDependencies": {
+    "@playwright/test": "1.61.1"
   }
 }

@@ -62,6 +62,7 @@ const SUBJECTS = [
   { name: 'end-slide', id: 'slides-end-slide--default' },
   { name: 'exhibit-row-fourfold', id: 'editorial-exhibit-row--four-fold' },
   { name: 'week-span-rows', id: 'editorial-week-span-rows--default' },
+  { name: 'week-span-rows-grouped', id: 'editorial-week-span-rows--grouped-periods' },
   { name: 'deck-present-seam-diagram', id: 'decks-매체와-논증의-분리--deck', advance: 9 },
   // The only callout on a real (scaled) slide — the case component stories
   // cannot represent, and where the seat drifted from its anchor unseen.

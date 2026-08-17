@@ -15,11 +15,11 @@ import { ContentSlide } from './ContentSlide.jsx';
  */
 const RATIOS = { '1:1': [1, 1], '2:1': [2, 1], '1:2': [1, 2] };
 
-export function SplitSlide({ ratio = '1:1', left, right, style, ...rest }) {
+export function SplitSlide({ ratio = '1:1', anchor, left, right, style, ...rest }) {
   const [a, b] = RATIOS[ratio] ?? RATIOS['1:1'];
 
   return (
-    <ContentSlide data-lds-split-slide data-slide-ratio={ratio} style={style} {...rest}>
+    <ContentSlide data-lds-split-slide data-slide-ratio={ratio} anchor={anchor} style={style} {...rest}>
       <div
         data-slide-split
         style={{
@@ -29,6 +29,13 @@ export function SplitSlide({ ratio = '1:1', left, right, style, ...rest }) {
           height: '100%',
           minHeight: 0,
           alignItems: 'start',
+          // The pane grid fills the region, so the region's own centring has
+          // nothing left to move — `anchor="center"` was silently a no-op here
+          // until this line. Moving the ROW TRACK is what centres the pair;
+          // centring the ITEMS instead would let two panes of different length
+          // drift apart, and a comparison's two columns must start on one line
+          // (which is what alignItems: start is for).
+          alignContent: anchor === 'center' ? 'center' : 'stretch',
         }}
       >
         <div data-slide-pane="left" style={{ minWidth: 0 }}>

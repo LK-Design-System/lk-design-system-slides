@@ -66,13 +66,22 @@ export function DeckPrintSheet({
   children,
   kind = 'present',
   preset,
+  // The grade marking matters more on paper than on screen: paper is the copy
+  // that leaves the building.
+  classification,
+  mark,
   label = '슬라이드 덱 (인쇄용)',
   style,
   ...rest
 }) {
   const slides = React.Children.toArray(children);
   const total = slides.length;
-  const mediumValue = React.useMemo(() => ({ preset, kind }), [preset, kind]);
+  const mediumValue = React.useMemo(
+    () => ({
+      preset, kind, classification, mark,
+    }),
+    [preset, kind, classification, mark],
+  );
 
   return (
     <div

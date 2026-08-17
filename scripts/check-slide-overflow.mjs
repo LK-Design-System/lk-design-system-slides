@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
-import { closeServer, startStaticServer } from './_storybook-static.mjs';
+import { closeServer, loadStoryIndex, openStorybook } from './_storybook-static.mjs';
 
 // Fails the build when a slide loses content off the bottom of its canvas.
 //
@@ -139,7 +139,7 @@ async function loadKnown() {
 }
 
 async function main(origin) {
-  const index = JSON.parse(await readFile(path.join(staticDir, 'index.json'), 'utf8'));
+  const index = await loadStoryIndex(origin, staticDir);
   const stories = Object.values(index.entries)
     .filter((entry) => entry.type === 'story')
     // Storybook resolves `!test` by REMOVING `test` from the index rather
@@ -234,7 +234,7 @@ async function main(origin) {
   if (problems.length > 0) throw new Error(problems.join('\n\n'));
 }
 
-const staticServer = await startStaticServer(staticDir);
+const staticServer = await openStorybook(staticDir);
 try {
   await main(staticServer.origin);
 } catch (error) {
