@@ -1,6 +1,13 @@
 {
   "schemaVersion": 1,
   "note": "Deck stories with content-discipline violations. A ratchet: check:deck-content fails on any unlisted violation, and also when a listed deck comes clean. Only ever remove entries.",
-  "count": 0,
-  "failures": []
+  "count": 1,
+  "failures": [
+    {
+      "id": "decks-주간-업무현황-파일럿--deck",
+      "rules": [
+        "body-cap"
+      ]
+    }
+  ]
 }
