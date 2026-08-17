@@ -18,10 +18,15 @@ import React from 'react';
  *   bar are correct — the bar crosses the grid, the grid does not cut the
  *   bar. (Same continuity rule as NarrativeTimeline's rail.)
  * - CONTINUATION ARROWHEAD: `continues` ends the bar in a triangle of the
- *   same token, wider than the bar, overshooting the table edge — the
- *   source idiom's arrow poking out of the table. A glyph laid on the bar
- *   was primary-on-primary and invisible.
+ *   same token, overshooting the table edge — the source idiom's arrow
+ *   poking out of the table. A glyph laid on the bar was primary-on-primary
+ *   and invisible. Proportions are the block-arrow classic: the head flares
+ *   to ~2× the shaft — a head barely wider than its shaft reads as a
+ *   blunted bar, not an arrow (user-flagged at 16px shaft / 22px head).
  */
+const SHAFT = 10;
+const HEAD_HALF = 10;
+const HEAD_LENGTH = 16;
 export function WeekSpanRows({ weeks = [], rows = [], label, style, ...rest }) {
   const cellPad = 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)';
   const band = 'var(--color-semantic-fill-alternative)';
@@ -92,9 +97,9 @@ export function WeekSpanRows({ weeks = [], rows = [], label, style, ...rest }) {
             <span
               style={{
                 flex: 1,
-                height: 16,
+                height: SHAFT,
                 background: 'var(--color-semantic-primary-normal)',
-                borderRadius: continues ? '8px 0 0 8px' : '8px',
+                borderRadius: continues ? `${SHAFT / 2}px 0 0 ${SHAFT / 2}px` : `${SHAFT / 2}px`,
               }}
             />
             {continues && (
@@ -104,9 +109,9 @@ export function WeekSpanRows({ weeks = [], rows = [], label, style, ...rest }) {
                   width: 0,
                   height: 0,
                   flex: 'none',
-                  borderTop: '11px solid transparent',
-                  borderBottom: '11px solid transparent',
-                  borderLeft: '14px solid var(--color-semantic-primary-normal)',
+                  borderTop: `${HEAD_HALF}px solid transparent`,
+                  borderBottom: `${HEAD_HALF}px solid transparent`,
+                  borderLeft: `${HEAD_LENGTH}px solid var(--color-semantic-primary-normal)`,
                 }}
               />
             )}
