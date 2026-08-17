@@ -54,6 +54,12 @@ const Details = ({ items }) => (
    `continues`는 마지막 주차 너머로 이어짐을 화살표 글리프로 말한다 —
    원본 PPT의 표 밖으로 삐져나가는 화살표의 정직한 번역. */
 const WEEKS = ['8월 2주차', '8월 3주차'];
+/* 시간 격자가 간트를 간트로 만든다: 주차 칸은 왼쪽 헤어라인(눈금)을 갖고,
+   헤더는 자기 칸 중앙에 앉는다 — 눈금 없는 바는 축 위의 스팬이 아니라
+   떠 있는 선으로 읽힌다(원본 PPT의 세로 괘선이 하던 일). 스팬 바는 칸별
+   조각을 이어붙이지 않고 grid-column으로 한 몸으로 그린다 — 무단절 규칙의
+   정직한 구현이고, 조각 이음매(안티에일리어싱 심)도 사라진다. 바가 눈금
+   위를 지나가면 격자가 바 뒤로 비치는 것이 맞다. */
 const PlanRows = ({ rows }) => (
   <div
     role="table"
@@ -66,81 +72,81 @@ const PlanRows = ({ rows }) => (
       letterSpacing: 'var(--editorial-note-spacing)',
     }}
   >
-    {['프로젝트', '업무 내용', ...WEEKS].map((head) => (
+    {['프로젝트', '업무 내용', ...WEEKS].map((head, column) => (
       <div
         key={head}
         role="columnheader"
         style={{
+          gridRow: 1,
+          gridColumn: column + 1,
           padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)',
           fontWeight: 'var(--fw-semibold)',
           color: 'var(--color-semantic-label-strong)',
           borderBottom: '1px solid var(--color-semantic-line-normal-normal)',
+          textAlign: column >= 2 ? 'center' : 'left',
+          borderLeft: column >= 2 ? '1px solid var(--color-semantic-line-normal-neutral)' : 'none',
         }}
       >
         {head}
       </div>
     ))}
-    {rows.map(({ name, work, from, to, continues }) => (
+    {rows.map(({ name, work, from, to, continues }, row) => (
       <React.Fragment key={name}>
-        <div role="rowheader" style={{ padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)', background: 'var(--color-semantic-fill-alternative)', fontWeight: 'var(--fw-semibold)', color: 'var(--color-semantic-label-strong)' }}>
+        <div role="rowheader" style={{ gridRow: row + 2, gridColumn: 1, padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)', background: 'var(--color-semantic-fill-alternative)', fontWeight: 'var(--fw-semibold)', color: 'var(--color-semantic-label-strong)' }}>
           {name}
         </div>
-        <div role="cell" style={{ padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)', background: 'var(--color-semantic-fill-alternative)', color: 'var(--color-semantic-label-neutral)' }}>
+        <div role="cell" style={{ gridRow: row + 2, gridColumn: 2, padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)', background: 'var(--color-semantic-fill-alternative)', color: 'var(--color-semantic-label-neutral)' }}>
           {work}
         </div>
-        {WEEKS.map((week, order) => {
-          const active = order >= from && order <= to;
-          const isStart = order === from;
-          const isEnd = order === to;
-          return (
-            /* 스팬 바는 칸 경계에서 끊기면 안 된다 — 끊긴 스팬은 두 개의
-               계획으로 읽힌다(타임라인 레일과 같은 연속성 규칙). 활성 칸은
-               가로 패딩을 버리고 바가 경계까지 닿게 하며, 둥근 끝은 스팬의
-               진짜 시작·끝에만 준다. */
-            <div
-              key={week}
-              role="cell"
-              aria-label={active ? `${week} 진행` : undefined}
+        {WEEKS.map((week, order) => (
+          <div
+            key={week}
+            role="cell"
+            style={{
+              gridRow: row + 2,
+              gridColumn: order + 3,
+              background: 'var(--color-semantic-fill-alternative)',
+              borderLeft: '1px solid var(--color-semantic-line-normal-neutral)',
+            }}
+          />
+        ))}
+        <div
+          aria-label={`${WEEKS[from]}부터 ${continues ? `${WEEKS[to]} 이후까지 계속` : `${WEEKS[to]}까지`} 진행`}
+          style={{
+            gridRow: row + 2,
+            gridColumn: `${from + 3} / ${to + 4}`,
+            alignSelf: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            paddingLeft: 'var(--space-3)',
+            paddingRight: continues ? 0 : 'var(--space-3)',
+            pointerEvents: 'none',
+          }}
+        >
+          <span
+            style={{
+              flex: 1,
+              height: 16,
+              background: 'var(--color-semantic-primary-normal)',
+              borderRadius: continues ? '8px 0 0 8px' : '8px',
+            }}
+          />
+          {/* 계속 화살촉 — 바와 같은 토큰의 삼각형이 바보다 넓게 벌어진다
+              (원본 PPT 화살표의 촉). 글리프를 바 위에 얹는 첫 시도는
+              primary 위 primary라 보이지 않았다. */}
+          {continues && (
+            <span
               style={{
-                padding: 'var(--editorial-cell-pad-block) 0',
-                paddingLeft: active && isStart ? 'var(--space-2)' : 0,
-                paddingRight: active && isEnd && !continues ? 'var(--space-2)' : 0,
-                background: 'var(--color-semantic-fill-alternative)',
-                display: 'flex',
-                alignItems: 'center',
+                width: 0,
+                height: 0,
+                flex: 'none',
+                borderTop: '11px solid transparent',
+                borderBottom: '11px solid transparent',
+                borderLeft: '14px solid var(--color-semantic-primary-normal)',
               }}
-            >
-              {active && (
-                <>
-                  <span
-                    style={{
-                      flex: 1,
-                      height: 12,
-                      background: 'var(--color-semantic-primary-normal)',
-                      borderRadius: `${isStart ? '6px' : 0} ${isEnd && !continues ? '6px 6px' : '0 0'} ${isStart ? '6px' : 0}`,
-                    }}
-                  />
-                  {/* 계속 화살촉 — 글리프가 아니라 바와 같은 토큰의 삼각형.
-                      글리프를 바 위에 얹는 첫 시도는 primary 위 primary라
-                      보이지 않았다. */}
-                  {isEnd && continues && (
-                    <span
-                      aria-label="다음 주차로 계속"
-                      style={{
-                        width: 0,
-                        height: 0,
-                        flex: 'none',
-                        borderTop: '9px solid transparent',
-                        borderBottom: '9px solid transparent',
-                        borderLeft: '12px solid var(--color-semantic-primary-normal)',
-                      }}
-                    />
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })}
+            />
+          )}
+        </div>
       </React.Fragment>
     ))}
   </div>
