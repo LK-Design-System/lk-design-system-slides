@@ -85,8 +85,12 @@
   --slides-overline-size: var(--heading1-size);
   --slides-overline-line: var(--heading1-line);
   --slides-overline-spacing: var(--heading1-spacing);
-  /* `orient` is the orienting line under a hero — a section divider's
-     one-sentence direction ("방향 제시 한 줄"). It has its own step because it
+  /* `orient` is the structural-line tier: type that structures the deck but
+     does not carry a slide alone — the section divider's orienting sentence
+     ("방향 제시 한 줄"), and the agenda's chapter-name list (whose promotion
+     to "title scale" was reviewed when title WAS this value; when title moved
+     to display1 the agenda inherited a size nobody had judged).
+     It has its own step because it
      was the first casualty of a borrowed one: the divider subtitle used to
      read --slides-title-size, and its recorded rationale said "rises to title
      scale (2.8:1)" — written when title sat at display2 (40px). The

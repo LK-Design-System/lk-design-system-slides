@@ -41,19 +41,28 @@ export const Default = {
     // slide, and chapter names read at the scale chapters are titled. Body
     // scale left three lines stranded in a corner of the canvas.
     const surface = canvasElement.querySelector('[data-lds-agenda-slide]');
-    const titleSize = getComputedStyle(surface).getPropertyValue('--slides-title-size').trim();
-    if (getComputedStyle(items[0]).fontSize !== titleSize) {
-      throw new Error(`Agenda items must read at title scale (${titleSize}); got ${getComputedStyle(items[0]).fontSize}.`);
+    // Items ride the orient tier — the size their promotion actually reviewed,
+    // pinned so the next title-tier move cannot drag the list along again.
+    const probe = document.createElement('span');
+    probe.style.fontSize = 'var(--slides-orient-size)';
+    surface.append(probe);
+    const orientSize = getComputedStyle(probe).fontSize;
+    probe.remove();
+    if (getComputedStyle(items[0]).fontSize !== orientSize) {
+      throw new Error(`Agenda items ride the orient tier (${orientSize}); got ${getComputedStyle(items[0]).fontSize}.`);
     }
 
-    // The ordinal is furniture: strictly smaller than the chapter it numbers.
-    // It inherited the item size once, and with bold on top the number
-    // outweighed the name — the eye landed on 01, not the chapter
-    // (user-caught, 2026-08-17). SectionSlide's index:title relation is the
-    // precedent this pins.
+    // The ordinal is subordinated by TONE, not size: same rung, regular
+    // weight, quieter colour — the book-TOC idiom. Both other shapes failed in
+    // renders (full-size bold outweighed the name; a small bold ordinal
+    // floated — a stacked ratio transplanted into an inline row). Asserted so
+    // neither failure can return quietly.
     const ordinal = items[0].querySelector('[data-slide-agenda-index]');
-    if (parseFloat(getComputedStyle(ordinal).fontSize) >= parseFloat(getComputedStyle(items[0]).fontSize)) {
-      throw new Error('The agenda ordinal must sit strictly under the item it numbers.');
+    if (getComputedStyle(ordinal).fontSize !== getComputedStyle(items[0]).fontSize) {
+      throw new Error('The ordinal shares its item\'s line and size — subordination is tonal.');
+    }
+    if (parseInt(getComputedStyle(ordinal).fontWeight, 10) > 400) {
+      throw new Error('The ordinal stays regular — a bold ordinal outweighs the chapter it numbers.');
     }
     for (const item of ITEMS) {
       if (/다\.$/.test(item)) {

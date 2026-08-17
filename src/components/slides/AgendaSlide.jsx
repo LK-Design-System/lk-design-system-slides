@@ -61,9 +61,14 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
                 display: 'flex',
                 gap: 'var(--space-6)',
                 alignItems: 'baseline',
-                fontSize: 'var(--slides-title-size)',
-                lineHeight: 'var(--slides-title-line)',
-                letterSpacing: 'var(--slides-title-spacing)',
+                // The orient tier, not title. The "items read at TITLE scale"
+                // promotion was reviewed when title WAS this value (display2);
+                // when the stage grammar moved title to display1 the list
+                // inherited 56px two-glyph chapter names nobody had judged.
+                // orient is the size the promotion actually looked at.
+                fontSize: 'var(--slides-orient-size)',
+                lineHeight: 'var(--slides-orient-line)',
+                letterSpacing: 'var(--slides-orient-spacing)',
                 fontWeight: isCurrent ? 'var(--fw-semibold)' : 'var(--fw-regular)',
                 color: isCurrent
                   ? 'var(--color-semantic-label-strong)'
@@ -73,20 +78,19 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
               <span
                 data-slide-agenda-index
                 style={{
-                  // The ordinal identifies; the name is the content. Inherited
-                  // at full item size with bold on top, the number OUTWEIGHED
-                  // the chapter it numbers — the eye landed on 01, not 산출
-                  // (user-caught on the real deck's agenda page). SectionSlide
-                  // already settles this relationship: its index sits at half
-                  // the title tier. The same relation here puts the ordinal on
-                  // the body rung (56:24 ≈ the divider's own 2:1); bold and
-                  // tabular stay, because a small ordinal still anchors the
-                  // rail — weight cannot swap instead, current already spends
-                  // weight as its marker.
-                  fontSize: 'var(--slides-body-size)',
-                  lineHeight: 'var(--slides-body-line)',
+                  // Same size as the name, subordinated by TONE — the book-TOC
+                  // idiom, settled by rendering the alternatives side by side.
+                  // Two shapes failed first: full item size with bold on top
+                  // made the furniture outweigh the chapter (the eye landed on
+                  // 01, not 산출 — user-caught); dropping it to the body rung
+                  // transplanted SectionSlide's 2:1, but that ratio belongs to
+                  // a STACKED composition — inline, a small bold ordinal reads
+                  // as a floating stamp, not a subordinate (user-rejected).
+                  // Same-size regular grey keeps "01 산출" one line with one
+                  // baseline; tabular stays for the rail. `current` still has
+                  // its markers: the accent ordinal and the semibold name.
                   fontVariantNumeric: 'tabular-nums',
-                  fontWeight: 'var(--fw-bold)',
+                  fontWeight: 'var(--fw-regular)',
                   color: isCurrent
                     ? 'var(--color-semantic-primary-normal)'
                     : 'var(--color-semantic-label-alternative)',
