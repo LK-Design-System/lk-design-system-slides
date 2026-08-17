@@ -68,8 +68,12 @@ export const Governing = {
       throw new Error('The governing message must precede the content region it is substantiated by.');
     }
     const gs = getComputedStyle(governing);
-    if (parseFloat(gs.fontSize) !== parseFloat(getComputedStyle(content).fontSize)) {
-      throw new Error('The governing message reads at body scale — it is a claim, not a caption.');
+    // The claim never reads BELOW the body it governs; on briefing it reads a
+    // step above (한국 보고 관행 16pt>14pt — SLIDE_SYSTEMS_COMPARISON §6). The
+    // old assertion pinned equality, which was the keynote alias mistaken for
+    // the contract.
+    if (parseFloat(gs.fontSize) <= parseFloat(getComputedStyle(content).fontSize)) {
+      throw new Error('On briefing the governing message reads one step above the body — it is a claim, not a caption.');
     }
     if (parseInt(gs.fontWeight, 10) <= parseInt(getComputedStyle(content).fontWeight, 10)) {
       throw new Error('The governing message must carry more weight than the body that substantiates it.');

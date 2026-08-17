@@ -2,6 +2,10 @@
 
 `@lk-design-system/lds-slides-ui`의 슬라이드 어휘 전체. 모두 `src/index.js`에서 flat export.
 모든 슬라이드는 `preset`('keynote' | 'briefing')과 `style`을 받고 나머지는 표면으로 전달한다.
+두 프리셋은 밀도만이 아니라 **헤더 문법**이 다르다: keynote는 여백으로 경계를 긋고
+크기가 위계를 세우며, briefing은 한국 보고 장표 문법 — 압축된 제목 띠(28px) + 헤더
+아래 구분선 + 거버닝이 본문 한 단 위(22px>20px). 덱 작성자가 할 일은 없고 프리셋
+선택으로 따라온다.
 
 ## 골격 슬라이드
 

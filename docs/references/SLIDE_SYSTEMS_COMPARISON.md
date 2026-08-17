@@ -168,3 +168,36 @@ StatSlide 개수 적응(4절 SmartArt 항목)의 두 번째 외부 근거가 된
 출처: [reveal.js](https://revealjs.com/) · [reveal PDF export](https://revealjs.com/pdf-export/)
 · [Slidev exporting](https://sli.dev/guide/exporting) · [marp-cli](https://github.com/marp-team/marp-cli)
 · [beautiful.ai Smart Slides](https://www.beautiful.ai/smart-slides)
+
+---
+
+## 6. 한국 보고 장표 문법 — 압축 헤더와 그어진 경계 (2026-08-17 추가)
+
+1~4절의 비교군은 전부 서구권이었다. 이 절은 한국 기업/기관 보고 장표의
+관행 실측이다 (briefing 프리셋의 근거).
+
+**실측된 램프 관행** (기업 PPT 권고, 링커리어 커뮤니티 정리):
+제목 20pt / 대분류·헤드메시지 16pt / 본문 14pt / 부연 12pt / 주석 10pt.
+제목:본문 비율 **1.43** — MBB(2.6~3)와 정반대로, 제목을 키우지 않고
+**줄인다**. 위계는 크기가 아니라 **경계**가 세운다: 제목 밑 구분선, 색 막대,
+헤드메시지 박스. 장표는 타이틀/헤드라인 메시지/본문의 3단 구성이 표준이고
+(비즈폼), "제목과 장표 메시지만으로 발표가 가능해야 한다"(컨설턴트 장표
+작성법)는 원칙이 헤드메시지를 본문 위(16pt > 14pt)에 앉힌다.
+
+**채택 (briefing 프리셋, alpha.10 후속)**
+- 제목 title1→title2 (32→28px): 헤더는 띠. title2/heading2 = **1.40**으로
+  관행 비율과 일치.
+- 헤더 아래 1px 구분선 + 패딩 압축 (`--slides-header-*` 토큰): 경계가
+  크기의 일을 대신한다. keynote는 rule-width 0으로 바이트 동일.
+- 거버닝 heading1 (22px): 본문(20px) 한 단 위 — 관행의 16pt>14pt 대응.
+  `--slides-governing-*` 룽 신설, 기본값은 body 별칭.
+
+**미채택**
+- 색 막대·헤드메시지 박스: 강조 예산(슬라이드당 하나)과 충돌 — 매 장
+  반복되는 색면은 강조가 아니라 장식이다. 덱이 스스로 얹는 것은 막지 않는다.
+- keynote 적용: 무대 문법은 크기가 경계의 일을 한다. 서구 비교군(1~4절)의
+  축이 그대로 유효.
+
+출처: [기업 PPT 폰트 관행 — 링커리어](https://community.linkareer.com/honeytips/2639714)
+· [장표 3단 구성 — 비즈폼](https://magazine.bizforms.co.kr/view.asp?number=7809&parent_category=49&category=12)
+· [컨설턴트 장표 작성법 — 브런치](https://brunch.co.kr/@taehyo/482)

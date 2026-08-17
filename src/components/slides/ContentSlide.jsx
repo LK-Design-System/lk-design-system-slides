@@ -24,7 +24,18 @@ import { phrased } from './phrasing.jsx';
 export function ContentSlide({ eyebrow, title, governing, anchor = 'top', children, style, ...rest }) {
   return (
     <SlideSurface style={{ justifyContent: 'flex-start', ...style }} {...rest}>
-      <header data-slide-header style={{ marginBottom: 'var(--space-8)' }}>
+      <header
+        data-slide-header
+        style={{
+          // The header/body boundary belongs to the preset: keynote draws it
+          // as whitespace (rule width 0), briefing as a rule under a thin
+          // band — the Korean report grammar, where the edge does the work
+          // the type-size step does on stage (tokens/slides.css).
+          marginBottom: 'var(--slides-header-gap)',
+          paddingBottom: 'var(--slides-header-pad)',
+          borderBottom: 'var(--slides-header-rule-width) solid var(--slides-header-rule-color)',
+        }}
+      >
         {eyebrow && (
           <p
             data-slide-eyebrow
@@ -60,8 +71,10 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
             data-slide-governing
             style={{
               margin: 'var(--space-3) 0 0',
-              fontSize: 'var(--slides-body-size)',
-              lineHeight: 'var(--slides-body-line)',
+              // Its own rung, not body's: the briefing grammar sets the claim
+              // one step above the body it governs (keynote aliases them).
+              fontSize: 'var(--slides-governing-size)',
+              lineHeight: 'var(--slides-governing-line)',
               letterSpacing: 'var(--slides-body-spacing)',
               fontWeight: 'var(--fw-semibold)',
               color: 'var(--color-semantic-label-normal)',
