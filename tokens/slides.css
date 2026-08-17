@@ -53,12 +53,24 @@
   --slides-display-size: var(--display1-size);
   --slides-display-line: var(--display1-line);
   --slides-display-spacing: var(--display1-spacing);
-  --slides-title-size: var(--display2-size);
-  --slides-title-line: var(--display2-line);
-  --slides-title-spacing: var(--display2-spacing);
+  /* Stage grammar: SIZE does the work the drawn boundary does on briefing.
+     display2 (40px) put title:body at 1.67 — "bold text" rather than a rank,
+     with the deck's most important sentence (governing) level with its
+     evidence. display1 lands title:body at 2.33 (MBB's lower bound; reveal h2
+     sits at 9.6% of canvas, this is 7.8%) and the governing steps to title2,
+     one rung over the body it governs. Both are existing rungs — the ramp
+     gained nothing. Judged against renders side by side, 2026-08-17.
+     (This retires the earlier "keynote aliases governing to body" default
+     from the same day — measured, the 24/24 tie was the claim reading level
+     with its evidence on stage too, and no grammar defends that.) */
+  --slides-title-size: var(--display1-size);
+  --slides-title-line: var(--display1-line);
+  --slides-title-spacing: var(--display1-spacing);
   --slides-body-size: var(--title3-size);
   --slides-body-line: var(--title3-line);
   --slides-body-spacing: var(--title3-spacing);
+  --slides-governing-size: var(--title2-size);
+  --slides-governing-line: var(--title2-line);
   --slides-caption-size: var(--heading2-size);
   --slides-caption-line: var(--heading2-line);
   --slides-caption-spacing: var(--heading2-spacing);
@@ -84,14 +96,9 @@
   --slides-fine-size: var(--headline1-size);
   --slides-fine-line: var(--headline1-line);
   --slides-fine-spacing: var(--headline1-spacing);
-  /* `governing` is the claim line under the title. Its OWN rung exists because
-     the two report grammars disagree about it: the keynote grammar lets it sit
-     at body scale (a stage slide carries few other lines), while the Korean
-     report grammar (briefing) sets the head message one step ABOVE the body it
-     governs — 16pt over 14pt body in the surveyed convention, never level with
-     it. Defaults alias body so keynote renders byte-identically. */
-  --slides-governing-size: var(--slides-body-size);
-  --slides-governing-line: var(--slides-body-line);
+  /* `governing` (the claim line under the title) is declared with the title
+     block above: on BOTH grammars it reads one rung over the body it governs
+     — the grammars disagree about the title, not about the claim. */
   /* Header band geometry. The Korean report grammar draws the header/body
      boundary as a VISIBLE EDGE (rule under a thin title band) where the stage
      grammar draws it as whitespace; both are legitimate, so the boundary is a

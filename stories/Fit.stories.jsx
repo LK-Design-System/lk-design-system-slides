@@ -90,10 +90,10 @@ export const FloorIsDerivedFromTheRamp = {
   render: () => (
     <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
       <ContentSlide data-probe="keynote" eyebrow="Keynote" title="기본 프리셋">
-        <Fit><List items={bullets(12)} /></Fit>
+        <Fit><List items={bullets(10)} /></Fit>
       </ContentSlide>
       <ContentSlide data-probe="briefing" preset="briefing" eyebrow="Briefing" title="밀도 상향">
-        <Fit><List items={bullets(12)} /></Fit>
+        <Fit><List items={bullets(10)} /></Fit>
       </ContentSlide>
     </div>
   ),
