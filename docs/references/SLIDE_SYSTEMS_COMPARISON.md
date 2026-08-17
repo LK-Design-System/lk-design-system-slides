@@ -121,3 +121,50 @@ Marp 1280×720, Slidev 980×552, PowerPoint 13.333×7.5in).
 - **의미 기반 저작**: `governing` 등 한국 보고서 문법의 prop 계약.
 - **매체-랭크 분리**(editorial seam): 타입에는 이미 있다. 간격에는 없다 —
   그 공백이 [SCALE_DENSITY_PROPOSAL.md](../SCALE_DENSITY_PROPOSAL.md)의 대상이다.
+
+---
+
+## 5. 기능 매트릭스 — 산출·런타임·저작 보조 (2026-08-17 추가)
+
+위 1~4절은 타입 스케일·구도의 실측이었다. 이 절은 **기능** 축의 대조다
+(COMPLETENESS_AUDIT.md의 요청으로 추가). 출처: 각 시스템 공식 문서,
+2026-08-17 열람.
+
+| 기능 | reveal.js | Slidev | Marp (CLI) | **LDS Slides (alpha.9)** |
+|---|---|---|---|---|
+| PDF 내보내기 | ✅ `?print-pdf` + 브라우저 인쇄 (Chrome 한정), decktape 대안 | ✅ Playwright 헤드리스 + 브라우저 exporter UI | ✅ CLI (노트·아웃라인 포함 가능) | **✗ 없음** |
+| PPTX 내보내기 | ✗ | ✅ 이미지 기반(텍스트 비선택) + 장별 노트 | ✅ 이미지 기반 (editable은 실험적, LibreOffice 필요) | ✗ |
+| PNG/이미지 | ✗ | ✅ 장별 PNG, 마크다운 합본 | ✅ PNG/JPEG | ✗ (게이트 워커가 내부적으로만 캡처) |
+| 내보내기 옵션 | 노트 포함, fragment 분리 제어 | `--with-clicks`(단계 공개를 페이지로), `--dark`, `--range`, `--with-toc` | 노트 텍스트 별도 출력 | — |
+| 오버뷰(전장 그리드) | ✅ 코어 (ESC) | ✅ | — (프리뷰 창) | ✗ |
+| 전체화면 | ✅ 코어 | ✅ | ✅ (프리뷰) | ✗ |
+| URL 딥링크/점프 | ✅ 해시 + jump-to-slide | ✅ | — | ✗ |
+| 발표자 화면 | ✅ 타이머 + 다음 장 | ✅ | — | ✅ **PresenterView (타이머·다음 장·노트)** |
+| 위치 동기(다중 창) | 플러그인(multiplex) | ✅ 원격 프리젠터 | — | ✅ **channel (로컬 창 간)** — 원격은 없음 |
+| 판서/드로잉 | 플러그인(chalkboard) | ✅ 내장 | ✗ | ✗ |
+| 자동 진행(auto-slide) | ✅ 코어 | — | ✗ | ✗ |
+| 단계 공개 | ✅ fragments | ✅ clicks | ✗ | ✅ **Step (리플로 금지 계약)** |
+| 슬라이드 전환 | ✅ + auto-animate | ✅ | ✅ (bespoke) | ✗ — **의도된 부재** (시간 축은 모션 레포 소유) |
+| 콘텐츠 규율 게이트 | ✗ | ✗ | ✗ | ✅ **8규칙 + 오버플로 + 크롬 침범, CI 래칫** |
+
+적응형 레이아웃 제품군(beautiful.ai "Smart Slides" — 내용을 넣으면 간격·정렬·
+위계가 실시간 재배치, 300+ 레이아웃)은 표 밖의 별도 참조: 편집 GUI 제품이라
+저작 모델은 비교 대상이 아니지만, **"구도는 시스템이 자동으로"라는 방향 자체의
+시장 검증**이다 — LDS의 fit 사다리·분량→단 규칙·anchor가 같은 논지이고,
+StatSlide 개수 적응(4절 SmartArt 항목)의 두 번째 외부 근거가 된다.
+
+**이 매트릭스에서 읽는 판정**
+
+- **내보내기는 동종 3종 전원이 보유, LDS만 0.** 격차 중 유일한 만장일치 항목
+  이며, Slidev·Marp의 PPTX가 둘 다 이미지 기반이라는 사실은 "PPTX = 레이아웃
+  재구현"이 아니라 "PPTX = PDF 경로의 파생물"이라는 저비용 경로의 전례다.
+  → COMPLETENESS_AUDIT A1.
+- **런타임(오버뷰·전체화면·딥링크)은 reveal·Slidev 공통 코어.** → AUDIT F1.
+- **판서·자동 진행·원격 동기**는 시스템마다 갈린다(코어/플러그인/부재) —
+  만장일치가 아니므로 수요 실물이 나올 때 판정한다. **미채택(보류)로 기록.**
+- LDS의 우위 축(게이트·강조 예산·의미 저작·Step 리플로 계약·PresenterView)은
+  이 매트릭스에서도 재확인 — 어느 비교군에도 콘텐츠 규율 집행이 없다.
+
+출처: [reveal.js](https://revealjs.com/) · [reveal PDF export](https://revealjs.com/pdf-export/)
+· [Slidev exporting](https://sli.dev/guide/exporting) · [marp-cli](https://github.com/marp-team/marp-cli)
+· [beautiful.ai Smart Slides](https://www.beautiful.ai/smart-slides)

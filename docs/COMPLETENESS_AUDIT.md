@@ -8,7 +8,9 @@ editorial 11, 게이트 8, 스킬 2판), ② 실전 덱 2벌(주간 업무현황
 실제로 부딪힌 것, ③ 업계 비교 레지스트리([SLIDE_SYSTEMS_COMPARISON](references/SLIDE_SYSTEMS_COMPARISON.md))와
 FT 어휘 지도([VISUAL_VOCABULARY_MAP](references/VISUAL_VOCABULARY_MAP.md))의 빈 칸,
 ④ 코드 실측(grep — 인쇄 CSS 0건, fullscreen 0건, video 0건, 업스트림
-`LineChart`/`BarChart`/`DonutChart` 존재 확인).
+`LineChart`/`BarChart`/`DonutChart` 존재 확인), ⑤ **동종 기능 매트릭스**
+(reveal.js·Slidev·Marp 공식 문서 + 적응형 제품군, 2026-08-17 웹 실측 —
+[SLIDE_SYSTEMS_COMPARISON §5](references/SLIDE_SYSTEMS_COMPARISON.md)).
 
 한 문장 판정: **보고서 덱(텍스트·표·지표 중심)은 실전이고, 발표 덱은 산출물을
 "내보낼 수 없다"는 한 가지 이유로 아직 파일럿이다.** 아래 격차는 심각도순.
@@ -34,6 +36,12 @@ FT 어휘 지도([VISUAL_VOCABULARY_MAP](references/VISUAL_VOCABULARY_MAP.md))�
   동작, 덱이 한 장씩 마운트하는 구조(인쇄용 전장 렌더 경로 필요), 크롬(버튼·
   진행 바) 제거. ② PPTX는 별개의 큰 작업(레이아웃 재구현이라 계약 이중화
   위험) — 요구가 실제로 나올 때 판정.
+- **동종 대조**: reveal(브라우저 인쇄)·Slidev(Playwright + exporter UI)·
+  Marp(CLI) — **동종 3종 전원이 PDF를 내보내고 LDS만 0이다**(기능 매트릭스의
+  유일한 만장일치 격차). Slidev·Marp의 PPTX가 둘 다 이미지 기반(텍스트
+  비선택)이라는 것도 확인 — PPTX는 레이아웃 재구현이 아니라 **PDF 경로의
+  파생물**로 붙일 수 있다는 전례다. Slidev의 `--with-clicks`(단계 공개를
+  페이지로)·`--range`·`--with-toc`는 옵션 설계의 참조점.
 - **선행 증거**: 모션 레포가 이미 같은 문제를 풀었다 — Playwright로 전 장을
   걸어가며 렌더한다. 같은 접근이면 "덱 → PDF" 스크립트는 게이트 워커의 변형이다.
 
@@ -102,7 +110,8 @@ FT 어휘 지도([VISUAL_VOCABULARY_MAP](references/VISUAL_VOCABULARY_MAP.md))�
 
 - PPT SmartArt의 "2개면 크게, 5개면 작게"는 비교 레지스트리에서 **이미 채택
   방향으로 기록**돼 있다(StatSlide 장기 방향, 레이아웃 후속 작업). 현재는
-  개수와 무관하게 같은 크기.
+  개수와 무관하게 같은 크기. 적응형 제품군(beautiful.ai Smart Slides —
+  내용 변화에 실시간 재배치)이 두 번째 외부 근거로 추가됐다(레지스트리 §5).
 - 심각도: 마모.
 
 ### C3. 사진 3장 이상의 그리드가 없다
@@ -157,7 +166,10 @@ FT 어휘 지도([VISUAL_VOCABULARY_MAP](references/VISUAL_VOCABULARY_MAP.md))�
   그리드 오버뷰 없음. 실제 발표에서 전체화면은 필수 동작이고, 위치 URL이 없으면
   "13페이지 봐주세요" 링크가 불가능하다. reveal.js 대비 가장 뚜렷한 런타임 격차.
 - PresenterView는 생각보다 갖춰져 있다(실측): 경과 타이머, 다음 장 미리보기,
-  노트 — 부족한 건 뷰어 쪽이다.
+  노트 — 부족한 건 뷰어 쪽이다. 오버뷰(ESC)·전체화면·딥링크는 reveal·Slidev
+  **공통 코어**라 발표 덱 기준으로는 기대 기본값이다. 창 간 위치 동기는
+  `channel`로 이미 있다(원격 동기만 없음 — reveal도 플러그인 영역).
+
 
 ### F2. 슬라이드 전환 효과 없음 — **의도된 부재로 판정**
 
@@ -165,6 +177,12 @@ FT 어휘 지도([VISUAL_VOCABULARY_MAP](references/VISUAL_VOCABULARY_MAP.md))�
   소유권 경계다. 라이브 발표용 최소 전환(fade/push)을 원하면 그것도 모션
   어휘를 역수입할 일이지 여기서 CSS transition을 만들 일이 아니다. **재론 방지
   기록.**
+
+### F3. 판서·자동 진행·원격 동기 — 보류 판정 (신규)
+
+- 기능 매트릭스에서 시스템마다 갈리는 항목들(판서: Slidev 내장/reveal 플러그인,
+  자동 진행: reveal 코어만, 원격 동기: 전부 플러그인 이하). 만장일치가 아니고
+  수요 실물이 없으므로 **보류** — 요구가 나올 때 개별 판정한다.
 
 ## G. 품질 체계의 사각 — 마모
 
