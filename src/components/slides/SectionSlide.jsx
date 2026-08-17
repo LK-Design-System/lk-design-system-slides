@@ -60,14 +60,17 @@ export function SectionSlide({ index, title, subtitle, style, ...rest }) {
           data-slide-subtitle
           style={{
             margin: 'var(--space-5) 0 0',
-            // The orienting line keeps step with the title's tier: under a
-            // hero title, body scale reads as a caption that wandered in
-            // (4.7:1 — the full-deck review's ratio complaint), so it rises
-            // to title scale (2.8:1); under a display title, body already
-            // sits at 2.3:1 and stays.
-            fontSize: scale !== 'display' ? 'var(--slides-title-size)' : 'var(--slides-body-size)',
-            lineHeight: scale !== 'display' ? 'var(--slides-title-line)' : 'var(--slides-body-line)',
-            letterSpacing: scale !== 'display' ? 'var(--slides-title-spacing)' : 'var(--slides-body-spacing)',
+            // The orienting line under a hero rides its OWN rung (orient),
+            // not a borrowed one. It borrowed title-size once, with "rises to
+            // title scale (2.8:1)" recorded here — and when the stage grammar
+            // lifted title to display1 for the content header's sake, this
+            // line rode along to 2:1, level with body-page titles, while the
+            // 2.8:1 rationale sat unchanged beside the code (user-caught,
+            // 2026-08-17). orient IS the 2.8:1 this comment always promised.
+            // Under a display title, body already sits at 2.3:1 and stays.
+            fontSize: scale !== 'display' ? 'var(--slides-orient-size)' : 'var(--slides-body-size)',
+            lineHeight: scale !== 'display' ? 'var(--slides-orient-line)' : 'var(--slides-body-line)',
+            letterSpacing: scale !== 'display' ? 'var(--slides-orient-spacing)' : 'var(--slides-body-spacing)',
             color: 'var(--slides-ink-neutral)',
             maxWidth: '36ch',
           }}

@@ -60,5 +60,27 @@ export const Default = {
     if (/다\.$/.test(title.textContent.trim())) {
       throw new Error('The chapter title ends with a noun — sentences belong to governing messages.');
     }
+
+    // The orienting line rides its own rung, strictly under the title's. It
+    // borrowed --slides-title-size once, and when that tier was re-argued for
+    // the content header the subtitle silently rose to 2:1 — level with every
+    // body-page title, against the 2.8:1 its own comment recorded. This
+    // assertion is what turns that silent ride into a red build.
+    const subtitle = canvasElement.querySelector('[data-slide-subtitle]');
+    const rung = (name) => {
+      const el = document.createElement('span');
+      el.style.fontSize = `var(--slides-${name}-size)`;
+      surface.append(el);
+      const value = parseFloat(getComputedStyle(el).fontSize);
+      el.remove();
+      return value;
+    };
+    const subtitleSize = parseFloat(getComputedStyle(subtitle).fontSize);
+    if (subtitleSize !== rung('orient')) {
+      throw new Error(`The orienting line rides the orient rung; measured ${subtitleSize}px.`);
+    }
+    if (subtitleSize >= rung('title')) {
+      throw new Error('An orienting line must sit strictly under the title tier — it does not carry the slide.');
+    }
   },
 };

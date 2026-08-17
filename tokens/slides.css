@@ -85,6 +85,24 @@
   --slides-overline-size: var(--heading1-size);
   --slides-overline-line: var(--heading1-line);
   --slides-overline-spacing: var(--heading1-spacing);
+  /* `orient` is the orienting line under a hero — a section divider's
+     one-sentence direction ("방향 제시 한 줄"). It has its own step because it
+     was the first casualty of a borrowed one: the divider subtitle used to
+     read --slides-title-size, and its recorded rationale said "rises to title
+     scale (2.8:1)" — written when title sat at display2 (40px). The
+     2026-08-17 stage-grammar change lifted title to display1 (56px) for the
+     CONTENT header's sake, and the borrowed subtitle rode along to 2:1,
+     level with every body-page title: two headings and no hierarchy, with a
+     rationale on file that no longer matched the render. A line that does not
+     carry the slide sits between the sparse ladder (spot 10.9% of canvas) and
+     body (3.3%) — display2, 5.6%, is that seat, and it is an existing rung.
+     A borrowed tier couples this line to every future re-argument of that
+     tier; its own step keeps each decision attached to its own reason.
+     briefing inherits it: against briefing's hero (80px) it reads 2:1, which
+     the denser kind can afford. */
+  --slides-orient-size: var(--display2-size);
+  --slides-orient-line: var(--display2-line);
+  --slides-orient-spacing: var(--display2-spacing);
   /* `fine` is the floor rung: sources, legends, annotation bodies. Nothing on a
      slide may be smaller than this, which is why it stops one rung under caption
      rather than continuing down the product ramp. The rung sits at headline1
