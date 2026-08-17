@@ -48,6 +48,93 @@ const Details = ({ items }) => (
   </ul>
 );
 
+/* 주차 스팬 행(간트-lite) — 열람 덱의 세 번째 요구(파일럿 3호에서 등장).
+   계획 항목이 주차 축 위에 스팬 바로 눕는다. 표의 밴딩 문법(데이터 행 밴드,
+   헤더 맨몸)과 --editorial-* 밀도 seam을 재사용하고, 바는 primary 토큰이다.
+   `continues`는 마지막 주차 너머로 이어짐을 화살표 글리프로 말한다 —
+   원본 PPT의 표 밖으로 삐져나가는 화살표의 정직한 번역. */
+const WEEKS = ['8월 2주차', '8월 3주차'];
+const PlanRows = ({ rows }) => (
+  <div
+    role="table"
+    aria-label="향후 업무 계획"
+    style={{
+      display: 'grid',
+      gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 2fr) repeat(2, minmax(0, 0.7fr))',
+      fontSize: 'var(--editorial-note-size)',
+      lineHeight: 'var(--editorial-note-line)',
+      letterSpacing: 'var(--editorial-note-spacing)',
+    }}
+  >
+    {['프로젝트', '업무 내용', ...WEEKS].map((head) => (
+      <div
+        key={head}
+        role="columnheader"
+        style={{
+          padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)',
+          fontWeight: 'var(--fw-semibold)',
+          color: 'var(--color-semantic-label-strong)',
+          borderBottom: '1px solid var(--color-semantic-line-normal-normal)',
+        }}
+      >
+        {head}
+      </div>
+    ))}
+    {rows.map(({ name, work, from, to, continues }) => (
+      <React.Fragment key={name}>
+        <div role="rowheader" style={{ padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)', background: 'var(--color-semantic-fill-alternative)', fontWeight: 'var(--fw-semibold)', color: 'var(--color-semantic-label-strong)' }}>
+          {name}
+        </div>
+        <div role="cell" style={{ padding: 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)', background: 'var(--color-semantic-fill-alternative)', color: 'var(--color-semantic-label-neutral)' }}>
+          {work}
+        </div>
+        {WEEKS.map((week, order) => {
+          const active = order >= from && order <= to;
+          const isStart = order === from;
+          const isEnd = order === to;
+          return (
+            /* 스팬 바는 칸 경계에서 끊기면 안 된다 — 끊긴 스팬은 두 개의
+               계획으로 읽힌다(타임라인 레일과 같은 연속성 규칙). 활성 칸은
+               가로 패딩을 버리고 바가 경계까지 닿게 하며, 둥근 끝은 스팬의
+               진짜 시작·끝에만 준다. */
+            <div
+              key={week}
+              role="cell"
+              aria-label={active ? `${week} 진행` : undefined}
+              style={{
+                padding: 'var(--editorial-cell-pad-block) 0',
+                paddingLeft: active && isStart ? 'var(--space-2)' : 0,
+                paddingRight: active && isEnd && !continues ? 'var(--space-2)' : 0,
+                background: 'var(--color-semantic-fill-alternative)',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              {active && (
+                <span
+                  style={{
+                    flex: 1,
+                    height: 10,
+                    background: 'var(--color-semantic-primary-normal)',
+                    borderRadius: `${isStart ? '5px' : 0} ${isEnd && !continues ? '5px 5px' : '0 0'} ${isStart ? '5px' : 0}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  {isEnd && continues && (
+                    <span aria-label="다음 주차로 계속" style={{ color: 'var(--color-semantic-primary-normal)', fontSize: 'var(--slides-caption-size)', lineHeight: 1 }}>▶</span>
+                  )}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </React.Fragment>
+    ))}
+  </div>
+);
+
 export const Deck = {
   name: '주간 업무현황 (열람 파일럿)',
   render: () => (
@@ -59,6 +146,30 @@ export const Deck = {
         foot={FOOT}
         notes="열람 덱 파일럿: 회람용이라 발표자 서사 없이 페이지 단위로 완결된다."
       />
+      <ContentSlide
+        preset="briefing"
+        eyebrow="업무 현황 · 장진혁"
+        title="업무 현황 및 이슈"
+        governing="두 프로젝트 모두 시뮬레이션 검증 단계를 통과해 실환경 검증으로 넘어갑니다."
+        foot={FOOT}
+        notes="열람 파일럿 2호: 원본은 내용|진행현황 2열 표지만, 실체는 프로젝트별 진행 리스트다 — 1호의 2단계 리스트 계약을 재사용한다."
+      >
+        <ul style={{ margin: 0, paddingLeft: '1.2em', display: 'grid', gap: 'var(--space-5)' }}>
+          <Topic>
+            대덕특구
+            <Details items={[
+              '시뮬레이션 기반 검증 완료',
+              '실환경 검증을 위한 데모용 CCTV 제작 및 녹화 동기화 기능 구현',
+            ]} />
+          </Topic>
+          <Topic>
+            쓰러짐 기능 구현
+            <Details items={[
+              '시뮬레이션 기반 검증 및 실환경 검증 진행',
+            ]} />
+          </Topic>
+        </ul>
+      </ContentSlide>
       <ContentSlide
         preset="briefing"
         eyebrow="업무 현황 상세"
@@ -114,6 +225,22 @@ export const Deck = {
             ))}
           </div>
         </div>
+      </ContentSlide>
+      <ContentSlide
+        preset="briefing"
+        eyebrow="업무 계획"
+        title="향후 업무 계획"
+        governing="두 프로젝트 모두 3주차 이후로 이어집니다."
+        anchor="center"
+        foot={FOOT}
+        notes="열람 파일럿 3호: 주차 스팬 행(간트-lite) — 기존 어휘에 없는 세 번째 계약 후보."
+      >
+        <PlanRows
+          rows={[
+            { name: '화재 검출', work: '화재 데이터셋 수집 및 학습', from: 0, to: 1, continues: true },
+            { name: '쓰러짐 검출', work: '실환경 검증 및 테스트', from: 0, to: 1, continues: true },
+          ]}
+        />
       </ContentSlide>
     </DeckViewer>
   ),
