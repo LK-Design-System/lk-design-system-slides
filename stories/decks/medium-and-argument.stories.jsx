@@ -63,7 +63,10 @@ const BEFORE = `// Editorial — KeyFigure (이전)
 // viewBox가 맡는다 — 고정 420px였던 첫 판은 주석 레일과의 사이를 텅 비웠다
 // (시각 리뷰 지적). 확대되며 선·글자가 비례로 굵어지는 것이 투영의 관용구다.
 const SeamDiagram = () => (
-  <svg viewBox="0 0 420 190" style={{ width: '100%', height: 'auto', display: 'block' }} role="img" aria-label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조">
+  // viewBox 높이는 실제 그림의 끝(마지막 행 하단 159)에 맞춘다 — 캔버스
+  // 아래 빈 여백은 전폭 확대에서 실높이가 되어 크롬 밴드를 침범한다
+  // (가드가 2px 침범으로 검출, 첫 실전 어획).
+  <svg viewBox="0 0 420 168" style={{ width: '100%', height: 'auto', display: 'block' }} role="img" aria-label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조">
     <text x="0" y="14" fill="var(--color-semantic-label-alternative)" style={{ fontSize: 'var(--slides-fine-size)' }}>
       Editorial — 순위
     </text>
