@@ -35,3 +35,4 @@ export { StatusAssessment } from './components/editorial/StatusAssessment.jsx';
 export { TopicList } from './components/editorial/TopicList.jsx';
 export { ExhibitRow } from './components/editorial/ExhibitRow.jsx';
 export { WeekSpanRows } from './components/editorial/WeekSpanRows.jsx';
+export { TrendChart } from './components/editorial/TrendChart.jsx';

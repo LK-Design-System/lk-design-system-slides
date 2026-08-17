@@ -4,6 +4,8 @@ import { DeckPositionContext } from './deckPosition.js';
 import { useDeck } from './useDeck.js';
 import { DeckMediumContext } from './deckMedium.js';
 import { DeckPrintSheet } from './DeckPrintSheet.jsx';
+import { DeckOverview } from './DeckOverview.jsx';
+import { useFullscreen, useHashPosition } from './deckRuntime.js';
 
 // The print seam. Any deck — including every deck already written — becomes a
 // print sheet by appending `?lds-print=1` to its URL, which is how the
@@ -60,8 +62,14 @@ export function DeckViewer({
   kind = 'present',
   preset,
   print,
+  // Runtime-only props are destructured here so the print branch does not
+  // forward them onto a DOM node — paper has no fullscreen.
+  deepLink,
   label = '슬라이드 덱',
   notesLabel = '발표자 노트',
+  overviewLabel,
+  fullscreenLabel,
+  fullscreenExitLabel,
   style,
   ...rest
 }) {
@@ -70,7 +78,7 @@ export function DeckViewer({
   const [urlPrint] = React.useState(printModeFromLocation);
   if (print ?? urlPrint) {
     return (
-      <DeckPrintSheet kind={kind} preset={preset} style={style} {...rest}>
+      <DeckPrintSheet kind={kind} preset={preset} label={label} style={style} {...rest}>
         {children}
       </DeckPrintSheet>
     );
@@ -81,8 +89,12 @@ export function DeckViewer({
       channel={channel}
       kind={kind}
       preset={preset}
+      deepLink={deepLink}
       label={label}
       notesLabel={notesLabel}
+      overviewLabel={overviewLabel}
+      fullscreenLabel={fullscreenLabel}
+      fullscreenExitLabel={fullscreenExitLabel}
       style={style}
       {...rest}
     >
@@ -97,16 +109,36 @@ function DeckViewerRuntime({
   channel,
   kind = 'present',
   preset,
+  deepLink = true,
   label = '슬라이드 덱',
   notesLabel = '발표자 노트',
+  overviewLabel = '개요',
+  fullscreenLabel = '전체화면',
+  fullscreenExitLabel = '전체화면 종료',
   style,
   ...rest
 }) {
   const {
     slides, count, index, step, stepCount, slideRef,
-    forward, backward, deckKeyHandlers, atStart, atEnd, notes,
+    forward, backward, jump, deckKeyHandlers, atStart, atEnd, notes,
   } = useDeck({ children, initial, channel });
   const [showNotes, setShowNotes] = React.useState(false);
+  const [showOverview, setShowOverview] = React.useState(false);
+  const rootRef = React.useRef(null);
+  const fullscreen = useFullscreen(rootRef);
+  // The address bar is a navigation surface: `#7` is slide 7. Off by default
+  // for a deck that shares its page with anything else — two decks writing one
+  // hash would fight — and on for the ordinary case of a deck on its own page.
+  useHashPosition({
+    enabled: deepLink,
+    index,
+    step,
+    count,
+    onAdopt: (position) => {
+      if (position.index === index && position.step === step) return;
+      jump(position.index);
+    },
+  });
   // Memoised so a step reveal does not hand the slide a new position object
   // and re-render every layout that reads the page number.
   const positionValue = React.useMemo(() => ({ page: index + 1, total: count }), [index, count]);
@@ -115,11 +147,21 @@ function DeckViewerRuntime({
   const mediumValue = React.useMemo(() => ({ preset, kind }), [preset, kind]);
 
   const onKeyDown = (event) => {
-    const handlers = {
-      ...deckKeyHandlers,
-      n: () => setShowNotes((visible) => !visible),
-      N: () => setShowNotes((visible) => !visible),
-    };
+    const toggleOverview = () => setShowOverview((visible) => !visible);
+    // In the overview the arrows would move a slide nobody is looking at, so
+    // only the keys that concern the overview itself are live.
+    const handlers = showOverview
+      ? { Escape: () => setShowOverview(false), o: toggleOverview, O: toggleOverview }
+      : {
+        ...deckKeyHandlers,
+        n: () => setShowNotes((visible) => !visible),
+        N: () => setShowNotes((visible) => !visible),
+        f: fullscreen.toggle,
+        F: fullscreen.toggle,
+        o: toggleOverview,
+        O: toggleOverview,
+        Escape: toggleOverview,
+      };
     if (event.key in handlers) {
       event.preventDefault();
       handlers[event.key]();
@@ -128,14 +170,30 @@ function DeckViewerRuntime({
 
   return (
     <section
+      ref={rootRef}
       data-lds-deck-viewer
       data-lds-deck-kind={kind}
+      data-deck-fullscreen={fullscreen.active ? 'true' : undefined}
       role="group"
       aria-roledescription="슬라이드 덱"
       aria-label={label}
       tabIndex={0}
       onKeyDown={onKeyDown}
-      style={{ display: 'grid', gap: 'var(--space-4)', outlineOffset: 4, ...style }}
+      style={{
+        display: 'grid',
+        gap: 'var(--space-4)',
+        outlineOffset: 4,
+        // Fullscreen makes this element the whole screen, so it owns the
+        // background the slide sits on — otherwise the canvas floats on black.
+        ...(fullscreen.active
+          ? {
+            alignContent: 'center',
+            padding: 'var(--space-4)',
+            background: 'var(--color-semantic-background-normal-alternative)',
+          }
+          : null),
+        ...style,
+      }}
       {...rest}
     >
       <div data-deck-slide ref={slideRef}>
@@ -183,6 +241,24 @@ function DeckViewerRuntime({
             {notesLabel}
           </button>
         )}
+        <button
+          type="button"
+          data-deck-overview-toggle
+          aria-expanded={showOverview}
+          onClick={() => setShowOverview((visible) => !visible)}
+          style={{ font: 'inherit' }}
+        >
+          {overviewLabel}
+        </button>
+        <button
+          type="button"
+          data-deck-fullscreen-toggle
+          aria-pressed={fullscreen.active}
+          onClick={fullscreen.toggle}
+          style={{ font: 'inherit' }}
+        >
+          {fullscreen.active ? fullscreenExitLabel : fullscreenLabel}
+        </button>
         <div
           data-deck-progress-track
           aria-hidden="true"
@@ -219,6 +295,17 @@ function DeckViewerRuntime({
           {stepCount > 0 ? ` · ${step} / ${stepCount}` : ''}
         </p>
       </footer>
+      {showOverview && (
+        <DeckOverview
+          slides={slides}
+          index={index}
+          onSelect={(next) => {
+            jump(next);
+            setShowOverview(false);
+          }}
+          onClose={() => setShowOverview(false)}
+        />
+      )}
       {notes && showNotes && (
         <aside
           data-deck-notes

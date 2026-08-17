@@ -561,19 +561,34 @@
           "name": "print"
         },
         {
+          "name": "deepLink"
+        },
+        {
           "name": "label",
           "default": "'슬라이드 덱'"
         },
         {
           "name": "notesLabel",
           "default": "'발표자 노트'"
+        },
+        {
+          "name": "overviewLabel"
+        },
+        {
+          "name": "fullscreenLabel"
+        },
+        {
+          "name": "fullscreenExitLabel"
         }
       ],
       "dataAttributes": [
         "data-deck-chrome",
+        "data-deck-fullscreen",
+        "data-deck-fullscreen-toggle",
         "data-deck-next",
         "data-deck-notes",
         "data-deck-notes-toggle",
+        "data-deck-overview-toggle",
         "data-deck-prev",
         "data-deck-progress",
         "data-deck-progress-fill",

@@ -118,6 +118,46 @@ emphasis를 여러 개 넣지 말 것 — 컴포넌트가 걸러주지만 의도
 배치로 채우고, viewBox 확대는 글자 없는 순수 도형에만 쓴다.
 `check:figure-fill`이 폭·글자 배율·콜아웃 이탈 세 가지를 함께 잰다.
 
+### TrendChart — 추이 (시계열)
+
+"언제부터 얼마나"를 주장하는 슬라이드의 도판. 차트를 손으로 그리지 않는다.
+
+```jsx
+<FigureSlide title="수집–반영 p95 지연" governing="셰도우 전환 이후 지연이 절반으로 내려왔습니다." …>
+  <TrendChart
+    series={[{ id: 'p95', name: '수집–반영 p95', points: [{x: 22, y: 41}, …] }]}
+    xTicks={[22, 25, 29]}
+    yDomain={[0, 45]} yTicks={3} formatY={(v) => `${Math.round(v)}분`}
+    referenceLines={[{ y: 20, label: '목표 20분' }]}
+    showLegend={false}
+  />
+</FigureSlide>
+```
+
+- **series** `{id, name, points:[{x,y}], dashed?}[]` · **xTicks/yTicks** ·
+  **yDomain** · **formatY** · **referenceLines** `{y,label}[]` ·
+  **showLegend** · **description**(스크린리더용 한 문장) · **aspect**(기본 2.4) ·
+  **maxHeight**(기본 320 캔버스px — 비율만으로는 높이가 안 잡힌다. 주석 레일이
+  있으면 도판 폭이 ~830, 없으면 ~1100이라 같은 비율이 80px 더 높은 차트를
+  만들고 캡션을 출처 띠로 밀어넣는다).
+- **눈금은 손으로 정한다.** `yDomain`·`yTicks`·`formatY`를 주지 않으면 자동
+  분할이 `30.75`, `20.5` 같은 값을 찍는다 — 제품 화면의 구조 preview용
+  폴백이고 장표에서는 읽는 사람이 나눗셈을 하게 만든다. 단위는 `formatY`에
+  붙인다(`45분`).
+- **축 제목(`yLabel`·`xLabel`)은 무시된다.** 슬라이드 도판에는 이미 캡션이
+  있고, 축 제목은 제품 화면의 어포던스다. `yLabel`은 세로로 눕혀 그려져
+  눈금값과 겹치고(첫 렌더에서 확인), `xLabel`은 제품 캡션 램프를 직접 읽는
+  HTML이라 투영에서 죽는다. 단위는 `formatY`, 축이 무엇인지는 캡션이 나른다.
+- 시리즈가 하나면 `showLegend={false}`로 끄고 `yLabel`이 이름을 진다.
+  범례는 둘 이상일 때의 것이다.
+- **목표·임계는 `referenceLines`로 긋는다.** 주장이 "목표 안에 들어왔다"면
+  목표선이 도판에 있어야 그 주장이 보인다. 기준선은 자동 텍스트 요약에도
+  들어간다.
+- 축 활자는 매체 램프로 자동 재지정된다(`--lk-chart-*`). 컴포넌트가 부여된
+  폭을 재서 viewBox를 맞추므로 **확대가 일어나지 않는다** — 위의 배율 함정을
+  구조적으로 피한 것이 이 래퍼의 존재 이유 절반이다.
+- 데이터는 덱이 소유한다. 도메인·포맷터를 이 층이 추측하지 않는다.
+
 ### ImageSlide — 사진
 ```jsx
 import photo from './assets/site-photo.jpg';   // 덱 자산은 덱 파일 옆 assets/에 두고 import
