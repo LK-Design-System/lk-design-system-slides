@@ -44,12 +44,17 @@ export function CodeSlide({
           margin: 0,
           display: 'grid',
           gap: 'var(--space-3)',
-          // The listing is width-capped by its measure, so on a canvas the
-          // capped block centres — a snippet hugging the left rail with the
-          // right half dead is document inertia, the same class as the
-          // intrinsic-width table. The code inside stays left: reading
-          // anchors are the text's, placement is the canvas's.
-          justifyItems: 'center',
+          // The listing keeps the slide's left edge. It was centred once, to
+          // answer "a capped block with the right half dead" — but that
+          // objection does not survive: the same argument would centre a
+          // photo, and ImageSlide is already exempt from the fill rule
+          // because an exhibit with an intrinsic size is not under-filling,
+          // it is being itself. A listing's measure cap is exactly that kind
+          // of intrinsic size. What centring cost was real, though — the
+          // title, the governing line and the caption all start at the left
+          // margin, and the exhibit alone floated off it, so the slide had
+          // two left edges and the eye had to find the second one.
+          justifyItems: 'start',
         }}
       >
         <pre

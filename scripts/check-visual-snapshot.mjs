@@ -45,6 +45,7 @@ const SUBJECTS = [
   { name: 'statement-slide', id: 'slides-statement-slide--default' },
   { name: 'stat-slide', id: 'slides-stat-slide--default' },
   { name: 'stat-slide-roomy', id: 'slides-stat-slide--count-adaptive-figures' },
+  { name: 'code-slide', id: 'slides-code-slide--default' },
   { name: 'figure-slide', id: 'slides-figure-slide--default' },
   { name: 'image-slide', id: 'slides-image-slide--contained' },
   { name: 'compare-slide', id: 'slides-compare-slide--default' },
