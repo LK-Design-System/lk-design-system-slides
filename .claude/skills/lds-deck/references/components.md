@@ -174,12 +174,46 @@ date를 비워 각주로 보내는 것이 같은 날짜를 복붙하는 것보�
 status 닫힌 어휘: `met`(무채색) `watch` `missed`. 상태 틴트는 일탈 채널이라 강조 예산과
 경쟁하지 않는다 — eyebrow 유지됨.
 
+## 열람 페이지 콘텐츠 (kind="read" 전용 어휘, content-rules §8)
+
+ContentSlide children 안에서 쓰는 열람 덱의 세 계약. 레퍼런스 실물:
+Decks/주간 업무현황 파일럿.
+
+### TopicList — 2단계 리스트
+```jsx
+<TopicList items={[
+  { topic: '대덕특구', details: ['시뮬레이션 기반 검증 완료', '…'] },
+]} />
+```
+대항목 note·semibold·strong, 세부 note-body·regular·neutral, 들여쓰기는 표의
+셀 패딩 재사용. **2단계가 계약** — 세 번째 위계는 들여쓰기가 아니라 표나
+페이지 분할로 간다.
+
+### ExhibitRow — 본문 곁 증거 행
+```jsx
+<ExhibitRow exhibits={[{ src, caption: '시뮬레이션 화면 — P0002 추적 중' }]} />
+```
+N열 균등 grid + 잔여 높이 주도 이미지(고정 px 높이 금지 — 크롬 스필의
+원인이었다) + ellipsis 한 줄 캡션. 컨테이너가 `minmax(0, 1fr)` 행으로
+높이를 한정해 줘야 한다.
+
+### WeekSpanRows — 주차 스팬 행 (간트-lite)
+```jsx
+<WeekSpanRows label="향후 업무 계획" weeks={['8월 2주차', '8월 3주차']}
+  rows={[{ name: '화재 검출', work: '화재 데이터셋 수집 및 학습', from: 0, to: 1, continues: true }]} />
+```
+시간 격자(주차 칸 눈금 + 칸 중앙 헤더)가 축을 만들고, 스팬 바는 grid-column
+**한 몸**이다 — **스팬·레일은 경계에서 끊기지 않는다**(타임라인 레일과 공통
+연속성 규칙, play 단언으로 집행). `continues`는 표 끝을 살짝 넘는 화살촉.
+
 ## 컨테이너
 
 ### DeckViewer
 ```jsx
-<DeckViewer label="덱 제목" initial={0}> {slides} </DeckViewer>
+<DeckViewer label="덱 제목" initial={0} kind="present"> {slides} </DeckViewer>
 ```
+`kind`: `present`(기본, 발표) | `read`(회람·열람 — 콘텐츠 게이트 프로파일이
+바뀐다, content-rules §8).
 한 번에 한 슬라이드 마운트. ← → PageUp/Down Home End, 끝은 순환하지 않고 멈춤.
 이전/다음 버튼 + 진행 바 + `n / total` 카운터 내장. `Step`이 있으면 키가 단계를 먼저
 소비하고, `N` 키가 현재 슬라이드의 발표자 노트를 토글한다.
