@@ -73,7 +73,11 @@ Editorial 컴포넌트는 업스트림 램프를 직접 참조하지 않고 `--e
 
 ## 상태
 
-`0.1.0-alpha.8` — 위임 복귀 세대. 손말이 중복 두 벌이 업스트림으로
+`0.1.0-alpha.9` — **덱 저작 스킬이 패키지에 실린다**(`docs/agent-skills/lds-deck/`).
+설치한 쪽이 그 디렉터리를 `.claude/skills/lds-deck/`로 복사하면 자기 앱에서 같은
+내용 규율로 덱을 만든다 — 컴포넌트만 나가고 규율은 저장소에 남던 비대칭이 닫혔다.
+
+직전 alpha.8은 위임 복귀 세대였다. 손말이 중복 두 벌이 업스트림으로
 돌아갔다: NarrativeTimeline의 가로 레일은 Core Timeline의
 `orientation="horizontal"` 위임으로, StatusAssessment의 표는 Core Table의
 `banded`+`groupKey` 위임으로 — 레일 지오메트리와 셀 문법은 업스트림 것이고,
@@ -107,10 +111,19 @@ npm run storybook   # http://127.0.0.1:6009
 
 ## 덱 생성 스킬
 
-`.claude/skills/lds-deck/`에 덱 작성용 Claude 스킬이 있다. 이 저장소에서 "발표자료
-만들어줘"류의 요청이 오면 스킬이 내용 규율(거버닝 체인 고스트 덱 테스트, 전시물
-규율, 강조 예산)과 컴포넌트 어휘 매핑을 거쳐 `stories/decks/*.stories.jsx`로 덱을
-조립한다. 덱은 Storybook `Decks/` 아래에서 재생한다.
+덱 작성 스킬은 **두 판, 규칙은 한 벌**이다. 워크플로만 독자에 따라 갈린다.
+
+- `.claude/skills/lds-deck/` — **저장소 판**. 여기서 "발표자료 만들어줘"류 요청이
+  오면 산출물은 `stories/decks/*.stories.jsx`이고 QA는 Storybook과 기계 게이트다.
+- `docs/agent-skills/lds-deck/` — **소비자 판**. 패키지에 실려 나가고(`files`가
+  `docs`를 포함), 설치한 쪽이 `.claude/skills/lds-deck/`로 복사하면 자기 앱에서
+  같은 규율로 덱을 만든다. 산출물은 덱 모듈 한 파일이고, **소비 레포에는 게이트가
+  없으므로 ✓ 항목도 사람이 확인한다**는 점이 QA 절의 차이다.
+
+두 판이 읽는 `references/content-rules.md`·`components.md`는 **한 벌뿐**이며
+`docs/agent-skills/lds-deck/references/`에 있다 — 저장소 판이 상대 경로로 그것을
+가리킨다. 사본을 만들면 규칙이 두 벌이 되고 두 벌은 어긋난다(카탈로그를 소스에서
+생성하는 것과 같은 이유).
 
 ## 단계 공개와 발표자 노트
 

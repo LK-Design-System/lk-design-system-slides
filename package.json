@@ -1,6 +1,6 @@
 {
   "name": "@lk-design-system/lds-slides-ui",
-  "version": "0.1.0-alpha.8",
+  "version": "0.1.0-alpha.9",
   "description": "Presentation slide surface, layout, and deck presentation layer for LDS.",
   "license": "MIT",
   "type": "module",
@@ -22,12 +22,13 @@
     "build:storybook": "storybook build",
     "check:story-play": "node scripts/check-story-play.mjs",
     "check:style-ownership": "node scripts/check-style-ownership.mjs",
-    "check:storybook": "npm run check:style-ownership && npm run check:catalogue && npm run build:storybook && npm run check:story-play && npm run check:slide-overflow && npm run check:deck-content",
+    "check:storybook": "npm run check:style-ownership && npm run check:skill-shipping && npm run check:catalogue && npm run build:storybook && npm run check:story-play && npm run check:slide-overflow && npm run check:deck-content",
     "check:slide-overflow": "node scripts/check-slide-overflow.mjs",
     "generate:catalogue": "node scripts/generate-catalogue.mjs",
     "check:catalogue": "node scripts/generate-catalogue.mjs --check",
     "check:deck-content": "node scripts/check-deck-content.mjs",
-    "qa": "node qa/run.mjs"
+    "qa": "node qa/run.mjs",
+    "check:skill-shipping": "node scripts/check-skill-shipping.mjs"
   },
   "peerDependencies": {
     "@lk-design-system/lds-core": ">=0.1.0-rc.69.27 <0.2.0",

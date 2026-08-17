@@ -109,7 +109,7 @@ emphasis를 여러 개 넣지 말 것 — 컴포넌트가 걸러주지만 의도
 
 ### ImageSlide — 사진
 ```jsx
-import photo from './assets/site-photo.jpg';   // 덱 자산은 stories/decks/assets/에 두고 import
+import photo from './assets/site-photo.jpg';   // 덱 자산은 덱 파일 옆 assets/에 두고 import
 <ImageSlide
   eyebrow="현장" title="물류동 증설 현장"
   governing="9월 착공분이 외장 마감 단계에 들어갔습니다."
@@ -226,7 +226,7 @@ N열 균등 grid + 잔여 높이 주도 이미지(고정 px 높이 금지 — �
 
 ### SlideSurface (직접 쓸 일은 드묾)
 고정 1280px 논리 캔버스를 컨테이너에 scale로 끼움. 모든 px는 설계 px.
-새 레이아웃이 필요할 때만 직접 조립하되, 그 전에 저장소 소유자와 어휘 확장을 논의.
+새 레이아웃이 필요할 때만 직접 조립하되, 그 전에 lds-slides-ui 소유자에게 어휘 확장을 요청한다 — 우회 구현은 계약 밖이다.
 
 ## 공통 규칙
 

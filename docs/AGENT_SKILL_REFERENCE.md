@@ -2,7 +2,7 @@
 
 이 문서는 소비 레포의 에이전트 스킬(`lds-ui`, `@lk-design-system/lds-core/docs/agent-skills/lds-ui/`)이 슬라이드·에디토리얼 작업 시점에 로드하는 도메인 규칙 요약이다. 설치된 패키지에서는 `@lk-design-system/lds-slides-ui/docs/AGENT_SKILL_REFERENCE.md`로 도달한다.
 
-기계 계약의 정본은 [catalogue.json](../catalogue.json)(레이아웃 어휘 + 규칙 10개), 소유 철학의 정본은 [README.md](../README.md)다. 산문과 컴포넌트 동작이 다르면 스토리 play 단언이 정본이다. 이 저장소 안에서 덱을 저작할 때는 이 요약이 아니라 저장소의 `lds-deck` 스킬을 쓴다.
+기계 계약의 정본은 [catalogue.json](../catalogue.json)(레이아웃 어휘 + 규칙 10개), 소유 철학의 정본은 [README.md](../README.md)다. 산문과 컴포넌트 동작이 다르면 스토리 play 단언이 정본이다. **덱을 저작하는 작업이면 이 요약이 아니라 [`agent-skills/lds-deck/`](agent-skills/lds-deck/SKILL.md) 스킬을 쓴다** — 이 패키지에 함께 실려 나가며, 소비 레포의 `.claude/skills/lds-deck/`로 복사하면 발표자료 요청에서 자동 트리거된다. 이 요약은 덱 저작이 아닌 작업(제품 화면에 슬라이드 표면을 얹는 등)에서 도메인 규칙만 필요할 때의 것이다.
 
 ## 소유 경계 — 덱은 내용·순서·문구만 소유한다
 

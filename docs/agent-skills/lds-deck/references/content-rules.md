@@ -117,8 +117,10 @@ make-slide에서 가져와 이 시스템의 계약에 맞게 번안했다. 둘 �
 
 ## 7. 최종 체크리스트
 
-기계가 잡는 항목(✓)과 사람이 잡는 항목(□)을 구분한다. ✓는 `npm run check:storybook`에
-포함되어 실패 시 빌드가 선다; □는 `qa/rubric.md`로 심사한다.
+기계가 잡는 항목(✓)과 사람이 잡는 항목(□)을 구분한다. ✓는 lds-slides-ui
+저장소의 `npm run check:storybook`이 집행해 실패 시 빌드를 세운다 — **소비
+레포에는 그 게이트가 없으므로 ✓도 사람이 확인한다.** □는 `qa/rubric.md`의
+심사 항목이다(저장소에 있다).
 
 ```
 □ 거버닝 체인만 읽어도 논증이 성립한다 (고스트 덱 테스트 → rubric: 논증)
@@ -131,7 +133,7 @@ make-slide에서 가져와 이 시스템의 계약에 맞게 번안했다. 둘 �
 ✓ StatementSlide는 덱에 최대 2장                    (check:deck-content)
 ✓ 막지 message가 감사가 아니라 잔향이다               (check:deck-content)
 ✓ 캔버스를 넘치는 슬라이드가 없다 (덱 전 장 순회)      (check:slide-overflow)
-✓ npm run check:storybook 통과 (위 전부 포함)
+✓ (저장소 안에서 저작할 때) npm run check:storybook 통과 — 위 전부 포함
 ```
 
 ## 8. 열람 프로파일 (`kind="read"`)

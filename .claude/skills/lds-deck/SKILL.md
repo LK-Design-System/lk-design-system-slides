@@ -3,7 +3,14 @@ name: lds-deck
 description: "LDS Slides 컴포넌트로 발표 덱을 생성한다. 이 저장소(lk-design-system-slides) 안에서 사용자가 발표자료·슬라이드·덱·장표·프레젠테이션을 만들어 달라고 하면 — '~에 대한 발표자료 만들어줘', '이 문서로 슬라이드 만들어줘', '보고용 장표 구성해줘' 등 — 이 스킬을 사용한다. 산출물은 raw HTML이나 PPTX가 아니라 @lk-design-system/lds-slides-ui 컴포넌트를 조립한 덱 스토리(stories/decks/*.stories.jsx)이며, Storybook(포트 6009)에서 재생한다."
 ---
 
-# lds-deck — LDS Slides 덱 생성 스킬
+# lds-deck — LDS Slides 덱 생성 스킬 (저장소 판)
+
+**두 판이 있고 규칙은 한 벌이다.** 이 파일은 lds-slides-ui **저장소 안에서**
+덱을 저작할 때의 판이다 — 산출물이 덱 스토리이고, Storybook과 기계 게이트가
+있다. 소비 레포용 판은 [`docs/agent-skills/lds-deck/SKILL.md`](../../../docs/agent-skills/lds-deck/SKILL.md)
+로 패키지에 실려 나가며, 워크플로(조립 위치·QA 수단)만 다르다. 내용 규율과
+컴포넌트 어휘는 두 판이 **같은 파일 두 개**를 읽는다(`docs/agent-skills/lds-deck/
+references/`) — 사본을 만들지 말 것, 규칙이 두 벌이 되는 순간 어긋난다.
 
 ## 전제
 
@@ -11,8 +18,8 @@ description: "LDS Slides 컴포넌트로 발표 덱을 생성한다. 이 저장�
 슬라이드의 지오메트리·타입 스케일·레이아웃 계약은 전부 `@lk-design-system/lds-slides-ui`가
 이미 소유한다. 스킬이 하는 일은 세 가지다:
 
-1. 내용을 논증 구조로 편성한다 → [references/content-rules.md](references/content-rules.md)
-2. 각 슬라이드를 컴포넌트 어휘에 매핑한다 → [references/components.md](references/components.md)
+1. 내용을 논증 구조로 편성한다 → [../../../docs/agent-skills/lds-deck/references/content-rules.md](../../../docs/agent-skills/lds-deck/references/content-rules.md)
+2. 각 슬라이드를 컴포넌트 어휘에 매핑한다 → [../../../docs/agent-skills/lds-deck/references/components.md](../../../docs/agent-skills/lds-deck/references/components.md)
 3. `stories/decks/<덱이름>.stories.jsx` 한 파일로 조립한다
 
 **두 레퍼런스를 모두 읽은 뒤에 개요를 짜기 시작한다.**
@@ -41,7 +48,7 @@ description: "LDS Slides 컴포넌트로 발표 덱을 생성한다. 이 저장�
 
 **kind 판별 — 발표하러 가는 덱인가, 읽으라고 보내는 덱인가.** 회람·열람이
 목적(주간보고, leave-behind)이면 `DeckViewer kind="read"`를 달고
-[content-rules.md §8 열람 프로파일](references/content-rules.md)을 따른다:
+[content-rules.md §8 열람 프로파일](../../../docs/agent-skills/lds-deck/references/content-rules.md)을 따른다:
 거버닝 없이 명사형 제목+전시물로 완결, 본문 예산 300자, 상단 정렬, 빈
 슬롯은 비워둔다. 표지는 제목·소속·보고자·주차. 열람 페이지의 어휘는
 `TopicList`·`ExhibitRow`·`WeekSpanRows`. 레퍼런스 실물: Decks/주간 업무현황
