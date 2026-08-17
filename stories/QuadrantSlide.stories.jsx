@@ -81,6 +81,17 @@ export const Default = {
       }
     }
 
+    // THE PLOT CLEARS THE CHROME. This layout is the only one that fills its
+    // region, which makes it the only one that can collide with the
+    // out-of-flow source line — and it did, x-axis rail and source printed on
+    // top of each other (user-caught). Asserted here rather than left to the
+    // deck gate, because the deck gate only sees decks that happen to use it.
+    const source = canvasElement.querySelector('[data-slide-source]');
+    const xAxis = canvasElement.querySelector('[data-quadrant-x-axis]');
+    if (source && xAxis && xAxis.getBoundingClientRect().bottom > source.getBoundingClientRect().top) {
+      throw new Error('The x-axis rail must clear the source line — the chrome band is out of flow, so a filling layout has to reserve it.');
+    }
+
     // NO ROTATED TYPE, here either. The y-axis name reads horizontally above
     // the plot: Korean in vertical writing-mode stacks one block per line and
     // collided with the pole labels.

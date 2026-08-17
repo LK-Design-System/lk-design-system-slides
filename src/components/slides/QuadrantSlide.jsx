@@ -36,6 +36,10 @@ export function QuadrantSlide({
   yAxis = {},
   quadrants = [],
   items = [],
+  // Read, not just forwarded: whether the chrome band exists decides how much
+  // vertical room the plot may claim (see the reservation note below).
+  source,
+  foot,
   style,
   ...rest
 }) {
@@ -45,6 +49,35 @@ export function QuadrantSlide({
     if (granted) emphasisTaken = true;
     return { ...item, emphasis: granted };
   });
+
+  /*
+   * This layout FILLS its region, and that turns out to be the one condition
+   * under which the surface's out-of-flow chrome becomes a collision. The
+   * footer and source line are positioned, deliberately, so they add nothing to
+   * the canvas's scroll height — which also means nothing stops in-flow content
+   * from running underneath them. Every other layout stops short of the bottom,
+   * so the overlap never appeared until a plot claimed its whole region: the
+   * x-axis rail landed at 602–628 with the source line at 598–624, one on top
+   * of the other (user-caught on the real deck; check:deck-content had reported
+   * it as a 20px chrome intrusion and I wrongly filed it under another
+   * session's in-flight chrome work).
+   *
+   * So the plot reserves that band — but only the part that actually reaches
+   * into the region. Measured: the source line runs 598–624 while the region
+   * ends at 628, and the FOOTER (636–662) sits below the region entirely, in
+   * the surface's own bottom padding. Reserving the whole chrome stack was the
+   * first cut and it over-corrected by ~90px, trading the collision for a plot
+   * that left 47% of its region empty — dead-bottom caught that immediately.
+   * So the reservation is the source line's own band, in the SAME tokens the
+   * surface positions it with, and only when a source exists.
+   *
+   * The systemic fix belongs one level up — a content region that ends where
+   * the chrome begins would cure every future filling layout at once — but
+   * ContentSlide and SlideSurface are mid-flight in another session, so this
+   * stays local and the next person to touch the band should consolidate it.
+   */
+  const reservesChrome = Boolean(source);
+  const chromeBand = 'calc(var(--slides-fine-line) + var(--space-3))';
   const placed = marked.filter(hasCoordinates);
   const unplaced = marked.filter((item) => !hasCoordinates(item));
 
@@ -62,7 +95,7 @@ export function QuadrantSlide({
   };
 
   return (
-    <ContentSlide data-lds-quadrant-slide style={style} {...rest}>
+    <ContentSlide data-lds-quadrant-slide source={source} foot={foot} style={style} {...rest}>
       <div
         data-slide-quadrant
         style={{
@@ -75,6 +108,9 @@ export function QuadrantSlide({
           columnGap: 'var(--space-3)',
           rowGap: 'var(--space-2)',
           height: '100%',
+          // Reserve the out-of-flow chrome band; see the note above.
+          paddingBottom: reservesChrome ? chromeBand : 0,
+          boxSizing: 'border-box',
           minHeight: 0,
         }}
       >
