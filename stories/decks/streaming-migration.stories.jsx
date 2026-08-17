@@ -15,6 +15,7 @@ import {
   StatSlide,
   EndSlide,
 } from '../../src/index.js';
+import { Lockup } from '@lk-design-system/lds-theme';
 
 /**
  * lds-deck 스킬의 모범 덱. 스킬 워크플로(개요 → 고스트 덱 테스트 → 조립 → QA)를
@@ -71,8 +72,13 @@ export const Deck = {
   name: '스트리밍 이관 제안',
   render: () => (
     <DeckViewer label="스트리밍 이관 제안">
+      {/* 표지와 간지만 브랜드 네이비, 본문은 흰 표면 — appearance가 레이아웃
+          축인 이유(D1) 그대로다. 45장 전부 흰 카드였을 때 챕터 전환이 읽어야만
+          보였다; 색면은 넘기는 눈에 챕터가 바뀌었음을 즉시 알린다. */}
       <TitleSlide
         preset="briefing"
+        appearance="brand"
+        lockup={<Lockup variant="inline" tone="white" height={30} />}
         eyebrow="플랫폼팀 · 2026 3분기"
         title="데이터 파이프라인 이관 제안"
         subtitle="배치에서 스트리밍으로 — 지연에 민감한 것부터"
@@ -86,6 +92,7 @@ export const Deck = {
 
       <SectionSlide
         preset="briefing"
+        appearance="brand"
         index={1}
         title="현황 진단"
         subtitle="지연은 어디서 생기는가"
@@ -149,6 +156,7 @@ export const Deck = {
       />
       <SectionSlide
         preset="briefing"
+        appearance="brand"
         index={2}
         title="대안 평가"
         subtitle="세 갈래 선택지"
@@ -185,6 +193,7 @@ export const Deck = {
       />
       <SectionSlide
         preset="briefing"
+        appearance="brand"
         index={3}
         title="실행 계획"
         subtitle="3단계 이관과 판정 기준"
@@ -252,6 +261,7 @@ export const Deck = {
       />
       <EndSlide
         preset="briefing"
+        appearance="brand"
         message="지연에 민감한 것부터, 8월에 시작합니다."
         contact="플랫폼팀 · jinhyuk2me@gmail.com"
         notes="Q&A 동안 이 화면을 유지한다."
