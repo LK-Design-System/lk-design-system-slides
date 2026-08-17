@@ -153,9 +153,9 @@ export const Deck = {
       <TitleSlide
         eyebrow="LKR 플랫폼"
         title="8월 2주차 업무현황"
-        subtitle="시뮬레이션 기반 검증 경과 — 열람용 요약"
+        subtitle="장진혁"
         foot={FOOT}
-        notes="열람 덱 파일럿: 회람용이라 발표자 서사 없이 페이지 단위로 완결된다."
+        notes="열람 덱 파일럿: 회람용이라 발표자 서사 없이 페이지 단위로 완결된다. 표지는 제목·소속·보고자·주차로 완결 — 내용 요약 부제는 발표 문법이라 쓰지 않는다."
       />
       <ContentSlide
         preset="briefing"
