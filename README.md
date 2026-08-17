@@ -73,12 +73,16 @@ Editorial 컴포넌트는 업스트림 램프를 직접 참조하지 않고 `--e
 
 ## 상태
 
-`0.1.0-alpha.6` — 구도 개편 세대. 투영 램프가 hero 단(업스트림 `display0` 경유,
-112px)을 갖고, 분량이 희소 슬라이드의 단을 정하며(12자 규칙), 표·도판은 매체
-폭 정책을 따르고, 출처는 캔버스 하단 크롬에 고정된다. **Core/Theme/Product
-`>=0.1.0-rc.69.26` 필수** — `--display0-*`가 그 릴리스에서 생겼고, 구 코어에서는
-없는 토큰이 조용히 무너진다(함정 2). Storybook 포트는 **6009**
-(사다리: Core 6006 · 3D 6007 · Robotics 6008 · Slides 6009 — 새 자매는 6011부터).
+`0.1.0-alpha.7` — 열람 덱 세대. 덱에 소비 방식 축이 생겼다: `DeckViewer
+kind="present"|"read"` — read는 발표 문법만 벗고(거버닝 강제 해제, 본문 300자,
+under-fill 해제) 장르 무관 규율은 유지한다(READING_DECK_PROPOSAL). 열람
+페이지의 계약 3종이 editorial로 승격됐고(`TopicList`·`ExhibitRow`·
+`WeekSpanRows` — 시간 격자 + 무단절 스팬 바), 콘텐츠 게이트는 크롬 존
+침범(chrome-intrusion)을 잡으며 핀은 (덱, 규칙) 쌍 단위다. 그 외: eyebrow
+가족 단일 단(overline), 가로 타임라인 랭크 상향, 표지 fit 사다리.
+**Core/Theme/Product `>=0.1.0-rc.69.26` 필수**(display0). Storybook 포트는
+**6009** (사다리: Core 6006 · 3D 6007 · Robotics 6008 · Slides 6009 — 새
+자매는 6011부터).
 
 Core/Product/Theme은 `peerDependencies`라 트리에 Core는 정확히 하나만 존재한다 —
 토큰 층이 두 벌이 되면 `--color-*`의 승자가 로드 순서로 정해지기 때문이다. 알파
