@@ -111,21 +111,32 @@ const PlanRows = ({ rows }) => (
               }}
             >
               {active && (
-                <span
-                  style={{
-                    flex: 1,
-                    height: 10,
-                    background: 'var(--color-semantic-primary-normal)',
-                    borderRadius: `${isStart ? '5px' : 0} ${isEnd && !continues ? '5px 5px' : '0 0'} ${isStart ? '5px' : 0}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                  }}
-                >
+                <>
+                  <span
+                    style={{
+                      flex: 1,
+                      height: 12,
+                      background: 'var(--color-semantic-primary-normal)',
+                      borderRadius: `${isStart ? '6px' : 0} ${isEnd && !continues ? '6px 6px' : '0 0'} ${isStart ? '6px' : 0}`,
+                    }}
+                  />
+                  {/* 계속 화살촉 — 글리프가 아니라 바와 같은 토큰의 삼각형.
+                      글리프를 바 위에 얹는 첫 시도는 primary 위 primary라
+                      보이지 않았다. */}
                   {isEnd && continues && (
-                    <span aria-label="다음 주차로 계속" style={{ color: 'var(--color-semantic-primary-normal)', fontSize: 'var(--slides-caption-size)', lineHeight: 1 }}>▶</span>
+                    <span
+                      aria-label="다음 주차로 계속"
+                      style={{
+                        width: 0,
+                        height: 0,
+                        flex: 'none',
+                        borderTop: '9px solid transparent',
+                        borderBottom: '9px solid transparent',
+                        borderLeft: '12px solid var(--color-semantic-primary-normal)',
+                      }}
+                    />
                   )}
-                </span>
+                </>
               )}
             </div>
           );
