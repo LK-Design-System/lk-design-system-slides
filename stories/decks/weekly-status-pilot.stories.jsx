@@ -161,7 +161,6 @@ export const Deck = {
         preset="briefing"
         eyebrow="업무 현황 · 장진혁"
         title="업무 현황 및 이슈"
-        anchor="center"
         foot={FOOT}
         notes="열람 파일럿 2호: 원본은 내용|진행현황 2열 표지만, 실체는 프로젝트별 진행 리스트다 — 1호의 2단계 리스트 계약을 재사용한다."
       >
@@ -240,7 +239,6 @@ export const Deck = {
         preset="briefing"
         eyebrow="업무 계획"
         title="향후 업무 계획"
-        anchor="center"
         foot={FOOT}
         notes="열람 파일럿 3호: 주차 스팬 행(간트-lite) — 기존 어휘에 없는 세 번째 계약 후보."
       >
