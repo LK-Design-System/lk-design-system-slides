@@ -46,8 +46,13 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
             // slide's only accent.
             fontSize: 'var(--slides-overline-size)',
             lineHeight: 'var(--slides-overline-line)',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
+            // The ramp's own tracking, not the Latin kicker idiom. uppercase +
+            // 0.08em is an English smallcaps convention; every real eyebrow in
+            // this repository is Korean, where uppercase is a no-op and tracking
+            // out already-wide syllable blocks loosens them further
+            // (HEADER_SYSTEM_PROPOSAL R2). English eyebrows lose smallcaps —
+            // accepted; the English deck profile is a separate deferred item (E3).
+            letterSpacing: 'var(--slides-overline-spacing)',
             fontWeight: 'var(--fw-semibold)',
             color: 'var(--slides-ink-quiet)',
           }}
