@@ -538,6 +538,10 @@
           "name": "channel"
         },
         {
+          "name": "kind",
+          "default": "'present'"
+        },
+        {
           "name": "label",
           "default": "'슬라이드 덱'"
         },
@@ -556,6 +560,7 @@
         "data-deck-progress-fill",
         "data-deck-progress-track",
         "data-deck-slide",
+        "data-lds-deck-kind",
         "data-lds-deck-viewer"
       ]
     },

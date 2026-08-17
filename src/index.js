@@ -29,3 +29,8 @@ export { BeforeAfter } from './components/editorial/BeforeAfter.jsx';
 export { NarrativeTimeline } from './components/editorial/NarrativeTimeline.jsx';
 export { OptionAssessment } from './components/editorial/OptionAssessment.jsx';
 export { StatusAssessment } from './components/editorial/StatusAssessment.jsx';
+// Reading-page contracts, promoted from the weekly-status pilot
+// (READING_DECK_PROPOSAL 변경 2).
+export { TopicList } from './components/editorial/TopicList.jsx';
+export { ExhibitRow } from './components/editorial/ExhibitRow.jsx';
+export { WeekSpanRows } from './components/editorial/WeekSpanRows.jsx';

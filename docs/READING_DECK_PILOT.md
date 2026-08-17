@@ -1,6 +1,8 @@
 # 열람 덱 파일럿 — 관찰 기록
 
-상태: **파일럿 진행 중** (2026-08-17, 실덱 1건)
+상태: **완료 — 제안 구현으로 졸업** (2026-08-17. 이 덱은 kind="read"의
+레퍼런스 실물이 됐고, 손 정의 계약 3종은 TopicList·ExhibitRow·WeekSpanRows로
+승격됐다)
 실물: `stories/decks/weekly-status-pilot.stories.jsx` (Decks/주간 업무현황 파일럿)
 
 ## 장르
