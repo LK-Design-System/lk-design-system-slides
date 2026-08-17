@@ -1,5 +1,6 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
+import { DeckMediumContext } from './deckMedium.js';
 import { phrased } from './phrasing.jsx';
 
 /**
@@ -22,6 +23,16 @@ import { phrased } from './phrasing.jsx';
  * The header does not move either way.
  */
 export function ContentSlide({ eyebrow, title, governing, anchor = 'top', children, style, ...rest }) {
+  // A present-deck content slide without a claim is a slide with no reason,
+  // and until now only the GATE knew it — the component rendered the gap in
+  // silence, so the contract lived one repository-layer away from the thing
+  // it governed. Breaches render on the canvas in this repository (Triptych
+  // "레이블 없음", AnnotatedFigure "앵커 미확인"); this is the same idiom.
+  // Read decks legitimately omit the claim (noun title + exhibit is that
+  // genre's complete grammar), and outside a deck there is no medium to
+  // judge by — both stay silent, so the catalogue is untouched.
+  const medium = React.useContext(DeckMediumContext);
+  const claimMissing = Boolean(medium) && medium.kind !== 'read' && !governing;
   return (
     <SlideSurface style={{ justifyContent: 'flex-start', ...style }} {...rest}>
       {/* data-slide-header VALUES name which of the three header stacks this
@@ -101,6 +112,20 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
             }}
           >
             {phrased(governing)}
+          </p>
+        )}
+        {claimMissing && (
+          <p
+            data-slide-governing-missing
+            style={{
+              margin: 'var(--space-3) 0 0',
+              fontSize: 'var(--slides-fine-size)',
+              lineHeight: 'var(--slides-fine-line)',
+              fontWeight: 'var(--fw-semibold)',
+              color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
+            }}
+          >
+            거버닝 미기재 — 본문이 입증할 주장 한 문장이 필요합니다
           </p>
         )}
       </header>

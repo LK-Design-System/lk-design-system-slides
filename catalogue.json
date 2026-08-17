@@ -146,6 +146,7 @@
         "data-slide-content",
         "data-slide-eyebrow",
         "data-slide-governing",
+        "data-slide-governing-missing",
         "data-slide-header",
         "data-slide-title"
       ]

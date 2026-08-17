@@ -1,5 +1,6 @@
 import React from 'react';
 import { ContentSlide } from '../src/index.js';
+import { DeckMediumContext } from '../src/components/slides/deckMedium.js';
 
 const meta = {
   title: 'Slides/Content Slide',
@@ -86,6 +87,46 @@ export const Governing = {
     }
     if (!/(다|요)\.$/.test(governing.textContent.trim())) {
       throw new Error('The governing message is a complete sentence — the noun ending belongs to the title.');
+    }
+  },
+};
+
+export const MissingClaimReported = {
+  name: '거버닝 미기재 신고',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'present 덱의 콘텐츠 슬라이드가 거버닝 없이 렌더되면 캔버스에 신고가 뜹니다 '
+          + '(Triptych "레이블 없음"과 같은 관용구). read 덱은 명사형 제목 + 전시물이 완결 '
+          + '문법이라 조용하고, 덱 밖(카탈로그)에서도 판단할 매체가 없어 조용합니다.',
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
+      <DeckMediumContext.Provider value={{ kind: 'present' }}>
+        <ContentSlide data-probe="present" eyebrow="현황" title="주장 없는 장">
+          <p style={{ margin: 0 }}>근거만 있고 주장이 없는 본문.</p>
+        </ContentSlide>
+      </DeckMediumContext.Provider>
+      <DeckMediumContext.Provider value={{ kind: 'read' }}>
+        <ContentSlide data-probe="read" eyebrow="현황" title="열람 페이지">
+          <p style={{ margin: 0 }}>열람 문법: 명사형 제목 + 전시물로 완결.</p>
+        </ContentSlide>
+      </DeckMediumContext.Provider>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const present = canvasElement.querySelector('[data-probe="present"]');
+    const marker = present.querySelector('[data-slide-governing-missing]');
+    if (!marker) throw new Error('A present-deck content slide without a claim must report the gap on the canvas.');
+    if (!marker.textContent.includes('거버닝 미기재')) {
+      throw new Error('The report must name what is missing, not decorate the gap.');
+    }
+    const read = canvasElement.querySelector('[data-probe="read"]');
+    if (read.querySelector('[data-slide-governing-missing]')) {
+      throw new Error('A read deck omits the claim by grammar, not by mistake — no report.');
     }
   },
 };
