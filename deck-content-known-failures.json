@@ -6,6 +6,7 @@
     {
       "id": "decks-주간-업무현황-파일럿--deck",
       "rules": [
+        "governing-required",
         "body-cap"
       ]
     }

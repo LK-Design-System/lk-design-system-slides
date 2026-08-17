@@ -161,7 +161,7 @@ export const Deck = {
         preset="briefing"
         eyebrow="업무 현황 · 장진혁"
         title="업무 현황 및 이슈"
-        governing="두 프로젝트 모두 시뮬레이션 검증 단계를 통과해 실환경 검증으로 넘어갑니다."
+        anchor="center"
         foot={FOOT}
         notes="열람 파일럿 2호: 원본은 내용|진행현황 2열 표지만, 실체는 프로젝트별 진행 리스트다 — 1호의 2단계 리스트 계약을 재사용한다."
       >
@@ -185,7 +185,6 @@ export const Deck = {
         preset="briefing"
         eyebrow="업무 현황 상세"
         title="시뮬레이션 기반 검증"
-        governing="실제 CCTV 투입 전에 Issac Sim과 Unreal로 기능·부하를 검증했습니다."
         foot={FOOT}
         notes="열람 페이지: 경과·수치·증거가 한 장에 담긴다 — 발표 덱이라면 세 장으로 나눌 내용."
       >
@@ -241,7 +240,6 @@ export const Deck = {
         preset="briefing"
         eyebrow="업무 계획"
         title="향후 업무 계획"
-        governing="3주차는 신규 착수 없이 두 프로젝트의 지속 업무로 채워집니다."
         anchor="center"
         foot={FOOT}
         notes="열람 파일럿 3호: 주차 스팬 행(간트-lite) — 기존 어휘에 없는 세 번째 계약 후보."
