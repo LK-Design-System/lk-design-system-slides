@@ -241,6 +241,12 @@
         {
           "name": "items",
           "default": "[]"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "foot"
         }
       ],
       "dataAttributes": [

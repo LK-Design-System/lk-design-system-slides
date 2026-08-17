@@ -32,7 +32,7 @@ export const BrandCover = {
       // organisation in type UNDER its own logo is the habit this slot
       // exists to end.
       subtitle="2026 3분기"
-      foot="LK ROBOTICS"
+      mark={<Lockup variant="mark" tone="current" height={20} />}
     />
   ),
   play: async ({ canvasElement }) => {
@@ -58,6 +58,39 @@ export const BrandCover = {
       throw new Error(`Type on the brand surface must be inverse ink, measured ${titleColour}.`);
     }
 
+    // CHROME follows the surface too, and this is the assertion that was
+    // missing: the footer read the label token DIRECTLY instead of the ink
+    // indirection, held its white-surface value on brand navy, and measured
+    // 1.37:1 — invisible, and invisible in a way an eye reads as "a bit
+    // faint" rather than as a defect. Contrast is computed properly here
+    // (translucent ink composited over the surface, color(srgb …) parsed as
+    // 0-1) because the first attempt at this number was wrong in both ways.
+    const parse = (colour) => {
+      const nums = (colour.match(/[\d.]+/g) ?? []).map(Number);
+      const scaled = colour.startsWith('color(') ? nums.slice(0, 3).map((v) => v * 255) : nums.slice(0, 3);
+      return { channels: scaled, alpha: nums.length > 3 ? nums[3] : 1 };
+    };
+    const contrast = (colour, behind) => {
+      const front = parse(colour);
+      const back = parse(behind).channels;
+      const linear = (v) => (v / 255 <= 0.03928 ? v / 255 / 12.92 : ((v / 255 + 0.055) / 1.055) ** 2.4);
+      const composited = front.channels.map((v, i) => v * front.alpha + back[i] * (1 - front.alpha));
+      const light = (c) => 0.2126 * linear(c[0]) + 0.7152 * linear(c[1]) + 0.0722 * linear(c[2]);
+      const [high, low] = [light(composited), light(back)].sort((a, b) => b - a);
+      return (high + 0.05) / (low + 0.05);
+    };
+    for (const [name, node] of [
+      ['footer', surface.querySelector('[data-slide-foot-label]')],
+      ['footer mark', surface.querySelector('[data-slide-mark] svg')],
+      ['page number', surface.querySelector('[data-slide-page]')],
+    ]) {
+      if (!node) continue;
+      const ratio = contrast(getComputedStyle(node).color, surfaceColour);
+      if (ratio < 4.5) {
+        throw new Error(`The ${name} must survive the brand re-point; measured ${ratio.toFixed(2)}:1 against ${surfaceColour}.`);
+      }
+    }
+
     // The logo has a place to land, and it is a slot the deck fills.
     const lockup = surface.querySelector('[data-slide-lockup] svg');
     if (!lockup) throw new Error('The cover must be able to carry a brand mark.');
@@ -75,7 +108,7 @@ export const BrandSection = {
       index={2}
       title="도입 효과"
       subtitle="측정된 것과 추정한 것"
-      foot="LK ROBOTICS"
+      mark={<Lockup variant="mark" tone="current" height={20} />}
     />
   ),
   play: async ({ canvasElement }) => {
@@ -99,14 +132,14 @@ export const SparseFamily = {
         appearance="brand"
         eyebrow="약속"
         statement="현장에서 재고를 세는 일은 사라집니다."
-        foot="LK ROBOTICS"
+        mark={<Lockup variant="mark" tone="current" height={20} />}
       />
       <EndSlide
         appearance="brand"
         lockup={<Lockup variant="inline" tone="white" height={24} />}
         message="다음 단계는 파일럿 한 동입니다."
         contact="platform@example.com"
-        foot="LK ROBOTICS"
+        mark={<Lockup variant="mark" tone="current" height={20} />}
       />
     </div>
   ),

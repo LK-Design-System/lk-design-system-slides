@@ -9,6 +9,15 @@
  * centimeters: steps are larger and fewer than the product ramp, and every step
  * resolves through the upstream ramp variables so a Theme change re-skins decks.
  *
+ * Weights follow the ramp variant sets recorded in the LDS baseline
+ * (FOUNDATION_BASELINE_REPORT): display and title tiers carry 400/500/700,
+ * heading and below carry 400/500/600. Slides spends the display/title tiers
+ * as a BINARY — regular content, bold structure — because 600 there is not a
+ * ramp weight at all: governing, the agenda current row and panel labels all
+ * sat on semibold until the weight audit (user-prompted, 2026-08-17). 600
+ * belongs to heading-tier chrome: eyebrows, the grade marking, emphasized
+ * captions.
+ *
  * Presets: the deck kind is a token axis, not a layout axis. `:root` is the
  * `keynote` preset — the strictest projection floor (body ≥ 24px ≈ 18pt on the
  * 1280px canvas), so an unmarked deck is always auditorium-safe. Denser kinds
@@ -27,6 +36,22 @@
   --slides-canvas-max-width: 1280px;
   --slides-safe-x: 7%;
   --slides-safe-y: 8%;
+  /* Vertical inset for out-of-flow chrome (footer, source line, grade
+     marking). The horizontal axis always tracked the safe area; the vertical
+     axis was a flat 24px everywhere, so the footer sat 65-90px from the left
+     and 25px from the bottom — an imbalance invisible in small grey type and
+     immediately wrong the moment a logo landed in it (user-flagged).
+
+     The value is the CEILING the chrome stack permits, not taste: the padding
+     band must hold inset + footer line + gap + source line with clearance,
+     because content is entitled to paint down to the padding edge and the
+     source line must stay below it (chrome-intrusion contract). Keynote:
+     102.4px padding − (18 fine + 12 gap + 18 fine) − 4 clearance ≈ 50px. A
+     first cut raised this to safe-y itself (57.6px) and the source line rode
+     20px INTO the content region on the first deck page that carried both a
+     source and a footer — the flat 24px turns out to have been briefing's
+     ceiling all along, miscarried onto keynote where the band is deeper. */
+  --slides-chrome-inset: 50px;
 
   /* Projection type scale — display/title/body/caption for a projected room. */
   /* `hero` is the sparse-slide tier: one statement or one number carrying a
@@ -195,6 +220,11 @@
 [data-slides-preset='briefing'] {
   --slides-safe-x: 5%;
   --slides-safe-y: 6%;
+  /* Briefing's ceiling by the same arithmetic: 76.8px padding − 48 stack − 3
+     clearance ≈ 26px. The tighter band is a consequence of the denser safe
+     area, not a separate opinion — a briefing page with a source line simply
+     has no more room than this. */
+  --slides-chrome-inset: 26px;
 
   /* briefing's hero keeps the one-rung-down anchor as a calc: the upstream
      ramp has display0 for the keynote tier only, and a briefing display0

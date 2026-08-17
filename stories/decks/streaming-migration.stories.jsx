@@ -85,7 +85,15 @@ const listStyle = {
 export const Deck = {
   name: '스트리밍 이관 제안',
   render: () => (
-    <DeckViewer label="스트리밍 이관 제안">
+    <DeckViewer
+      label="스트리밍 이관 제안"
+      // The standing mark, stated once for the whole deck (한국 보고 장표의 매
+      // 페이지 로고). variant="mark": the compact glyph, 21px wide against the
+      // wordmark 156px — chrome rides in the band, it does not carry the page.
+      // tone="current" so it inherits the chrome ink and follows a re-pointed
+      // surface instead of holding a colour of its own.
+      mark={<Lockup variant="mark" tone="current" height={20} />}
+    >
       {/* 표지와 간지만 브랜드 네이비, 본문은 흰 표면 — appearance가 레이아웃
           축인 이유(D1) 그대로다. 45장 전부 흰 카드였을 때 챕터 전환이 읽어야만
           보였다; 색면은 넘기는 눈에 챕터가 바뀌었음을 즉시 알린다. */}

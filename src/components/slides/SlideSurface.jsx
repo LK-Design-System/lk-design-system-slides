@@ -81,7 +81,13 @@ export function SlideSurface({
   const frameRef = React.useRef(null);
   const [scale, setScale] = React.useState(null);
   const position = React.useContext(DeckPositionContext);
-  const showFooter = footer !== false && (foot || position);
+  // The MARK counts as a reason for the band to exist. It did not, and the
+  // consequence was silent in the worst way: a deck that replaced its typed
+  // organisation name with the standing mark lost the footer entirely, so the
+  // mark it had just been given rendered nowhere and the slide looked merely
+  // "clean". A chrome slot that only appears when a DIFFERENT slot is filled
+  // is not a slot.
+  const showFooter = footer !== false && (foot || position || resolvedMark);
 
   // Layout effect, not effect: the first paint must already be scaled, or the
   // slide flashes at full logical size before snapping down.
@@ -166,13 +172,19 @@ export function SlideSurface({
               left: 'var(--slides-safe-x)',
               right: 'var(--slides-safe-x)',
               bottom: showFooter
-                ? 'calc(var(--space-6) + var(--slides-fine-line) + var(--space-3))'
-                : 'var(--space-6)',
+                ? 'calc(var(--slides-chrome-inset) + var(--slides-fine-line) + var(--space-3))'
+                : 'var(--slides-chrome-inset)',
               margin: 0,
               fontSize: 'var(--slides-fine-size)',
               lineHeight: 'var(--slides-fine-line)',
               letterSpacing: 'var(--slides-fine-spacing)',
-              color: 'var(--color-semantic-label-alternative)',
+              // The ink indirection, not the label token underneath it. Both
+              // chrome lines read the upstream token directly and so stayed on
+              // the WHITE-surface value when the brand surface re-pointed
+              // everything around them — measured 1.37:1 on brand navy, where
+              // 4.5 is the floor. The default resolves to the same token these
+              // read before, so nothing on a white surface moves.
+              color: 'var(--slides-ink-quiet)',
             }}
           >
             {source}
@@ -188,7 +200,7 @@ export function SlideSurface({
             data-slide-classification
             style={{
               position: 'absolute',
-              top: 'var(--space-6)',
+              top: 'var(--slides-chrome-inset)',
               right: 'var(--slides-safe-x)',
               margin: 0,
               fontSize: 'var(--slides-fine-size)',
@@ -212,20 +224,30 @@ export function SlideSurface({
               position: 'absolute',
               left: 'var(--slides-safe-x)',
               right: 'var(--slides-safe-x)',
-              // space-6, not space-4: at 16px the band visually merged with
-              // the 12px rounded corner and read as stuck to the edge
-              // (user-flagged). 24px clears the corner radius with room to
-              // spare and still keeps the whole chrome stack inside the
-              // keynote margin band.
-              bottom: 'var(--space-6)',
+              // The chrome inset, not a constant. The old flat 24px was
+              // chosen only to clear the 12px corner radius, which left the
+              // band 65-90px from the left but 25px from the bottom — an
+              // imbalance invisible in small grey type and immediately wrong
+              // under a logo (user-flagged). The token tracks the preset's
+              // safe area, and clears the radius at every preset by
+              // construction.
+              bottom: 'var(--slides-chrome-inset)',
               display: 'flex',
-              alignItems: 'baseline',
+              // Centre, not baseline. Baseline is right for two runs of text
+              // and wrong the moment one side is a MARK: an SVG has no
+              // baseline, so its bottom edge gets aligned to the text's
+              // baseline and it floats above the descenders — measured 5px
+              // higher than the page number. Both items carry the same type
+              // size, so centring leaves text-only footers where they were.
+              alignItems: 'center',
               justifyContent: 'space-between',
               gap: 'var(--space-4)',
               fontSize: 'var(--slides-fine-size)',
               lineHeight: 'var(--slides-fine-line)',
               letterSpacing: 'var(--slides-fine-spacing)',
-              color: 'var(--color-semantic-label-alternative)',
+              // Same repair as the source line above: chrome rides the ink
+              // indirection so a re-pointed surface carries it.
+              color: 'var(--slides-ink-quiet)',
             }}
           >
             <span
