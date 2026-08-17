@@ -80,8 +80,11 @@ import { closeServer, startStaticServer } from './_storybook-static.mjs';
 // Deck stories are WALKED (same affordance as check-slide-overflow): one slide
 // is mounted at a time, so judging what is on screen would judge the cover.
 //
-// Known failures are pinned in deck-content-known-failures.json on the same
-// ratchet terms as the other gates.
+// Known failures are pinned in deck-content-known-failures.json per (deck,
+// rule) pair, not per deck: a deck pinned for body-cap gets no pass on a
+// governing-required it grows later. (Id-level pins had exactly that blind
+// spot — found 2026-08-17 when the reading pilot dropped its governings and
+// the gate stayed green; READING_DECK_PILOT.md friction 5.)
 
 const root = process.cwd();
 const staticDir = path.join(root, 'storybook-static');
@@ -321,9 +324,9 @@ async function auditStory(page, origin, id) {
 async function loadKnown() {
   try {
     const parsed = JSON.parse(await readFile(knownPath, 'utf8'));
-    return new Set(parsed.failures.map((failure) => failure.id));
+    return new Map(parsed.failures.map((failure) => [failure.id, new Set(failure.rules ?? [])]));
   } catch (error) {
-    if (error.code === 'ENOENT') return new Set();
+    if (error.code === 'ENOENT') return new Map();
     throw error;
   }
 }
@@ -373,7 +376,7 @@ async function main(origin) {
   if (updateKnown) {
     await writeFile(knownPath, `${JSON.stringify({
       schemaVersion: 1,
-      note: 'Deck stories with content-discipline violations. A ratchet: check:deck-content fails on any unlisted violation, and also when a listed deck comes clean. Only ever remove entries.',
+      note: 'Deck stories with content-discipline violations, pinned per (deck, rule) pair. A ratchet: check:deck-content fails on any (deck, rule) not listed here — a pinned deck gets no pass on rules it was not pinned for — and also when a pinned rule stops firing. Only ever remove entries.',
       count: offenders.length,
       failures: offenders.map((result) => ({
         id: result.id,
@@ -384,9 +387,24 @@ async function main(origin) {
     return;
   }
 
-  const offenderIds = new Set(offenders.map((result) => result.id));
-  const regressions = offenders.filter((result) => !known.has(result.id));
-  const fixed = requestedIds !== null ? [] : [...known].filter((id) => !offenderIds.has(id)).sort();
+  // The pin is a (deck, rule) pair, not a deck: a deck pinned for body-cap
+  // stays gated on every other rule. Judging by id alone let a pinned deck
+  // grow new violations silently (READING_DECK_PILOT.md friction 5).
+  const pinnedRules = (id) => known.get(id) ?? new Set();
+  const regressions = offenders
+    .map((result) => ({
+      ...result,
+      issues: result.issues.filter((issue) => !pinnedRules(result.id).has(issue.rule)),
+    }))
+    .filter((result) => result.issues.length > 0);
+  const firingRules = new Map(offenders.map((result) => [
+    result.id, new Set(result.issues.map((issue) => issue.rule)),
+  ]));
+  const fixed = requestedIds !== null ? [] : [...known]
+    .flatMap(([id, rules]) => [...rules]
+      .filter((rule) => !firingRules.get(id)?.has(rule))
+      .map((rule) => `${id} [${rule}]`))
+    .sort();
   const slidesSeen = results.reduce((total, result) => total + result.visited, 0);
 
   console.log(
@@ -398,16 +416,17 @@ async function main(origin) {
   const problems = [];
   if (regressions.length > 0) {
     problems.push(
-      'Decks breaking content discipline. Fix the content (the rules and their sources are at the '
-      + 'top of this script), or pin deliberately with `npm run check:deck-content -- --update-known-failures`:\n'
+      'Decks breaking content discipline (a pin excuses only its listed rules, so these violations '
+      + 'are new even where the deck is pinned). Fix the content (the rules and their sources are at '
+      + 'the top of this script), or pin deliberately with `npm run check:deck-content -- --update-known-failures`:\n'
       + regressions.map(describe).join('\n')
     );
   }
   if (fixed.length > 0) {
     problems.push(
-      'These decks are pinned as known violations but now pass. Remove them from '
-      + `${path.relative(root, knownPath)} so the ratchet keeps its teeth:\n`
-      + fixed.map((id) => `- ${id}`).join('\n')
+      'These (deck, rule) pins no longer fire. Remove the rule — or the whole entry once its rules '
+      + `run out — from ${path.relative(root, knownPath)} so the ratchet keeps its teeth:\n`
+      + fixed.map((pair) => `- ${pair}`).join('\n')
     );
   }
   if (problems.length > 0) throw new Error(problems.join('\n\n'));
