@@ -558,6 +558,9 @@
           "name": "preset"
         },
         {
+          "name": "print"
+        },
+        {
           "name": "label",
           "default": "'슬라이드 덱'"
         },
@@ -616,6 +619,35 @@
         "data-presenter-prev",
         "data-presenter-progress",
         "data-presenter-reset"
+      ]
+    },
+    {
+      "name": "DeckPrintSheet",
+      "kind": "deck",
+      "useFor": "The deck as paper. One surface, two consumers: a browser's print dialog and `scripts/export-pdf.mjs` — the export path is not a second renderer, it is this sheet driven by Playwright, so a PDF cannot drift from what the screen shows (COMPLETENESS_AUDIT A1).",
+      "props": [
+        {
+          "name": "children"
+        },
+        {
+          "name": "kind",
+          "default": "'present'"
+        },
+        {
+          "name": "preset"
+        },
+        {
+          "name": "label",
+          "default": "'슬라이드 덱 (인쇄용)'"
+        }
+      ],
+      "dataAttributes": [
+        "data-lds-deck-kind",
+        "data-lds-print-page",
+        "data-lds-print-sheet",
+        "data-lds-slide-surface",
+        "data-print-page",
+        "data-print-page-count"
       ]
     }
   ]

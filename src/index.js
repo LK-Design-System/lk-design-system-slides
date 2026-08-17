@@ -16,6 +16,7 @@ export { RoadmapSlide } from './components/slides/RoadmapSlide.jsx';
 export { AssessmentSlide } from './components/slides/AssessmentSlide.jsx';
 export { DeckViewer } from './components/slides/DeckViewer.jsx';
 export { PresenterView } from './components/slides/PresenterView.jsx';
+export { DeckPrintSheet } from './components/slides/DeckPrintSheet.jsx';
 export { EndSlide } from './components/slides/EndSlide.jsx';
 
 // Editorial surface, absorbed from @lk-design-system/lds-editorial-ui.

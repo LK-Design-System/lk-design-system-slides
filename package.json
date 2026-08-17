@@ -31,7 +31,9 @@
     "check:skill-shipping": "node scripts/check-skill-shipping.mjs",
     "check:figure-fill": "node scripts/check-figure-fill.mjs",
     "check:visual-snapshot": "node scripts/check-visual-snapshot.mjs",
-    "update:visual-snapshot": "node scripts/check-visual-snapshot.mjs --update"
+    "update:visual-snapshot": "node scripts/check-visual-snapshot.mjs --update",
+    "export:pdf": "node scripts/export-pdf.mjs",
+    "check:print-sheet": "node scripts/check-print-sheet.mjs"
   },
   "peerDependencies": {
     "@lk-design-system/lds-core": ">=0.1.0-rc.69.27 <0.2.0",

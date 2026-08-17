@@ -160,5 +160,10 @@ export const Deck = {
 
 - 산출물: `stories/decks/<덱이름>.stories.jsx` (+ 선택 `<덱이름>.script.md`)
 - 내용 언어는 대화 언어를 따른다. 제목 명사형 종결 규약은 한국어 덱에 적용.
-- PPTX/PDF 내보내기는 아직 이 저장소에 없다. 요청받으면 "배포 워크플로는 README 다음
-  단계 항목"임을 알리고, 임시로는 Storybook 화면 캡처를 안내한다.
+- **PDF: `npm run export:pdf -- <story-id> out/<이름>.pdf`** (빌드된 Storybook
+  필요). 목록은 인자 없이 실행하면 나온다. 브라우저에서는 덱 URL에
+  `?lds-print=1`을 붙이고 인쇄하면 같은 시트가 나온다 — 내보내기는 두 번째
+  렌더러가 아니라 그 시트를 Playwright로 인쇄하는 것이라 화면과 어긋날 수 없다.
+  `check:print-sheet`가 장수·배율·크롬·넘침·원점을 잰다.
+- PPTX는 아직 없다. 동종 제품들의 PPTX도 전부 이미지 기반(텍스트 비선택)이므로
+  PDF가 더 나은 산출물이라는 것까지 함께 알린다.

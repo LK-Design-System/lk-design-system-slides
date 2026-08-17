@@ -3,6 +3,23 @@ import { DeckStepContext } from './stepContext.js';
 import { DeckPositionContext } from './deckPosition.js';
 import { useDeck } from './useDeck.js';
 import { DeckMediumContext } from './deckMedium.js';
+import { DeckPrintSheet } from './DeckPrintSheet.jsx';
+
+// The print seam. Any deck — including every deck already written — becomes a
+// print sheet by appending `?lds-print=1` to its URL, which is how the
+// neighbours do it too (reveal's `?print-pdf`, Slidev's `/print`). The
+// alternative was a `print` prop, but a prop only helps decks written after it
+// exists: the person who needs a PDF has an URL in front of them, not a source
+// file. `print` still overrides, so a consumer can mount the sheet directly.
+const PRINT_PARAM = 'lds-print';
+function printModeFromLocation() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return new URLSearchParams(window.location.search).has(PRINT_PARAM);
+  } catch {
+    return false;
+  }
+}
 
 /**
  * LDS Slides — DeckViewer
@@ -37,6 +54,44 @@ import { DeckMediumContext } from './deckMedium.js';
  * budget, no under-fill rule).
  */
 export function DeckViewer({
+  children,
+  initial = 0,
+  channel,
+  kind = 'present',
+  preset,
+  print,
+  label = '슬라이드 덱',
+  notesLabel = '발표자 노트',
+  style,
+  ...rest
+}) {
+  // Read once: a print run must not change shape halfway through, and the
+  // sheet has no navigation to keep in sync.
+  const [urlPrint] = React.useState(printModeFromLocation);
+  if (print ?? urlPrint) {
+    return (
+      <DeckPrintSheet kind={kind} preset={preset} style={style} {...rest}>
+        {children}
+      </DeckPrintSheet>
+    );
+  }
+  return (
+    <DeckViewerRuntime
+      initial={initial}
+      channel={channel}
+      kind={kind}
+      preset={preset}
+      label={label}
+      notesLabel={notesLabel}
+      style={style}
+      {...rest}
+    >
+      {children}
+    </DeckViewerRuntime>
+  );
+}
+
+function DeckViewerRuntime({
   children,
   initial = 0,
   channel,

@@ -5,3 +5,6 @@ qa/out
 
 # Visual snapshot diffs are build output; the baselines themselves are committed.
 .visual-diff/
+
+# PDF exports are artifacts, not sources.
+out/

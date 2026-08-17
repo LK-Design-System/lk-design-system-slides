@@ -36,7 +36,7 @@ const RULES = [
 
 const KINDS = [
   [/Slide$|^SlideSurface$/, 'layout'],
-  [/^(DeckViewer|PresenterView)$/, 'deck'],
+  [/^(DeckViewer|PresenterView|DeckPrintSheet)$/, 'deck'],
   [/^(Step|Fit)$/, 'primitive'],
 ];
 const kindOf = (name) => (KINDS.find(([pattern]) => pattern.test(name)) ?? [null, 'primitive'])[1];

@@ -76,6 +76,31 @@ jobs:
       - name: Check deck content discipline
         run: npm run check:deck-content
 
+      # The measuring gates below were written locally and, until now, only ran
+      # locally — a gate that CI does not run is prose with a shell script
+      # attached. They are cheap once Chromium is already installed.
+
+      # Horizontal fill, figure text scale, callout drift: three ways a figure
+      # overrides what the medium owns. See the header of the script for the
+      # measured thresholds and the defect each one was written for.
+      - name: Check figure fill and text scale
+        run: npm run check:figure-fill
+
+      # The export path's own gate: page per slide, unscaled canvas, no chrome,
+      # nothing spilling, sheet at the page origin.
+      - name: Check deck print sheets
+        run: npm run check:print-sheet
+
+      # The cheap net over everything the measuring gates do not know to look
+      # for. Baselines are committed; a diff here means someone must look.
+      - name: Check visual snapshots
+        run: npm run check:visual-snapshot
+
+      # The shipped copy of the deck-authoring skill must stay in step with the
+      # repository's own — two editions, one copy of the rules.
+      - name: Check skill shipping
+        run: npm run check:skill-shipping
+
       - name: Include third-party notices
         shell: pwsh
         run: |
