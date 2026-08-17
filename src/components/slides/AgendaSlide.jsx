@@ -73,6 +73,18 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
               <span
                 data-slide-agenda-index
                 style={{
+                  // The ordinal identifies; the name is the content. Inherited
+                  // at full item size with bold on top, the number OUTWEIGHED
+                  // the chapter it numbers — the eye landed on 01, not 산출
+                  // (user-caught on the real deck's agenda page). SectionSlide
+                  // already settles this relationship: its index sits at half
+                  // the title tier. The same relation here puts the ordinal on
+                  // the body rung (56:24 ≈ the divider's own 2:1); bold and
+                  // tabular stay, because a small ordinal still anchors the
+                  // rail — weight cannot swap instead, current already spends
+                  // weight as its marker.
+                  fontSize: 'var(--slides-body-size)',
+                  lineHeight: 'var(--slides-body-line)',
                   fontVariantNumeric: 'tabular-nums',
                   fontWeight: 'var(--fw-bold)',
                   color: isCurrent

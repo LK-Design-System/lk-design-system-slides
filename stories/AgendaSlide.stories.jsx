@@ -45,6 +45,16 @@ export const Default = {
     if (getComputedStyle(items[0]).fontSize !== titleSize) {
       throw new Error(`Agenda items must read at title scale (${titleSize}); got ${getComputedStyle(items[0]).fontSize}.`);
     }
+
+    // The ordinal is furniture: strictly smaller than the chapter it numbers.
+    // It inherited the item size once, and with bold on top the number
+    // outweighed the name — the eye landed on 01, not the chapter
+    // (user-caught, 2026-08-17). SectionSlide's index:title relation is the
+    // precedent this pins.
+    const ordinal = items[0].querySelector('[data-slide-agenda-index]');
+    if (parseFloat(getComputedStyle(ordinal).fontSize) >= parseFloat(getComputedStyle(items[0]).fontSize)) {
+      throw new Error('The agenda ordinal must sit strictly under the item it numbers.');
+    }
     for (const item of ITEMS) {
       if (/다\.$/.test(item)) {
         throw new Error('Agenda items are chapter titles — noun-ended, never sentences.');
