@@ -22,6 +22,9 @@ export function SectionSlide({ index, title, subtitle, style, ...rest }) {
   return (
     <SlideSurface
       data-lds-section-slide
+      // "divider" header grammar — marker on the surface for the same reason
+      // as the cover: the stack is the whole slide (HEADER_SYSTEM_PROPOSAL R3).
+      data-slide-header="divider"
       style={{ alignItems: 'center', textAlign: 'center', ...style }}
       {...rest}
     >

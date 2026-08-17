@@ -12,7 +12,11 @@ export function TitleSlide({
   eyebrow, title, subtitle, lockup, style, ...rest
 }) {
   return (
-    <SlideSurface style={style} {...rest}>
+    // data-slide-header="cover": the header-grammar marker rides the SURFACE
+    // here because on a cover the stack IS the whole slide — wrapping the
+    // flex items in a real <header> would change margin collapsing and
+    // cross-axis sizing for zero visual gain (HEADER_SYSTEM_PROPOSAL R3).
+    <SlideSurface data-slide-header="cover" style={style} {...rest}>
       {/* A place for the brand mark. Core ships lockup components and guards
           for them, and this layout had nowhere to put one — so an external
           deck's cover could not carry a logo at all (COMPLETENESS_AUDIT D1).

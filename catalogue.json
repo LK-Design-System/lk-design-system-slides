@@ -113,6 +113,7 @@
       ],
       "dataAttributes": [
         "data-slide-eyebrow",
+        "data-slide-header",
         "data-slide-lockup",
         "data-slide-subtitle",
         "data-slide-title"
@@ -166,6 +167,7 @@
       ],
       "dataAttributes": [
         "data-lds-section-slide",
+        "data-slide-header",
         "data-slide-index",
         "data-slide-scale",
         "data-slide-subtitle",

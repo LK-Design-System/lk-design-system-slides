@@ -24,8 +24,11 @@ import { phrased } from './phrasing.jsx';
 export function ContentSlide({ eyebrow, title, governing, anchor = 'top', children, style, ...rest }) {
   return (
     <SlideSurface style={{ justifyContent: 'flex-start', ...style }} {...rest}>
+      {/* data-slide-header VALUES name which of the three header stacks this
+          is (content/cover/divider — HEADER_SYSTEM_PROPOSAL). Attribute
+          presence selectors keep matching, so existing plays are unmoved. */}
       <header
-        data-slide-header
+        data-slide-header="content"
         style={{
           // The header/body boundary belongs to the preset: keynote draws it
           // as whitespace (rule width 0), briefing as a rule under a thin
@@ -46,7 +49,11 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               fontWeight: 'var(--fw-semibold)',
-              color: 'var(--color-semantic-primary-normal)',
+              // The ink indirection, matching TitleSlide — the eyebrow had
+              // split into two colour systems (this one read the label token
+              // directly), which is the footer's brand-navy defect waiting in
+              // ambush. Default resolves identically on white surfaces.
+              color: 'var(--slides-ink-accent)',
             }}
           >
             {eyebrow}
