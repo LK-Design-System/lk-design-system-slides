@@ -6,7 +6,13 @@ import { closeServer, startStaticServer } from './_storybook-static.mjs';
 // Content discipline, mechanised — the layer of content-rules.md a machine can
 // hold. The ghost-deck test (does the governing chain argue?) and layout-fit
 // judgement stay with a reviewer (qa/rubric.md); everything below is a rule
-// with a number, and every number carries its source:
+// with a number, and every number carries its source.
+//
+// The deck's `kind` (data-lds-deck-kind, READING_DECK_PROPOSAL) picks the
+// rule profile: 'present' (default) runs everything below; 'read' — a
+// leave-behind scanned page by page — sheds exactly the presentation grammar
+// (governing-required off, body-cap 300, canvas-under-fill off) and keeps
+// every genre-agnostic rule:
 //
 //   title-noun-final   Titles are noun-ended labels; the sentence lives in
 //                      `governing`. (한국 장표 규약; enforced repo-wide since the
@@ -182,7 +188,7 @@ async function auditStory(page, origin, id) {
       // governing-required — a content slide with no claim has no reason to
       // exist. Structural slides (표지·목차·간지·막지) and statements are exempt.
       const carriesContent = (content && clean(content.textContent).length > 0) || delegation;
-      if (carriesContent && !statement && !isStructural && !governing) {
+      if (profile.governingRequired && carriesContent && !statement && !isStructural && !governing) {
         const title = clean(surface.querySelector('[data-slide-title]')?.textContent ?? '(무제)');
         flag('governing-required', `"${title}" — 주장이 없는 콘텐츠 슬라이드`);
       }
@@ -198,7 +204,7 @@ async function auditStory(page, origin, id) {
 
       // canvas-under-fill — counted per slide here, judged per deck below:
       // one sparse slide is a breathing beat, three are a pattern.
-      if (content) {
+      if (content && profile.underFill) {
         const fill = paintedFill(surface);
         if (fill < 0.5) {
           const title = clean(surface.querySelector('[data-slide-title]')?.textContent ?? '(무제)');
@@ -212,9 +218,10 @@ async function auditStory(page, origin, id) {
         const bullets = content.querySelectorAll('li');
         if (bullets.length > 7) flag('bullet-count', `불릿 ${bullets.length}개 — 상한 7 (tahta MANY_BULLETS)`);
 
-        // body-cap — prose beyond ~140 chars is a document, not a slide.
+        // body-cap — prose beyond the kind's budget is a document wearing a
+        // slide's clothes (present ~140 ≈ 40 words; read 300, a page's worth).
         const body = clean(content.textContent);
-        if (body.length > 140) flag('body-cap', `본문 ${body.length}자 — 상한 140자 (~40단어)`);
+        if (body.length > profile.bodyCap) flag('body-cap', `본문 ${body.length}자 — 상한 ${profile.bodyCap}자 (kind: ${kind})`);
       }
 
       // source-required — every delegation exhibit shows data, and shown data
@@ -280,6 +287,18 @@ async function auditStory(page, origin, id) {
     };
 
     const deck = document.querySelector('[data-lds-deck-viewer], [data-lds-presenter-view]');
+
+    // Consumption axis (READING_DECK_PROPOSAL 변경 1). The source of truth is
+    // the RENDERED deck's data attribute, not story metadata. A read deck
+    // (leave-behind) keeps every genre-agnostic rule and sheds exactly the
+    // presentation grammar: no governing mandate (the idiom is noun title +
+    // exhibit), a document-sized body budget (measured 251 chars + the same
+    // slack ratio present carries → 300), and no under-fill rule (top-heavy
+    // pages are document flow, not a defect).
+    const kind = deck?.getAttribute('data-lds-deck-kind') ?? 'present';
+    const profile = kind === 'read'
+      ? { governingRequired: false, bodyCap: 300, underFill: false }
+      : { governingRequired: true, bodyCap: 140, underFill: true };
     const surfacesNow = () => [...document.querySelectorAll('[data-lds-slide-surface]')]
       .filter((node) => !node.closest('[data-presenter-next-slide]'));
 

@@ -155,7 +155,7 @@ const PlanRows = ({ rows }) => (
 export const Deck = {
   name: '주간 업무현황 (열람 파일럿)',
   render: () => (
-    <DeckViewer label="8월 2주차 LKR 업무현황">
+    <DeckViewer label="8월 2주차 LKR 업무현황" kind="read">
       <TitleSlide
         eyebrow="LKR 플랫폼"
         title="8월 2주차 업무현황"

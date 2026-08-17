@@ -26,11 +26,20 @@ import { useDeck } from './useDeck.js';
  * `channel` joins a named deck, mirroring position with any other view on
  * that channel — a `PresenterView` in the presenter's second window drives
  * this one and follows it back.
+ *
+ * `kind` is the consumption axis (READING_DECK_PROPOSAL 변경 1): 'present'
+ * (default) is a deck someone talks over; 'read' is a leave-behind that
+ * circulates and gets scanned page by page. It is a content-discipline
+ * axis, orthogonal to the token axis (`preset`) — it changes nothing the
+ * viewer renders, only the `data-lds-deck-kind` attribute the content gate
+ * reads to pick its rule profile (read: no governing mandate, larger body
+ * budget, no under-fill rule).
  */
 export function DeckViewer({
   children,
   initial = 0,
   channel,
+  kind = 'present',
   label = '슬라이드 덱',
   notesLabel = '발표자 노트',
   style,
@@ -60,6 +69,7 @@ export function DeckViewer({
   return (
     <section
       data-lds-deck-viewer
+      data-lds-deck-kind={kind}
       role="group"
       aria-roledescription="슬라이드 덱"
       aria-label={label}

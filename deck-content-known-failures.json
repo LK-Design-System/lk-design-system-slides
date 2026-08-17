@@ -1,14 +1,6 @@
 {
   "schemaVersion": 1,
   "note": "Deck stories with content-discipline violations, pinned per (deck, rule) pair. A ratchet: check:deck-content fails on any (deck, rule) not listed here — a pinned deck gets no pass on rules it was not pinned for — and also when a pinned rule stops firing. Only ever remove entries.",
-  "count": 1,
-  "failures": [
-    {
-      "id": "decks-주간-업무현황-파일럿--deck",
-      "rules": [
-        "governing-required",
-        "body-cap"
-      ]
-    }
-  ]
+  "count": 0,
+  "failures": []
 }
