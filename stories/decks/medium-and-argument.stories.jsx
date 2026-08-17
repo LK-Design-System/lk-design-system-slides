@@ -13,6 +13,7 @@ import {
   AssessmentSlide,
   RoadmapSlide,
   EndSlide,
+  MappingDiagram,
 } from '../../src/index.js';
 
 /**
@@ -60,95 +61,18 @@ const BEFORE = `// Editorial — KeyFigure (이전)
 
 // 도판은 화면 해상도에서 다시 그린다 — 캡처를 붙이지 않는다.
 //
-// 이 도판은 HTML/CSS다. 한 번은 viewBox SVG를 width:100%로 늘려 폭을
-// 채웠는데, 그러면 채워지는 것이 배치가 아니라 배율이다: 부여 폭 대비
-// viewBox가 ×1.97이라 --slides-fine-size(18px)로 지정한 라벨이 35px로,
-// 즉 이 슬라이드의 주장 문장(24px)보다 크게 찍혔다. 도판의 곁다리 라벨이
-// 슬라이드에서 가장 큰 글자가 되는 순위 역전이고, 하필 "거리는 매체가
-// 지정한다"고 주장하는 바로 그 슬라이드에서 도판이 매체의 램프를
-// 덮어쓴 것이다 (사용자 지적, 2026-08-17).
-//
-// 그래서 규칙: 도판은 넓어져서 폭을 채우고(칸이 늘어난다), 확대되어
-// 채우지 않는다. 글자가 있는 도판에서 확대는 폭 미달의 해법이 아니다 —
-// 다이어그램의 글자는 매체의 램프에 그대로 앉아야 한다. 순수한 도형
-// (차트 곡선, 픽토그램)은 여전히 viewBox 확대가 맞다.
-// check:figure-fill이 이제 이 역전을 기계로 잡는다.
+// 이 도판은 손으로 그리지 않는다. 두 열의 대응 관계는 이제 Editorial의
+// MappingDiagram 계약이다 — 이 슬라이드가 그 계약의 실물 파일럿이었고,
+// WeekSpanRows와 같은 절차로 승격됐다 (COMPLETENESS_AUDIT B2). 파일럿이
+// 지불한 교훈(HTML 배치로 폭을 채운다·통로가 여유를 먹는다·한 행만 켠다)은
+// 컴포넌트 docstring에 옮겨 적혀 있다.
 const SEAM_ROWS = [
-  ['value', 'slides-title'],
-  ['claim', 'slides-body'],
-  ['note', 'slides-caption'],
-  ['note-body', 'slides-fine'],
-  ['caption', 'slides-fine'],
+  { from: 'value', to: 'slides-title' },
+  { from: 'claim', to: 'slides-body', emphasis: true },
+  { from: 'note', to: 'slides-caption' },
+  { from: 'note-body', to: 'slides-fine' },
+  { from: 'caption', to: 'slides-fine' },
 ];
-const SeamDiagram = () => {
-  const head = {
-    fontSize: 'var(--slides-fine-size)',
-    lineHeight: 'var(--slides-fine-line)',
-    letterSpacing: 'var(--slides-fine-spacing)',
-    color: 'var(--color-semantic-label-alternative)',
-    paddingBottom: 'var(--space-2)',
-  };
-  const cell = (lit) => ({
-    padding: 'var(--space-2) var(--space-3)',
-    borderRadius: 'var(--radius-2, 4px)',
-    background: lit ? 'var(--editorial-emphasis-surface)' : 'var(--color-semantic-fill-normal)',
-    color: lit ? 'var(--color-semantic-label-strong)' : 'var(--color-semantic-label-neutral)',
-    fontWeight: lit ? 'var(--fw-semibold)' : 'var(--fw-regular)',
-    fontSize: 'var(--slides-fine-size)',
-    lineHeight: 'var(--slides-fine-line)',
-    letterSpacing: 'var(--slides-fine-spacing)',
-  });
-  return (
-    <div
-      role="img"
-      aria-label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조"
-      style={{
-        display: 'grid',
-        // 재지정 통로는 고정 폭이 아니라 남는 폭을 받는다 — 넓은 캔버스에서
-        // 늘어나는 것이 통로이고, 칸은 내용 폭을 지킨다.
-        gridTemplateColumns: 'minmax(0, 1fr) minmax(64px, 0.6fr) minmax(0, 1fr)',
-        rowGap: 'var(--space-2)',
-        alignItems: 'center',
-      }}
-    >
-      <div style={head}>Editorial — 순위</div>
-      <div />
-      <div style={head}>매체 — 거리</div>
-      {SEAM_ROWS.map(([step, distance]) => {
-        const lit = step === 'claim';
-        return (
-          <React.Fragment key={step}>
-            <div style={cell(lit)}>{step}</div>
-            <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center' }}>
-              <span
-                style={{
-                  flex: 1,
-                  height: lit ? 2 : 1,
-                  background: lit ? 'var(--editorial-emphasis)' : 'var(--color-semantic-line-normal-normal)',
-                }}
-              />
-              {lit && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    left: '50%',
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    background: 'var(--editorial-emphasis)',
-                  }}
-                />
-              )}
-            </div>
-            <div style={cell(false)}>{distance}</div>
-          </React.Fragment>
-        );
-      })}
-    </div>
-  );
-};
 
 export const Deck = {
   name: '매체와 논증의 분리',
@@ -238,7 +162,12 @@ export const Deck = {
         foot="LDS 플랫폼 · 2026 Q3"
         notes="왼쪽이 Editorial이 소유하는 순위, 오른쪽이 매체가 대는 거리다. 화살표가 재지정이다. 중요한 건 매체 단계를 경유한다는 것 — 그래서 briefing 프리셋으로 바꾸면 Editorial 층까지 공짜로 따라온다. [~2분]"
       >
-        <SeamDiagram />
+        <MappingDiagram
+          rows={SEAM_ROWS}
+          fromLabel="Editorial — 순위"
+          toLabel="매체 — 거리"
+          label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조"
+        />
       </FigureSlide>
 
       <ContentSlide

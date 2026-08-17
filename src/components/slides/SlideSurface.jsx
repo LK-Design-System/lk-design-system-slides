@@ -39,6 +39,13 @@ export function SlideSurface({
   children,
   safeArea = true,
   preset,
+  // Colour appearance of the canvas: undefined is the white reading surface,
+  // 'brand' is the navy cover. A LAYOUT axis, not a theme one — a deck brands
+  // its covers and keeps its content pages white, which a Theme swap cannot
+  // express — and it works by re-pointing --slides-surface and --slides-ink-*
+  // in this element's own scope, so every layout reading those follows without
+  // knowing it moved (COMPLETENESS_AUDIT D1).
+  appearance,
   scale: scaleMode = 'auto',
   // Speaker notes ride on the slide element so DeckViewer can read them off
   // its own children, but they must never reach the canvas: the surface the
@@ -106,6 +113,7 @@ export function SlideSurface({
       <section
         data-lds-slide-surface
         data-slides-preset={effectivePreset}
+        data-slides-appearance={appearance}
         style={{
           boxSizing: 'border-box',
           position: 'absolute',
@@ -124,7 +132,7 @@ export function SlideSurface({
           background: 'var(--slides-surface)',
           border: '1px solid var(--slides-surface-edge)',
           borderRadius: 'var(--radius-md, 12px)',
-          color: 'var(--color-semantic-label-normal)',
+          color: 'var(--slides-ink-normal)',
           fontFamily: 'var(--font-sans)',
           // Upstream Korean-copy contract (Core typography.css): lines break
           // between words, never mid-word. Inherited, so one declaration on

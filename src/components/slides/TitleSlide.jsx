@@ -8,9 +8,22 @@ import { phrased } from './phrasing.jsx';
  * subtitle. Content stays start-aligned and inside the safe area; the
  * projection scale keeps it readable from the back of a room.
  */
-export function TitleSlide({ eyebrow, title, subtitle, style, ...rest }) {
+export function TitleSlide({
+  eyebrow, title, subtitle, lockup, style, ...rest
+}) {
   return (
     <SlideSurface style={style} {...rest}>
+      {/* A place for the brand mark. Core ships lockup components and guards
+          for them, and this layout had nowhere to put one — so an external
+          deck's cover could not carry a logo at all (COMPLETENESS_AUDIT D1).
+          It is a SLOT, not a built-in: the mark belongs to Theme, its tone
+          (ink on white, white on brand) is the caller's call, and a layout that
+          imported a specific lockup would decide branding for every deck. */}
+      {lockup && (
+        <div data-slide-lockup style={{ margin: '0 0 var(--space-6)', display: 'flex', alignItems: 'center' }}>
+          {lockup}
+        </div>
+      )}
       {eyebrow && (
         <p
           data-slide-eyebrow
@@ -21,7 +34,7 @@ export function TitleSlide({ eyebrow, title, subtitle, style, ...rest }) {
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             fontWeight: 'var(--fw-semibold)',
-            color: 'var(--color-semantic-primary-normal)',
+            color: 'var(--slides-ink-accent)',
           }}
         >
           {eyebrow}
@@ -35,7 +48,7 @@ export function TitleSlide({ eyebrow, title, subtitle, style, ...rest }) {
           lineHeight: 'var(--slides-display-line)',
           letterSpacing: 'var(--slides-display-spacing)',
           fontWeight: 'var(--fw-bold)',
-          color: 'var(--color-semantic-label-strong)',
+          color: 'var(--slides-ink-strong)',
           maxWidth: '18ch',
           textWrap: 'balance',
         }}
@@ -50,7 +63,7 @@ export function TitleSlide({ eyebrow, title, subtitle, style, ...rest }) {
             fontSize: 'var(--slides-body-size)',
             lineHeight: 'var(--slides-body-line)',
             letterSpacing: 'var(--slides-body-spacing)',
-            color: 'var(--color-semantic-label-neutral)',
+            color: 'var(--slides-ink-neutral)',
             maxWidth: '36ch',
           }}
         >

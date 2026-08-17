@@ -11,6 +11,17 @@
 ```
 `title`은 display 스케일(18ch 상한). eyebrow는 대문자 캡션.
 
+**대외 발표용 브랜드 표지**는 `appearance="brand"` + `lockup` 슬롯:
+```jsx
+import { Lockup } from '@lk-design-system/lds-theme';
+<TitleSlide appearance="brand" lockup={<Lockup variant="inline" tone="white" height={30} />}
+  eyebrow="대외 발표" title="자율 물류 플랫폼 도입 제안" subtitle="LK ROBOTICS · 2026 3분기" />
+```
+표면이 브랜드 네이비로, 활자가 반전 잉크로 함께 넘어간다(표면이 `--slides-ink-*`를
+자기 스코프에서 재지정하므로 레이아웃은 아무것도 모른다). **희소 레이아웃 전용** —
+`TitleSlide`·`SectionSlide`·`StatementSlide`·`EndSlide`. 네이비 위의 표나 차트는
+브랜드 순간이 아니라 가독성 문제다. 본문까지 어둡게 하는 것은 테마 축이고 별개다.
+
 ### AgendaSlide — 목차 / 진행 표시
 ```jsx
 <AgendaSlide items={['현황 진단', '개선 방안', '실행 계획']} />
@@ -49,6 +60,40 @@ content 영역 기본 타입은 body 단계.
 ```
 `ratio`는 닫힌 어휘: `'1:1' | '2:1' | '1:2'`. 그 이상 기울면 비교가 아니라 그리드 —
 표나 도판으로 처리. ContentSlide 헤더 계약이 그대로 흐른다.
+
+### TriptychSlide — 3분할 (레이블 붙은 세 패널)
+```jsx
+<TriptychSlide title="지연의 세 갈래" governing="병목은 반영 단계의 배치 대기다."
+  panels={[
+    { id: 'collect', label: '수집', body: '…' },
+    { id: 'batch', label: '반영 (배치 대기)', body: '…', emphasis: true },
+    { id: 'serve', label: '조회', body: '…' },
+  ]}
+/>
+```
+문제/원인/대책, 과거/현재/계획, 선택지 셋. **레이블이 필수**다 — 레이블 없는 세 열은
+그리지 않은 표이고, 레이블이 이 레이아웃을 그리드와 가르는 유일한 성질이다(없으면
+캔버스에 "레이블 없음"으로 신고된다). 정확히 셋: 둘은 SplitSlide, 넷 이상은 표나
+ExhibitRow. **폭은 항상 균등** — 하나가 더 중요하면 `emphasis`이지 칸 너비가 아니다.
+
+### QuadrantSlide — 2×2 행렬 (우선순위 매트릭스)
+```jsx
+<QuadrantSlide title="다음 분기 후보 배치" governing="…"
+  xAxis={{ name: '구현 비용', low: '작다', high: '크다' }}
+  yAxis={{ name: '효과', low: '작다', high: '크다' }}
+  quadrants={[{ label: '먼저 한다' }, { label: '계획해서 한다' }, { label: '틈에 한다' }, { label: '하지 않는다' }]}
+  items={[{ id: 'pdf', label: 'PDF 내보내기', x: 0.28, y: 0.86, emphasis: true }, …]}
+/>
+```
+**자리가 곧 주장**일 때만 쓴다. "효과는 크고 비용은 작다"는 두 연속선 위의 상대
+위치에 대한 논증이고, 그게 아니라 항목×기준 비교면 CompareSlide(표)가 낫다.
+- 항목은 사분면 이름이 아니라 **좌표 `x`·`y`(0–1)**. 셀에 "높음/낮음"을 적으면
+  연속선이 라벨로 주저앉는다. 좌표를 안 주면 원점에 떨어지지 않고 이름이 불린다.
+- `y`는 위로 자란다(축이 그러하듯). 두 축 모두 **양 극을 말로** 적는다 — 화살표만
+  있으면 어느 쪽이 큰지 알 수 없다.
+- `quadrants`는 읽는 순서(좌상·우상·좌하·우하)이고 조용한 가구다. 강조는 항목 하나.
+- 겹침은 작성자의 구도다 — 같은 좌표는 "같은 등급"이라는 진술이고, 자동으로 밀어내면
+  레이아웃이 논증을 편집하는 것이 된다.
 
 ### StatementSlide — 주장 한 문장 / 인용
 ```jsx
@@ -157,6 +202,28 @@ emphasis를 여러 개 넣지 말 것 — 컴포넌트가 걸러주지만 의도
   폭을 재서 viewBox를 맞추므로 **확대가 일어나지 않는다** — 위의 배율 함정을
   구조적으로 피한 것이 이 래퍼의 존재 이유 절반이다.
 - 데이터는 덱이 소유한다. 도메인·포맷터를 이 층이 추측하지 않는다.
+
+### MappingDiagram — 대응 관계 (두 목록 사이)
+
+램프가 매체 단계로, 옛 필드가 대체 필드로, 역할이 담당자로.
+
+```jsx
+<FigureSlide title="다섯 단계와 재지정" governing="…" caption="…">
+  <MappingDiagram
+    fromLabel="Editorial — 순위" toLabel="매체 — 거리"
+    rows={[
+      { from: 'value', to: 'slides-title' },
+      { from: 'claim', to: 'slides-body', emphasis: true },
+    ]}
+  />
+</FigureSlide>
+```
+
+- 양쪽 열에 **이름을 붙인다** — 이름 없는 대응은 우연의 목록이다.
+- 강조는 **한 행**. 이 도판은 하나의 대응을 반박 불가능하게 만들려고 존재하고
+  나머지는 맥락이다.
+- 손으로 그리지 않는다. 이 계약은 실물 파일럿(매체와 논증의 분리 덱)에서 승격됐고,
+  그 파일럿이 SVG 확대로 라벨을 ×1.97 키운 사건이 HTML 배치 결정의 근거다.
 
 ### ImageSlide — 사진
 ```jsx

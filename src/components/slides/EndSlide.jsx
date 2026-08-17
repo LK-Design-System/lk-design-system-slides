@@ -30,7 +30,7 @@ export function EndSlide({ message, contact, style, ...rest }) {
           margin: 0,
           ...SPARSE_TYPE[scale],
           fontWeight: 'var(--fw-bold)',
-          color: 'var(--color-semantic-label-strong)',
+          color: 'var(--slides-ink-strong)',
           maxWidth: '18ch',
           textWrap: 'balance',
         }}
@@ -45,7 +45,7 @@ export function EndSlide({ message, contact, style, ...rest }) {
             fontSize: 'var(--slides-caption-size)',
             lineHeight: 'var(--slides-caption-line)',
             letterSpacing: 'var(--slides-caption-spacing)',
-            color: 'var(--color-semantic-label-neutral)',
+            color: 'var(--slides-ink-neutral)',
           }}
         >
           {contact}

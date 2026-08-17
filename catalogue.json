@@ -57,6 +57,9 @@
           "name": "preset"
         },
         {
+          "name": "appearance"
+        },
+        {
           "name": "notes"
         },
         {
@@ -78,6 +81,7 @@
         "data-slide-page",
         "data-slide-page-current",
         "data-slide-source",
+        "data-slides-appearance",
         "data-slides-preset"
       ]
     },
@@ -94,10 +98,14 @@
         },
         {
           "name": "subtitle"
+        },
+        {
+          "name": "lockup"
         }
       ],
       "dataAttributes": [
         "data-slide-eyebrow",
+        "data-slide-lockup",
         "data-slide-subtitle",
         "data-slide-title"
       ]
@@ -177,6 +185,61 @@
         "data-slide-pane",
         "data-slide-ratio",
         "data-slide-split"
+      ]
+    },
+    {
+      "name": "TriptychSlide",
+      "kind": "layout",
+      "useFor": "Three labelled panels: 문제 / 원인 / 대책, 과거 / 현재 / 계획, three options read side by side (COMPLETENESS_AUDIT C1).",
+      "props": [
+        {
+          "name": "panels",
+          "default": "[]"
+        }
+      ],
+      "dataAttributes": [
+        "data-lds-triptych-slide",
+        "data-panel-body",
+        "data-panel-count",
+        "data-panel-emphasis",
+        "data-panel-label",
+        "data-slide-panel",
+        "data-slide-triptych"
+      ]
+    },
+    {
+      "name": "QuadrantSlide",
+      "kind": "layout",
+      "useFor": "A 2×2 matrix: the priority matrix, the effort/impact grid, the classic consulting placement (COMPLETENESS_AUDIT C1).",
+      "props": [
+        {
+          "name": "xAxis",
+          "default": "{}"
+        },
+        {
+          "name": "yAxis",
+          "default": "{}"
+        },
+        {
+          "name": "quadrants",
+          "default": "[]"
+        },
+        {
+          "name": "items",
+          "default": "[]"
+        }
+      ],
+      "dataAttributes": [
+        "data-item-emphasis",
+        "data-lds-quadrant-slide",
+        "data-quadrant-item",
+        "data-quadrant-label",
+        "data-quadrant-plot",
+        "data-quadrant-unplaced",
+        "data-quadrant-x-axis",
+        "data-quadrant-y-axis",
+        "data-quadrant-y-name",
+        "data-slide-quadrant"
       ]
     },
     {

@@ -49,7 +49,7 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             fontWeight: 'var(--fw-semibold)',
-            color: 'var(--color-semantic-label-alternative)',
+            color: 'var(--slides-ink-quiet)',
           }}
         >
           {eyebrow}
@@ -62,7 +62,7 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
           margin: 0,
           ...SPARSE_TYPE[scale],
           fontWeight: 'var(--fw-bold)',
-          color: 'var(--color-semantic-label-strong)',
+          color: 'var(--slides-ink-strong)',
           // A statement that runs the full canvas width stops reading as one
           // breath; the measure forces it to break where a speaker would.
           maxWidth: '22ch',
@@ -79,7 +79,7 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
             fontSize: 'var(--slides-caption-size)',
             lineHeight: 'var(--slides-caption-line)',
             letterSpacing: 'var(--slides-caption-spacing)',
-            color: 'var(--color-semantic-label-alternative)',
+            color: 'var(--slides-ink-quiet)',
           }}
         >
           {attribution}

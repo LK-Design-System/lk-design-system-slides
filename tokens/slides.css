@@ -94,6 +94,50 @@
   /* Surface — slides read on the elevated surface, chrome on the alternative. */
   --slides-surface: var(--color-semantic-background-elevated-normal);
   --slides-surface-edge: var(--color-semantic-line-normal-normal);
+
+  /* Ink — one layer of indirection over the label tokens, for the same reason
+     the type steps have one over the ramp. A brand cover flips the surface to
+     navy, and every layout on it must flip with it; the alternative is each
+     layout branching on a variant prop, which is fifteen places to get wrong
+     and a colour decision living in a layout. Defaults ARE the semantic label
+     tokens, so nothing moves until an appearance re-points them.
+     (COMPLETENESS_AUDIT D1.) */
+  --slides-ink-strong: var(--color-semantic-label-strong);
+  --slides-ink-normal: var(--color-semantic-label-normal);
+  --slides-ink-neutral: var(--color-semantic-label-neutral);
+  --slides-ink-quiet: var(--color-semantic-label-alternative);
+  --slides-ink-accent: var(--color-semantic-primary-normal);
+}
+
+/*
+ * `appearance="brand"` — the cover and the interstitial on brand navy.
+ *
+ * A layout axis, not a theme axis: a deck's covers are branded while its
+ * content pages stay white, so this cannot be a Theme swap (which would take
+ * the whole deck) and it cannot be a preset (presets re-point type, not
+ * colour). It re-points the surface and the ink together, in the surface's own
+ * scope, and every layout that reads `--slides-ink-*` follows without knowing.
+ *
+ * Restricted by discipline to the sparse family — cover, interstitial,
+ * statement, closing. A table or a chart on navy is a legibility problem, not
+ * a brand moment, and those layouts keep reading the semantic tokens directly.
+ */
+[data-lds-slide-surface][data-slides-appearance='brand'] {
+  --slides-surface: var(--color-semantic-brand-surface);
+  --slides-surface-edge: var(--color-semantic-brand-surface);
+  /* The on-brand ink scale is upstream's, not invented here: Theme already
+     defines what type on brand navy looks like (`brand-on-surface` and its
+     muted/subtle steps) and re-deriving it locally would be a second opinion
+     about a brand value. It also keeps the mixing upstream, where the recorded
+     color-mix hazard already lives. */
+  --slides-ink-strong: var(--color-semantic-brand-on-surface);
+  --slides-ink-normal: var(--color-semantic-brand-on-surface);
+  --slides-ink-neutral: var(--color-semantic-brand-on-surface-muted);
+  --slides-ink-quiet: var(--color-semantic-brand-on-surface-subtle);
+  /* The accent cannot be the light-surface primary — a mid blue goes muddy on
+     navy. On brand the accent IS the surface's own ink; emphasis is carried by
+     weight, which is what the sparse layouts already use it for. */
+  --slides-ink-accent: var(--color-semantic-brand-on-surface);
 }
 
 /*

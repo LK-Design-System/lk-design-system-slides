@@ -46,6 +46,13 @@ const SUBJECTS = [
   { name: 'stat-slide', id: 'slides-stat-slide--default' },
   { name: 'stat-slide-roomy', id: 'slides-stat-slide--count-adaptive-figures' },
   { name: 'code-slide', id: 'slides-code-slide--default' },
+  { name: 'triptych-slide', id: 'slides-triptych-slide--default' },
+  { name: 'quadrant-slide', id: 'slides-quadrant-slide--default' },
+  // The brand appearance is the one place the ink indirection is visible at all
+  // — if a re-point stops reaching a layout, this is the picture that changes.
+  { name: 'brand-cover', id: 'slides-brand-appearance--brand-cover' },
+  { name: 'trend-chart-slide', id: 'editorial-trend-chart--on-a-slide' },
+  { name: 'mapping-diagram', id: 'editorial-mapping-diagram--default' },
   { name: 'figure-slide', id: 'slides-figure-slide--default' },
   { name: 'image-slide', id: 'slides-image-slide--contained' },
   { name: 'compare-slide', id: 'slides-compare-slide--default' },

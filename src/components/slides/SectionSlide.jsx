@@ -34,7 +34,7 @@ export function SectionSlide({ index, title, subtitle, style, ...rest }) {
             lineHeight: 'var(--slides-title-line)',
             letterSpacing: 'var(--slides-title-spacing)',
             fontWeight: 'var(--fw-bold)',
-            color: 'var(--color-semantic-primary-normal)',
+            color: 'var(--slides-ink-accent)',
             fontVariantNumeric: 'tabular-nums',
           }}
         >
@@ -48,7 +48,7 @@ export function SectionSlide({ index, title, subtitle, style, ...rest }) {
           margin: 0,
           ...SPARSE_TYPE[scale],
           fontWeight: 'var(--fw-bold)',
-          color: 'var(--color-semantic-label-strong)',
+          color: 'var(--slides-ink-strong)',
           maxWidth: '18ch',
           textWrap: 'balance',
         }}
@@ -68,7 +68,7 @@ export function SectionSlide({ index, title, subtitle, style, ...rest }) {
             fontSize: scale !== 'display' ? 'var(--slides-title-size)' : 'var(--slides-body-size)',
             lineHeight: scale !== 'display' ? 'var(--slides-title-line)' : 'var(--slides-body-line)',
             letterSpacing: scale !== 'display' ? 'var(--slides-title-spacing)' : 'var(--slides-body-spacing)',
-            color: 'var(--color-semantic-label-neutral)',
+            color: 'var(--slides-ink-neutral)',
             maxWidth: '36ch',
           }}
         >
