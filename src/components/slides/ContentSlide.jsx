@@ -76,7 +76,13 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
               fontSize: 'var(--slides-governing-size)',
               lineHeight: 'var(--slides-governing-line)',
               letterSpacing: 'var(--slides-body-spacing)',
-              fontWeight: 'var(--fw-semibold)',
+              // The tier's class weight. governing rides title2, and the
+              // baseline lists 400/500/700 for title tiers — semibold was an
+              // off-ramp weight the deck's most important sentence happened to
+              // wear (weight audit, 2026-08-17). Judged against 500/700
+              // renders: 500 speaks at the body's volume, and a claim that
+              // sounds like its evidence is not a claim.
+              fontWeight: 'var(--fw-bold)',
               color: 'var(--color-semantic-label-normal)',
               maxWidth: '46ch',
               textWrap: 'pretty',

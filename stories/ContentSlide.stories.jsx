@@ -61,6 +61,12 @@ export const Governing = {
     const governing = canvasElement.querySelector('[data-slide-governing]');
     const content = canvasElement.querySelector('[data-slide-content]');
     if (!governing) throw new Error('governing must render the claim region.');
+    // The claim carries the ramp CLASS weight of its tier (title tiers define
+    // 400/500/700 — the baseline lists no 600 there). It sat on semibold, an
+    // off-ramp weight, until the 2026-08-17 weight audit.
+    if (parseInt(getComputedStyle(governing).fontWeight, 10) !== 700) {
+      throw new Error('The governing claim rides the bold class weight of its tier.');
+    }
     if (!(title.compareDocumentPosition(governing) & Node.DOCUMENT_POSITION_FOLLOWING)) {
       throw new Error('The governing message must follow the title (제목/거버닝/본문 order).');
     }

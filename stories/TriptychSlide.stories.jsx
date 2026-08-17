@@ -47,6 +47,9 @@ export const Default = {
     // grid, so it is the property worth asserting.
     for (const panel of panels) {
       const label = panel.querySelector('[data-panel-label]');
+      if (parseInt(getComputedStyle(panel.querySelector('[data-panel-label]')).fontWeight, 10) !== 700) {
+        throw new Error('Panel labels ride the bold class weight — 600 is not a title-tier ramp weight.');
+      }
       if (!label || !label.textContent.trim()) {
         throw new Error('Every panel is labelled; an unlabelled column is an undrawn table.');
       }

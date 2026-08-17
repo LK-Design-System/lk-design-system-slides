@@ -37,6 +37,9 @@ export const Default = {
     if (parseInt(cur.fontWeight, 10) <= parseInt(past.fontWeight, 10)) {
       throw new Error('Emphasis is spent on the current chapter only — the rest stay quiet.');
     }
+    if (parseInt(getComputedStyle(marked[0]).fontWeight, 10) !== 700) {
+      throw new Error('The current chapter rides the bold class weight of its tier, not off-ramp semibold.');
+    }
     // Contract added 2026-08-16 (full-deck review): the agenda is a sparse
     // slide, and chapter names read at the scale chapters are titled. Body
     // scale left three lines stranded in a corner of the canvas.

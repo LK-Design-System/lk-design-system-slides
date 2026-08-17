@@ -69,7 +69,7 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
                 fontSize: 'var(--slides-orient-size)',
                 lineHeight: 'var(--slides-orient-line)',
                 letterSpacing: 'var(--slides-orient-spacing)',
-                fontWeight: isCurrent ? 'var(--fw-semibold)' : 'var(--fw-regular)',
+                fontWeight: isCurrent ? 'var(--fw-bold)' : 'var(--fw-regular)',
                 color: isCurrent
                   ? 'var(--color-semantic-label-strong)'
                   : 'var(--color-semantic-label-neutral)',
@@ -88,7 +88,7 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
                   // as a floating stamp, not a subordinate (user-rejected).
                   // Same-size regular grey keeps "01 산출" one line with one
                   // baseline; tabular stays for the rail. `current` still has
-                  // its markers: the accent ordinal and the semibold name.
+                  // its markers: the accent ordinal and the bold name.
                   fontVariantNumeric: 'tabular-nums',
                   fontWeight: 'var(--fw-regular)',
                   color: isCurrent

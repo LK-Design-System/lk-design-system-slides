@@ -65,7 +65,7 @@ export function TriptychSlide({ panels = [], anchor, style, ...rest }) {
                 fontSize: 'var(--slides-body-size)',
                 lineHeight: 'var(--slides-body-line)',
                 letterSpacing: 'var(--slides-body-spacing)',
-                fontWeight: 'var(--fw-semibold)',
+                fontWeight: 'var(--fw-bold)',
                 color: panel.emphasis
                   ? 'var(--color-semantic-primary-strong)'
                   : 'var(--color-semantic-label-strong)',
