@@ -49,6 +49,11 @@ import { closeServer, startStaticServer } from './_storybook-static.mjs';
 //                      (Found by the first qa harness critique, 2026-07-31: an
 //                      agent-authored deck passed every gate with a roadmap
 //                      whose three phases shared one date.)
+//   chrome-intrusion   Painted content crossing into the out-of-flow chrome
+//                      band (footer + source line). The overflow gate measures
+//                      scrollHeight, which padding-zone spill never grows —
+//                      found when a fixed-height exhibit overlapped the footer
+//                      with every gate green (READING_DECK_PILOT 마찰 3).
 //   img-alt            An image with no text channel. ImageSlide renders its
 //                      own visible breach marker (data-image-alt-missing); a
 //                      raw <img> missing the alt attribute entirely is the
@@ -134,26 +139,32 @@ async function auditStory(page, origin, id) {
 
     // How far the slide's PAINTED content reaches down the canvas: text via
     // Range boxes, replaced elements via their own. Container boxes lie —
-    // a flex:1 region stretches to the safe area however empty it is.
-    const paintedFill = (surface) => {
-      const surfaceRect = surface.getBoundingClientRect();
+    // a flex:1 region stretches to the safe area however empty it is. The
+    // chrome band (footer + source line) is out-of-flow and excluded — it is
+    // the thing content is measured AGAINST, not content itself.
+    const paintedBottomOf = (surface) => {
       let bottom = null;
       const walker = document.createTreeWalker(surface, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
       for (let node = walker.currentNode; node; node = walker.nextNode()) {
         if (node.nodeType === 1) {
-          if (node.closest('[data-slide-foot]')) continue;
+          if (node.closest('[data-slide-foot], [data-slide-source]')) continue;
           if (/^(svg|IMG|CANVAS|VIDEO)$/i.test(node.tagName)) {
             const rect = node.getBoundingClientRect();
             if (rect.height > 0) bottom = Math.max(bottom ?? -Infinity, rect.bottom);
           }
           continue;
         }
-        if (!node.textContent.trim() || node.parentElement?.closest('[data-slide-foot]')) continue;
+        if (!node.textContent.trim() || node.parentElement?.closest('[data-slide-foot], [data-slide-source]')) continue;
         const range = document.createRange();
         range.selectNodeContents(node);
         const rect = range.getBoundingClientRect();
         if (rect.height > 0) bottom = Math.max(bottom ?? -Infinity, rect.bottom);
       }
+      return bottom;
+    };
+    const paintedFill = (surface) => {
+      const surfaceRect = surface.getBoundingClientRect();
+      const bottom = paintedBottomOf(surface);
       return bottom === null ? 0 : (bottom - surfaceRect.top) / surfaceRect.height;
     };
 
@@ -275,6 +286,26 @@ async function auditStory(page, origin, id) {
         const dates = [...surface.querySelectorAll('time')].map((node) => clean(node.textContent)).filter(Boolean);
         if (dates.length >= 2 && new Set(dates).size === 1) {
           flag('roadmap-flat-dates', `phase ${dates.length}개가 전부 "${dates[0]}" — 시간축이 정보를 나르지 않으면 일정이 아니라 의존 관계다`);
+        }
+      }
+
+      // chrome-intrusion — the footer/source band is out-of-flow chrome, so
+      // content spilling into it grows no scrollHeight and the overflow gate
+      // stays blind (READING_DECK_PILOT 마찰 3: a fixed-height exhibit put its
+      // caption on top of the footer and every gate stayed green). Painted
+      // content must stop above the chrome band's top. Kind-agnostic — the
+      // briefing preset's tighter band makes present decks just as exposed.
+      const chromeRects = [...surface.querySelectorAll('[data-slide-foot], [data-slide-source]')]
+        .map((node) => node.getBoundingClientRect())
+        .filter((rect) => rect.height > 0);
+      if (chromeRects.length > 0) {
+        const chromeTop = Math.min(...chromeRects.map((rect) => rect.top));
+        const paintedBottom = paintedBottomOf(surface);
+        // 1px of slack: subpixel layout rounds range boxes up, and a genuine
+        // intrusion is never a single pixel.
+        if (paintedBottom !== null && paintedBottom > chromeTop + 1) {
+          const title = clean(surface.querySelector('[data-slide-title]')?.textContent ?? '(무제)');
+          flag('chrome-intrusion', `"${title}" — 콘텐츠가 크롬 밴드(푸터·출처 존)를 ${Math.round(paintedBottom - chromeTop)}px 침범`);
         }
       }
 

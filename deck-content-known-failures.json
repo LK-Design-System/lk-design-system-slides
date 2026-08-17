@@ -1,6 +1,19 @@
 {
   "schemaVersion": 1,
   "note": "Deck stories with content-discipline violations, pinned per (deck, rule) pair. A ratchet: check:deck-content fails on any (deck, rule) not listed here — a pinned deck gets no pass on rules it was not pinned for — and also when a pinned rule stops firing. Only ever remove entries.",
-  "count": 0,
-  "failures": []
+  "count": 2,
+  "failures": [
+    {
+      "id": "decks-매체와-논증의-분리--deck",
+      "rules": [
+        "chrome-intrusion"
+      ]
+    },
+    {
+      "id": "decks-스트리밍-이관-제안--deck",
+      "rules": [
+        "canvas-under-fill"
+      ]
+    }
+  ]
 }
