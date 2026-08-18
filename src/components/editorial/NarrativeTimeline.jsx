@@ -61,12 +61,31 @@ export function NarrativeTimeline({ events = [], label, direction = 'column', st
      to its own ranks — what moves is rank, not size: stamp at caption,
      event label at note, body at note-body, exactly the ranks the hand-rolled
      rail used to hard-code. */
+  /* THE ROW REFUSES TO SHRINK BELOW A READABLE COLUMN. Upstream's horizontal
+     rail deals every event an equal `minmax(0, 1fr)` column and will split
+     forever: measured on the 1280 canvas, 6 events leave 164px and titles
+     start folding, 8 leave 117px and every label reads vertically — and no
+     gate sees it, because squeezed text wraps DOWN instead of spilling, so
+     the overflow gate's scroll measurement never moves. A count ceiling
+     would lie in both directions (4 long labels can crowd, 6 short ones can
+     fit), so the contract is width, not count: the rail claims a floor per
+     column, and a chronology too crowded for its canvas now overflows it
+     HORIZONTALLY — the exact failure the overflow gate already measures.
+     The floor is the medium's to re-point, like every editorial distance. */
+  const rowFloor =
+    direction === 'row' && items.length > 0
+      ? {
+        minWidth: `calc(${items.length} * var(--editorial-timeline-col-floor, 180px) + ${items.length - 1} * var(--space-6))`,
+      }
+      : undefined;
+
   const rail = (
     <Timeline
       label={railLabel}
       items={items}
       orientation={direction === 'row' ? 'horizontal' : 'vertical'}
       style={{
+        ...rowFloor,
         '--lk-timeline-time-size': 'var(--editorial-caption-size)',
         '--lk-timeline-time-line': 'var(--editorial-caption-line)',
         '--lk-timeline-time-spacing': 'var(--editorial-caption-spacing)',

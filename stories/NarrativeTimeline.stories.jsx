@@ -66,3 +66,53 @@ export const Default = {
     }
   },
 };
+
+export const CrowdedRow = {
+  name: 'Crowded Row',
+  render: () => (
+    // 좁은 컨테이너(720px)에 여덟 사건 — 균등 분할이면 컬럼 ~66px로 전 라벨이
+    // 세로로 접히는 분량. 바닥 계약이 이를 가로 넘침으로 바꿔 신고하게 한다.
+    <div data-crowded-frame style={{ width: 720, overflow: 'hidden', border: '1px dashed var(--color-semantic-line-normal-normal)' }}>
+      <NarrativeTimeline
+        direction="row"
+        events={[
+          { id: 'p1', date: '2026-08', label: '1차: 지연 민감 테이블 이관' },
+          { id: 'p2', date: '2026-10', label: '2차: 운영 검증' },
+          { id: 'p3', date: '2026-11', label: '확대 여부 결정' },
+          { id: 'p4', date: '2027-01', label: '3차: 파생 테이블 이관' },
+          { id: 'p5', date: '2027-02', label: '4차: 배치 경로 축소' },
+          { id: 'p6', date: '2027-03', label: '5차: 이중화 해제' },
+          { id: 'p7', date: '2027-04', label: '전 경로 전환 완료' },
+          { id: 'p8', date: '2027-05', label: '회고' },
+        ]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // 조용한 열화의 차단 계약. 상류의 가로 레일은 minmax(0,1fr)로 무한 분할
+    // 하고, 좁아진 글은 아래로 감겨서 오버플로 게이트의 자에 안 잡힌다
+    // (1280 캔버스 실측: 6개 164px에서 제목이 접히기 시작, 8개 117px에서
+    // 전부 세로 낭독). 개수 상한은 양방향으로 거짓말이라(긴 라벨 4개도 좁고
+    // 짧은 6개도 괜찮다) 계약은 폭이다: 컬럼은 바닥 아래로 줄어들지 않고,
+    // 넘치는 분량은 가로 넘침이 되어 기존 게이트의 측정 축에 오른다.
+    const root = canvasElement.querySelector('[data-lds-narrative-timeline]');
+    const frame = canvasElement.querySelector('[data-crowded-frame]');
+    const columns = root.querySelectorAll('ol > li');
+    if (columns.length !== 8) throw new Error(`Expected 8 rail events, got ${columns.length}.`);
+
+    const floorProbe = document.createElement('div');
+    floorProbe.style.width = 'var(--editorial-timeline-col-floor, 180px)';
+    frame.append(floorProbe);
+    const floor = floorProbe.getBoundingClientRect().width;
+    floorProbe.remove();
+
+    for (const column of columns) {
+      if (column.getBoundingClientRect().width < floor - 1) {
+        throw new Error(`A rail column shrank to ${Math.round(column.getBoundingClientRect().width)}px — the floor is ${floor}px; crowding must overflow, not fold the labels.`);
+      }
+    }
+    if (frame.scrollWidth <= frame.clientWidth) {
+      throw new Error('Eight events in a 720px frame must overflow horizontally — if this fits, the floor is not holding and the labels are folding instead.');
+    }
+  },
+};
