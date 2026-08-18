@@ -175,6 +175,18 @@ export function SlideSurface({
                 ? 'calc(var(--slides-chrome-inset) + var(--slides-fine-line) + var(--space-3))'
                 : 'var(--slides-chrome-inset)',
               margin: 0,
+              // Right-aligned, against the footer's left column. Set flush
+              // left the two chrome lines shared alignment, size, and ink,
+              // and read as one two-line footer (user-flagged) — but they are
+              // different roles: the source is THIS slide's evidence, the
+              // footer is the deck's identity. Right alignment is the Korean
+              // report's own attribution idiom (자료: ○○ under the exhibit's
+              // right edge) and distinguishes the roles on both presets
+              // without a rule — keynote draws boundaries with whitespace,
+              // so a footer rule would contradict its own header grammar.
+              // The next tone down (label-assistive, 0.28 alpha) was ruled
+              // out: it cannot meet the 4.5:1 chrome contrast floor.
+              textAlign: 'right',
               fontSize: 'var(--slides-fine-size)',
               lineHeight: 'var(--slides-fine-line)',
               letterSpacing: 'var(--slides-fine-spacing)',

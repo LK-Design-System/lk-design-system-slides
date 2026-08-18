@@ -92,6 +92,16 @@ export const Default = {
       throw new Error('The x-axis rail must clear the source line — the chrome band is out of flow, so a filling layout has to reserve it.');
     }
 
+    // The two chrome lines are DIFFERENT ROLES and must not share a column:
+    // the source is this slide's evidence (right, the report's attribution
+    // idiom), the footer is the deck's identity (left). Set flush left with
+    // the same size and ink they read as one two-line footer (user-flagged,
+    // 2026-08-18). A surface contract, asserted here because this is the
+    // story where source assertions already live.
+    if (source && getComputedStyle(source).textAlign !== 'right') {
+      throw new Error('The source line is right-aligned — left, it fuses with the identity footer into one block.');
+    }
+
     // NO ROTATED TYPE, here either. The y-axis name reads horizontally above
     // the plot: Korean in vertical writing-mode stacks one block per line and
     // collided with the pole labels.
