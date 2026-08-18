@@ -37,6 +37,12 @@ export const Default = {
     if (parseInt(cur.fontWeight, 10) <= parseInt(past.fontWeight, 10)) {
       throw new Error('Emphasis is spent on the current chapter only — the rest stay quiet.');
     }
+    // Non-current names ride MEDIUM (2026-08-18 weight render): 400 reads as
+    // blown-up body at this scale, and 700 would spend the weight that marks
+    // `current`. The ladder is ordinal 400 < name 500 < current 700.
+    if (parseInt(past.fontWeight, 10) !== 500) {
+      throw new Error(`Chapter names ride medium — regular goes washy, bold spends the current-marker. Got ${past.fontWeight}.`);
+    }
     if (parseInt(getComputedStyle(marked[0]).fontWeight, 10) !== 700) {
       throw new Error('The current chapter rides the bold class weight of its tier, not off-ramp semibold.');
     }

@@ -74,7 +74,14 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
                 fontSize: 'var(--slides-orient-size)',
                 lineHeight: 'var(--slides-orient-line)',
                 letterSpacing: 'var(--slides-orient-spacing)',
-                fontWeight: isCurrent ? 'var(--fw-bold)' : 'var(--fw-regular)',
+                // Medium, not regular: at this scale a 400 chapter name reads
+                // as blown-up body and the list goes washy (user-flagged on
+                // the real deck's TOC). Not bold either — the conventional
+                // all-bold agenda spends the weight that marks `current`, and
+                // a progress slide whose current chapter differs only by
+                // colour has lost its one job. 400/500/700 render, 2026-08-18:
+                // ordinal 400 < name 500 < current 700, every rung distinct.
+                fontWeight: isCurrent ? 'var(--fw-bold)' : 'var(--fw-medium)',
                 color: isCurrent
                   ? 'var(--color-semantic-label-strong)'
                   : 'var(--color-semantic-label-neutral)',
