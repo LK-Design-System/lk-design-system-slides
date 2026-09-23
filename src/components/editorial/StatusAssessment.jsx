@@ -94,7 +94,7 @@ export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
           '--lk-table-cell-line': 'var(--editorial-note-line)',
           '--lk-table-group-size': 'var(--editorial-caption-size)',
           '--lk-table-group-line': 'var(--editorial-caption-line)',
-          '--lk-table-group-spacing': '0.08em',
+          '--lk-table-group-spacing': 'var(--editorial-caption-spacing)',
         }}
       />
       {caption && (

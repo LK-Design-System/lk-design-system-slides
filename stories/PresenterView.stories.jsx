@@ -2,7 +2,7 @@ import React from 'react';
 import { ContentSlide, DeckViewer, EndSlide, PresenterView, Step, TitleSlide } from '../src/index.js';
 
 const meta = {
-  title: 'Slides/Presenter View',
+  title: 'Deck/Presenter View',
   component: PresenterView,
   tags: ['autodocs'],
   parameters: {
@@ -50,7 +50,7 @@ const pressUntil = async (element, key, settled, what) => {
 
 export const Default = {
   name: 'Presenter View',
-  render: () => <PresenterView label="파이프라인 개편 보고 — 발표자" running={false}>{deck()}</PresenterView>,
+  render: () => <PresenterView aria-label="파이프라인 개편 보고 — 발표자" running={false}>{deck()}</PresenterView>,
   play: async ({ canvasElement }) => {
     const view = canvasElement.querySelector('[data-lds-presenter-view]');
     const elapsed = canvasElement.querySelector('[data-presenter-elapsed]');
@@ -96,8 +96,8 @@ function LateJoinDemo() {
       <button type="button" data-open-presenter onClick={() => setJoined(true)} style={{ justifySelf: 'start' }}>
         발표자 화면 열기
       </button>
-      <DeckViewer channel="story-late-join" label="청중">{deck()}</DeckViewer>
-      {joined && <PresenterView channel="story-late-join" label="발표자" running={false}>{deck()}</PresenterView>}
+      <DeckViewer channel="story-late-join" aria-label="청중">{deck()}</DeckViewer>
+      {joined && <PresenterView channel="story-late-join" aria-label="발표자" running={false}>{deck()}</PresenterView>}
     </div>
   );
 }
@@ -155,8 +155,8 @@ export const SyncedWithTheAudience = {
   },
   render: () => (
     <div style={{ display: 'grid', gap: 'var(--space-8)' }}>
-      <PresenterView channel="story-sync" label="발표자" running={false}>{deck()}</PresenterView>
-      <DeckViewer channel="story-sync" label="청중">{deck()}</DeckViewer>
+      <PresenterView channel="story-sync" aria-label="발표자" running={false}>{deck()}</PresenterView>
+      <DeckViewer channel="story-sync" aria-label="청중">{deck()}</DeckViewer>
     </div>
   ),
   play: async ({ canvasElement }) => {

@@ -71,7 +71,7 @@ export const Default = {
     }
 
     // Emphasis: only the named lines are lit, and they are the strong ones.
-    const lit = [...canvasElement.querySelectorAll('[data-code-emphasis="true"]')];
+    const lit = [...canvasElement.querySelectorAll('[data-code-line][data-emphasis="true"]')];
     if (lit.length !== 2) throw new Error(`highlight names two lines; ${lit.length} are lit.`);
     if (lit.map((line) => line.getAttribute('data-code-line')).join(',') !== '2,6') {
       throw new Error('The lit lines must be the ones named in `highlight`.');
@@ -94,7 +94,7 @@ export const WithoutEmphasis = {
     <CodeSlide eyebrow="구현" title="강조를 쓰지 않은 판" code={SAMPLE} caption="SlideSurface.jsx" />
   ),
   play: async ({ canvasElement }) => {
-    if (canvasElement.querySelector('[data-code-emphasis="true"]')) {
+    if (canvasElement.querySelector('[data-code-line][data-emphasis="true"]')) {
       throw new Error('With no highlight, no line may claim emphasis.');
     }
     const expected = SAMPLE.split('\n').length;

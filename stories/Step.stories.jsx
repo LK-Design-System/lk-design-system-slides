@@ -31,7 +31,7 @@ const findings = ['수집 지연 p95 41분', '적재 큐 대기 28분', '변환 
 export const InADeck = {
   name: '덱 안에서',
   render: () => (
-    <DeckViewer label="단계 공개 데모">
+    <DeckViewer aria-label="단계 공개 데모">
       <ContentSlide eyebrow="현황" title="지연은 어디서 생기나">
         <ul style={{ margin: 0, paddingLeft: '1.2em', display: 'grid', gap: 'var(--space-3)' }}>
           {findings.map((finding, order) => (

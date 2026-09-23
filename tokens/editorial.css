@@ -12,6 +12,11 @@
   /* Emphasis — one claim at a time. */
   --editorial-emphasis: var(--color-semantic-primary-normal);
   --editorial-emphasis-surface: color-mix(in srgb, var(--editorial-emphasis) 12%, transparent);
+  /* The same accent, as TEXT. Not a second accent: primary-normal is the
+     fill/stroke shade and misses AA as small type, so emphasised words take
+     upstream's strong step. Components used to read primary-strong directly
+     in eight places, so the emphasis text path bypassed this file. */
+  --editorial-emphasis-text: var(--color-semantic-primary-strong);
   --editorial-muted: var(--color-semantic-interaction-inactive);
 
   /* Type ramp — the MEDIUM owns reading distance, this layer owns rank.
@@ -74,6 +79,17 @@
      timeline phases. (Reinstated 2026-08-16 with its first real consumers;
      an earlier draft cut it for having none.) */
   --editorial-figure-gap: var(--space-6);
+  /* The narrowest column a horizontal chronology may deal an event before
+     it overflows instead of folding its labels vertically (NarrativeTimeline).
+     Read with a literal fallback for years with no definition anywhere, so
+     the "medium re-points it" promise had nothing to re-point. */
+  --editorial-timeline-col-floor: 180px;
+  /* TrendChart line weights, handed to Core's --lk-chart-*-stroke hooks.
+     Series outweighs the reference line: the data is the claim, the
+     threshold is its yardstick. Read with fallbacks and never defined, so
+     the seam the component advertised did not exist. */
+  --editorial-series-stroke: 3;
+  --editorial-reference-stroke: 2;
 
   /* Width policy — also the medium's call. In flowing product prose a table
      takes its intrinsic width and no more; on a fixed canvas where the table

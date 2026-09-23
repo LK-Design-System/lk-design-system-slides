@@ -44,7 +44,9 @@ function Attribution({ caption, source, onScrim = false }) {
             right: 0,
             bottom: 0,
             padding: 'var(--space-5) var(--slides-safe-x) var(--space-6)',
-            background: 'linear-gradient(transparent, rgba(10, 10, 12, 0.72))',
+            // Upstream's dimmer, not a local near-black: the scrim is Core's
+            // material, and its alpha already carries white type at AA.
+            background: 'linear-gradient(transparent, var(--color-semantic-material-dimmer))',
           }
           : {}),
       }}
@@ -57,7 +59,7 @@ function Attribution({ caption, source, onScrim = false }) {
             lineHeight: 'var(--slides-caption-line)',
             letterSpacing: 'var(--slides-caption-spacing)',
             fontWeight: 'var(--fw-semibold)',
-            color: onScrim ? '#fafaf8' : 'var(--color-semantic-label-strong)',
+            color: onScrim ? 'var(--color-semantic-static-white)' : 'var(--color-semantic-label-strong)',
           }}
         >
           {caption}
@@ -70,7 +72,9 @@ function Attribution({ caption, source, onScrim = false }) {
             fontSize: 'var(--slides-fine-size)',
             lineHeight: 'var(--slides-fine-line)',
             letterSpacing: 'var(--slides-fine-spacing)',
-            color: onScrim ? 'rgba(250, 250, 248, 0.8)' : 'var(--color-semantic-label-alternative)',
+            color: onScrim
+              ? 'color-mix(in srgb, var(--color-semantic-static-white) 80%, transparent)'
+              : 'var(--color-semantic-label-alternative)',
           }}
         >
           {source}
@@ -124,11 +128,13 @@ function Image({ src, alt, fit, aspect }) {
             left: 'var(--space-3)',
             bottom: 'var(--space-3)',
             padding: 'var(--space-1) var(--space-3)',
-            borderRadius: 'var(--radius-md, 8px)',
+            borderRadius: 'var(--radius-md, 12px)',
             fontSize: 'var(--slides-fine-size)',
             lineHeight: 'var(--slides-fine-line)',
-            background: 'var(--color-semantic-status-cautionary, #b45309)',
-            color: '#fafaf8',
+            background: 'var(--color-semantic-status-cautionary)',
+            // Black, not white: white on the cautionary fill measured ~2:1,
+            // a warning that could not be read. Static black clears 4.5:1.
+            color: 'var(--color-semantic-static-black)',
           }}
         >
           {ALT_WARNING}

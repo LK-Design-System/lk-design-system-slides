@@ -76,7 +76,7 @@ const DEFECT_TO_GATE = [
 export const Deck = {
   name: '산출과 계약',
   render: () => (
-    <DeckViewer label="산출과 계약" classification="내부용">
+    <DeckViewer aria-label="산출과 계약" classification="내부용">
       <TitleSlide
         eyebrow="플랫폼 보고"
         title="산출과 계약"
@@ -147,7 +147,7 @@ export const Deck = {
           ]}
           fromLabel="뷰어가 하는 것"
           toLabel="시트가 하는 것"
-          label="인쇄 시트가 뷰어의 세 동작을 되돌리는 구조"
+          aria-label="인쇄 시트가 뷰어의 세 동작을 되돌리는 구조"
         />
       </FigureSlide>
 
@@ -206,8 +206,7 @@ export const Deck = {
         annotations={[
           { id: 'scale', title: '확대는 폭 미달의 해법이 아니다', body: '정직한 해법은 넓게 배치하는 것이고, 부정직한 해법을 막는 것이 두 번째 규칙이다.', emphasis: true },
         ]}
-        caption="게이트 11종 중 도판·인쇄·시각 관련 5종"
-        source="출처: package.json check:* 스크립트, 2026-08-17"
+        source="출처: package.json check:* 중 도판·인쇄·시각 5종, 2026-08-17"
         foot={FOOT}
         notes="왼쪽이 실제로 겪은 결함, 오른쪽이 지금 그것을 잡는 게이트다. 강조한 행이 오늘 새로 생긴 규칙이다. [~2분]"
       >
@@ -215,7 +214,7 @@ export const Deck = {
           rows={DEFECT_TO_GATE}
           fromLabel="겪은 결함"
           toLabel="잡는 관문"
-          label="결함 유형과 그것을 검출하는 게이트의 대응"
+          aria-label="결함 유형과 그것을 검출하는 게이트의 대응"
         />
       </FigureSlide>
 

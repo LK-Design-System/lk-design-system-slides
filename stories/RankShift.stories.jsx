@@ -38,11 +38,11 @@ export const Default = {
     if (!root) throw new Error('RankShift must render.');
 
     // 강조는 하나 — 두 항목이 요청해도 첫 번째(C라인)만 승인된다.
-    const emphasizedLines = root.querySelectorAll('[data-rank-line][data-rank-emphasis="true"]');
+    const emphasizedLines = root.querySelectorAll('[data-rank-line][data-emphasis="true"]');
     if (emphasizedLines.length !== 1) {
       throw new Error('Two items requested emphasis; the contract must grant exactly one.');
     }
-    const emphasizedLabels = root.querySelectorAll('[data-rank-label-end][data-rank-emphasis="true"]');
+    const emphasizedLabels = root.querySelectorAll('[data-rank-label-end][data-emphasis="true"]');
     if (emphasizedLabels.length !== 1 || !emphasizedLabels[0].textContent.includes('C라인')) {
       throw new Error('The first emphasis request (C라인) must win; later ones are demoted.');
     }

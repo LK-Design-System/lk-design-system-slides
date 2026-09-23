@@ -86,7 +86,7 @@ export const Deck = {
   name: '스트리밍 이관 제안',
   render: () => (
     <DeckViewer
-      label="스트리밍 이관 제안"
+      aria-label="스트리밍 이관 제안"
       // The standing mark, stated once for the whole deck (한국 보고 장표의 매
       // 페이지 로고). variant="mark": the compact glyph, 21px wide against the
       // wordmark 156px — chrome rides in the band, it does not carry the page.

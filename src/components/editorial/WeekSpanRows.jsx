@@ -27,9 +27,12 @@ import React from 'react';
 const SHAFT = 10;
 const HEAD_HALF = 10;
 const HEAD_LENGTH = 16;
+// The accessible name. `aria-label` is canonical — across this package
+// `label` means text the room SEES; `label` is still accepted here (pre-alpha.12).
 export function WeekSpanRows({
-  weeks = [], groups = [], rows = [], label, style, ...rest
+  weeks = [], groups = [], rows = [], label: legacyLabel, 'aria-label': ariaLabel, style, ...rest
 }) {
+  const label = ariaLabel ?? legacyLabel;
   const headerRow = groups.length > 0 ? 2 : 1;
   const cellPad = 'var(--editorial-cell-pad-block) var(--editorial-cell-pad-inline)';
   const band = 'var(--color-semantic-fill-alternative)';

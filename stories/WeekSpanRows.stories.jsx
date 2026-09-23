@@ -32,7 +32,7 @@ const ROWS = [
 
 export const Default = {
   name: 'Week Span Rows',
-  render: () => <WeekSpanRows label="향후 업무 계획" weeks={WEEKS} rows={ROWS} />,
+  render: () => <WeekSpanRows aria-label="향후 업무 계획" weeks={WEEKS} rows={ROWS} />,
   play: async ({ canvasElement }) => {
     const table = canvasElement.querySelector('[data-lds-week-span-rows]');
     if (!table) throw new Error('WeekSpanRows must render its table root.');
@@ -76,7 +76,7 @@ export const GroupedPeriods = {
   name: 'Grouped Periods',
   render: () => (
     <WeekSpanRows
-      label="향후 업무 계획"
+      aria-label="향후 업무 계획"
       weeks={GROUPED_WEEKS}
       groups={WEEK_GROUPS}
       rows={GROUPED_ROWS}
@@ -115,7 +115,7 @@ export const GroupSpanMismatch = {
   name: 'Group Span Mismatch',
   render: () => (
     <WeekSpanRows
-      label="구간 합이 기간과 다른 경우"
+      aria-label="구간 합이 기간과 다른 경우"
       weeks={GROUPED_WEEKS}
       groups={[{ label: '8월', span: 2 }]}
       rows={GROUPED_ROWS}

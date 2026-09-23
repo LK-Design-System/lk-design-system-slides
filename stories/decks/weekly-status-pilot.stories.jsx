@@ -23,7 +23,7 @@ const WEEKS = ['8월 2주차', '8월 3주차'];
 export const Deck = {
   name: '주간 업무현황 (열람 파일럿)',
   render: () => (
-    <DeckViewer label="8월 2주차 LKR 업무현황" kind="read" preset="briefing">
+    <DeckViewer aria-label="8월 2주차 LKR 업무현황" kind="read" preset="briefing">
       <TitleSlide
         eyebrow="LKR 플랫폼"
         title="8월 2주차 업무현황"
@@ -94,7 +94,7 @@ export const Deck = {
         notes="열람 파일럿 3호: 주차 스팬 행(간트-lite) — WeekSpanRows로 승격된 세 번째 계약."
       >
         <WeekSpanRows
-          label="향후 업무 계획"
+          aria-label="향후 업무 계획"
           weeks={WEEKS}
           rows={[
             { name: '화재 검출', work: '화재 데이터셋 수집 및 학습', from: 0, to: 1, continues: true },

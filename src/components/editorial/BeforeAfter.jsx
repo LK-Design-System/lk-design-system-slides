@@ -15,7 +15,10 @@ function signedText(delta, unitLabel) {
  * by bar side and signed text — color is reinforcement — and at most one
  * item carries emphasis; if several ask, the first wins.
  */
-export function BeforeAfter({ reference = {}, items = [], unitLabel = '', barHeight = 14, style, ...rest }) {
+// `unit` is the system-wide name (KeyFigure, PictogramRow); `unitLabel` is
+// the pre-0.1.0-alpha.12 spelling, still accepted.
+export function BeforeAfter({ reference = {}, items = [], unit: unitProp, unitLabel: legacyUnit, barHeight = 14, style, ...rest }) {
+  const unitLabel = unitProp ?? legacyUnit ?? '';
   const refValue = Number(reference.value ?? 0);
   const refLabel = reference.label || `기준 ${refValue.toLocaleString('ko-KR')}${unitLabel}`;
 
@@ -73,7 +76,7 @@ export function BeforeAfter({ reference = {}, items = [], unitLabel = '', barHei
           <React.Fragment key={item.id ?? item.label}>
             <span
               data-deviation-item
-              data-deviation-emphasis={item.emphasis ? 'true' : undefined}
+              data-emphasis={item.emphasis ? 'true' : undefined}
               style={{
                 justifySelf: 'end',
                 whiteSpace: 'nowrap',
@@ -81,7 +84,7 @@ export function BeforeAfter({ reference = {}, items = [], unitLabel = '', barHei
                 lineHeight: 'var(--editorial-note-line)',
                 letterSpacing: 'var(--editorial-note-spacing)',
                 fontWeight: item.emphasis ? 'var(--fw-bold)' : 'var(--fw-medium)',
-                color: item.emphasis ? 'var(--color-semantic-primary-strong)' : 'var(--color-semantic-label-neutral)',
+                color: item.emphasis ? 'var(--editorial-emphasis-text)' : 'var(--color-semantic-label-neutral)',
               }}
             >
               {item.label}
@@ -122,7 +125,7 @@ export function BeforeAfter({ reference = {}, items = [], unitLabel = '', barHei
                 letterSpacing: 'var(--editorial-note-spacing)',
                 fontVariantNumeric: 'tabular-nums',
                 fontWeight: item.emphasis ? 'var(--fw-bold)' : 'var(--fw-medium)',
-                color: item.emphasis ? 'var(--color-semantic-primary-strong)' : 'var(--color-semantic-label-neutral)',
+                color: item.emphasis ? 'var(--editorial-emphasis-text)' : 'var(--color-semantic-label-neutral)',
               }}
             >
               {signedText(item.delta, unitLabel)}

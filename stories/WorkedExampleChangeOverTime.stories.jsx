@@ -130,7 +130,7 @@ export const BeforeAfter = {
     }
 
     // 절차 4 — 강조는 하나.
-    const emphasized = compliant.querySelectorAll('[data-annotation-emphasis="true"]');
+    const emphasized = compliant.querySelectorAll('[data-annotation][data-emphasis="true"]');
     if (emphasized.length !== 1) {
       throw new Error('The compliant panel must carry exactly one emphasized annotation.');
     }

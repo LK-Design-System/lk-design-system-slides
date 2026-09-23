@@ -1,7 +1,7 @@
 import React from 'react';
 import { Lockup } from '@lk-design-system/lds-theme';
 import {
-  TitleSlide, SectionSlide, StatementSlide, EndSlide,
+  TitleSlide, SectionSlide, StatementSlide, EndSlide, ContentSlide,
 } from '../src/index.js';
 
 const meta = {
@@ -169,6 +169,32 @@ export const SparseFamily = {
     }
     if (/LK\s*ROBOTICS/i.test(contact.textContent)) {
       throw new Error('The mark already says whose deck this is — the contact line carries only the address.');
+    }
+  },
+};
+
+export const ContentRefusesBrand = {
+  name: 'Content Layout Refuses Brand',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '본문 레이아웃은 `appearance="brand"`를 받지 않습니다. 예전에는 eyebrow와 크롬만 반전되고 본문은 흰 표면 토큰 그대로 네이비 위에 남았습니다. 이제 흰 표면을 유지하고 `data-slides-appearance-refused="brand"`로 신고합니다.',
+      },
+    },
+  },
+  render: () => (
+    <ContentSlide appearance="brand" eyebrow="진단" title="지연 원인" governing="지연의 대부분은 배치 대기에서 생깁니다.">
+      <p style={{ margin: 0 }}>표나 차트가 올라가는 본문은 흰 표면에서 읽힙니다.</p>
+    </ContentSlide>
+  ),
+  play: async ({ canvasElement }) => {
+    const surface = canvasElement.querySelector('[data-lds-slide-surface]');
+    if (surface.getAttribute('data-slides-appearance')) {
+      throw new Error('A content layout must not apply the brand appearance.');
+    }
+    if (surface.getAttribute('data-slides-appearance-refused') !== 'brand') {
+      throw new Error('The refusal must be reported on the surface.');
     }
   },
 };

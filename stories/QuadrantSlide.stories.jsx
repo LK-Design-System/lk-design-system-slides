@@ -69,8 +69,18 @@ export const Default = {
     }
 
     // Emphasis budget: one item, enforced in code.
-    if (canvasElement.querySelectorAll('[data-item-emphasis="true"]').length !== 1) {
+    if (canvasElement.querySelectorAll('[data-quadrant-item][data-emphasis="true"]').length !== 1) {
       throw new Error('At most one item carries emphasis.');
+    }
+
+    // The slide-level emphasis budget: a spent emphasis drops the accented
+    // eyebrow (two blue accents on one canvas).
+    const surface = canvasElement.querySelector('[data-lds-quadrant-slide]');
+    if (surface.getAttribute('data-emphasis-spent') !== 'item') {
+      throw new Error('An emphasised item must report the spent budget on the slide.');
+    }
+    if (canvasElement.querySelector('[data-slide-eyebrow]')) {
+      throw new Error('A slide that spends emphasis must drop its accented eyebrow.');
     }
 
     // Both axes state their direction in words — an arrow alone says nothing.

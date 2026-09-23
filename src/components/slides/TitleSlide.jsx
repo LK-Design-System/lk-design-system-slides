@@ -1,6 +1,7 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
 import { phrased } from './phrasing.jsx';
+import { SlideEyebrow } from './SlideEyebrow.jsx';
 
 /**
  * LDS Slides — TitleSlide
@@ -16,7 +17,7 @@ export function TitleSlide({
     // here because on a cover the stack IS the whole slide — wrapping the
     // flex items in a real <header> would change margin collapsing and
     // cross-axis sizing for zero visual gain (HEADER_SYSTEM_PROPOSAL R3).
-    <SlideSurface data-slide-header="cover" style={style} {...rest}>
+    <SlideSurface data-lds-title-slide data-slide-header="cover" style={style} {...rest}>
       {/* A place for the brand mark. Core ships lockup components and guards
           for them, and this layout had nowhere to put one — so an external
           deck's cover could not carry a logo at all (COMPLETENESS_AUDIT D1).
@@ -28,27 +29,7 @@ export function TitleSlide({
           {lockup}
         </div>
       )}
-      {eyebrow && (
-        <p
-          data-slide-eyebrow
-          style={{
-            margin: '0 0 var(--space-4)',
-            fontSize: 'var(--slides-overline-size)',
-            lineHeight: 'var(--slides-overline-line)',
-            // The ramp's own tracking, not the Latin kicker idiom. uppercase +
-            // 0.08em is an English smallcaps convention; every real eyebrow in
-            // this repository is Korean, where uppercase is a no-op and tracking
-            // out already-wide syllable blocks loosens them further
-            // (HEADER_SYSTEM_PROPOSAL R2). English eyebrows lose smallcaps —
-            // accepted; the English deck profile is a separate deferred item (E3).
-            letterSpacing: 'var(--slides-overline-spacing)',
-            fontWeight: 'var(--fw-semibold)',
-            color: 'var(--slides-ink-accent)',
-          }}
-        >
-          {eyebrow}
-        </p>
-      )}
+      <SlideEyebrow stack="cover">{eyebrow}</SlideEyebrow>
       <h2
         data-slide-title
         style={{

@@ -4,9 +4,12 @@
   "rules": [
     "Pick the layout whose shape matches the content, then fill its props. Layouts own composition; a deck owns wording and order.",
     "One claim per slide. If a slide needs two claims it is two slides.",
-    "Emphasis is spent once per slide. StatSlide grants the first figure that asks and demotes the rest; a slide that spends emphasis on a figure drops its accented eyebrow.",
+    "Emphasis is spent once per slide. The first item that asks gets it and the rest are demoted; a slide that spends emphasis (Stat, Figure, Compare, Roadmap, Triptych, Quadrant) drops its accented eyebrow. Every emphasised element carries data-emphasis=\"true\".",
     "Titles end in a noun; the sentence belongs in `governing` (ContentSlide) or `statement` (StatementSlide).",
-    "Never write an upstream ramp variable (--display1-size and friends) into a component or a deck. Read the --slides-* steps; check:style-ownership enforces it.",
+    "Never write an upstream ramp variable (--display1-size and friends), a colour literal, or an undefined token into a component. Read the --slides-* steps and semantic tokens; check:style-ownership enforces it.",
+    "Prop vocabulary is shared: `label` is text the room sees and `aria-label` an accessible name only; `unit` is a value's unit; `emphasis` is a boolean. Props marked deprecated here still work but are not for new decks.",
+    "appearance=\"brand\" is for cover, section, statement and end slides. A content layout refuses it and reports data-slides-appearance-refused.",
+    "Layouts that compose ContentSlide or SlideSurface accept their header and chrome props too — listed per entry under `inherits`.",
     "Every px in this package is a design pixel measured against a 1280px logical canvas. The canvas is fitted to its container, so authored composition is delivered composition.",
     "Content that overruns the canvas is clipped, not scrolled. Cut it, split the slide, or wrap the body in Fit — check:slide-overflow fails the build either way.",
     "Steps reveal on the presenter cue and must not reflow: a pending Step keeps its box. Outside a deck every Step renders revealed.",
@@ -22,10 +25,15 @@
       "--slides-safe-y"
     ],
     "ramp": [
+      "--slides-hero-*",
+      "--slides-spot-*",
       "--slides-display-*",
       "--slides-title-*",
       "--slides-body-*",
+      "--slides-governing-*",
       "--slides-caption-*",
+      "--slides-overline-*",
+      "--slides-orient-*",
       "--slides-fine-*"
     ],
     "presets": [
@@ -64,6 +72,10 @@
         },
         {
           "name": "mark"
+        },
+        {
+          "name": "scale",
+          "default": "'auto'"
         },
         {
           "name": "notes"
@@ -111,8 +123,25 @@
           "name": "lockup"
         }
       ],
+      "inherits": {
+        "from": [
+          "SlideSurface"
+        ],
+        "props": [
+          "safeArea",
+          "preset",
+          "appearance",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
-        "data-slide-eyebrow",
+        "data-lds-title-slide",
         "data-slide-header",
         "data-slide-lockup",
         "data-slide-subtitle",
@@ -138,17 +167,22 @@
           "default": "'top'"
         },
         {
+          "name": "appearance"
+        },
+        {
           "name": "children"
         }
       ],
       "dataAttributes": [
+        "data-lds",
+        "data-lds-content-slide",
         "data-slide-anchor",
         "data-slide-content",
-        "data-slide-eyebrow",
         "data-slide-governing",
         "data-slide-governing-missing",
         "data-slide-header",
-        "data-slide-title"
+        "data-slide-title",
+        "data-slides-appearance-refused"
       ]
     },
     {
@@ -166,6 +200,23 @@
           "name": "subtitle"
         }
       ],
+      "inherits": {
+        "from": [
+          "SlideSurface"
+        ],
+        "props": [
+          "safeArea",
+          "preset",
+          "appearance",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
         "data-lds-section-slide",
         "data-slide-header",
@@ -194,6 +245,27 @@
           "name": "right"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "eyebrow",
+          "title",
+          "governing",
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
         "data-lds-split-slide",
         "data-slide-pane",
@@ -212,13 +284,37 @@
         },
         {
           "name": "anchor"
+        },
+        {
+          "name": "eyebrow"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "title",
+          "governing",
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
+        "data-emphasis",
+        "data-emphasis-spent",
         "data-lds-triptych-slide",
         "data-panel-body",
         "data-panel-count",
-        "data-panel-emphasis",
         "data-panel-label",
         "data-slide-panel",
         "data-slide-triptych"
@@ -250,10 +346,33 @@
         },
         {
           "name": "foot"
+        },
+        {
+          "name": "eyebrow"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "title",
+          "governing",
+          "anchor",
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "footer"
+        ]
+      },
       "dataAttributes": [
-        "data-item-emphasis",
+        "data-emphasis",
+        "data-emphasis-spent",
         "data-lds-quadrant-slide",
         "data-quadrant-item",
         "data-quadrant-label",
@@ -287,6 +406,24 @@
           "name": "anchor"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "governing",
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer"
+        ]
+      },
       "dataAttributes": [
         "data-emphasis-spent",
         "data-lds-stat-slide",
@@ -309,9 +446,26 @@
           "name": "attribution"
         }
       ],
+      "inherits": {
+        "from": [
+          "SlideSurface"
+        ],
+        "props": [
+          "safeArea",
+          "preset",
+          "appearance",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
+        "data-lds-statement-slide",
         "data-slide-attribution",
-        "data-slide-eyebrow",
         "data-slide-scale",
         "data-slide-statement"
       ]
@@ -342,13 +496,33 @@
           "default": "[]"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "anchor",
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
         "data-code-caption",
         "data-code-columns",
-        "data-code-emphasis",
         "data-code-line",
         "data-code-listing",
-        "data-lds-code"
+        "data-emphasis",
+        "data-lds-code",
+        "data-lds-code-slide"
       ]
     },
     {
@@ -368,13 +542,29 @@
           "name": "current"
         }
       ],
+      "inherits": {
+        "from": [
+          "SlideSurface"
+        ],
+        "props": [
+          "safeArea",
+          "preset",
+          "appearance",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
-        "data-current",
+        "data-agenda-current",
         "data-lds-agenda-slide",
         "data-slide-agenda",
         "data-slide-agenda-index",
-        "data-slide-agenda-item",
-        "data-slide-eyebrow"
+        "data-slide-agenda-item"
       ]
     },
     {
@@ -405,6 +595,24 @@
           "name": "children"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "anchor",
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer"
+        ]
+      },
       "dataAttributes": [
         "data-emphasis-spent",
         "data-lds-figure-slide"
@@ -449,6 +657,24 @@
           "default": "false"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "anchor",
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer"
+        ]
+      },
       "dataAttributes": [
         "data-image-alt-missing",
         "data-image-alt-warning",
@@ -496,6 +722,23 @@
           "name": "anchor"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer"
+        ]
+      },
       "dataAttributes": [
         "data-emphasis-spent",
         "data-lds-compare-slide"
@@ -526,6 +769,23 @@
           "name": "anchor"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer"
+        ]
+      },
       "dataAttributes": [
         "data-emphasis-spent",
         "data-lds-roadmap-slide"
@@ -559,6 +819,23 @@
           "name": "anchor"
         }
       ],
+      "inherits": {
+        "from": [
+          "ContentSlide",
+          "SlideSurface"
+        ],
+        "props": [
+          "appearance",
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer"
+        ]
+      },
       "dataAttributes": [
         "data-lds-assessment-slide"
       ]
@@ -578,6 +855,23 @@
           "name": "lockup"
         }
       ],
+      "inherits": {
+        "from": [
+          "SlideSurface"
+        ],
+        "props": [
+          "safeArea",
+          "preset",
+          "appearance",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
         "data-lds-end-slide",
         "data-slide-contact",
@@ -596,6 +890,10 @@
         {
           "name": "at",
           "default": "1"
+        },
+        {
+          "name": "as",
+          "default": "'div'"
         },
         {
           "name": "children"
@@ -661,7 +959,10 @@
         },
         {
           "name": "label",
-          "default": "'슬라이드 덱'"
+          "deprecated": true
+        },
+        {
+          "name": "aria-label"
         },
         {
           "name": "notesLabel",
@@ -711,7 +1012,10 @@
         },
         {
           "name": "label",
-          "default": "'발표자 화면'"
+          "deprecated": true
+        },
+        {
+          "name": "aria-label"
         },
         {
           "name": "running",
@@ -755,7 +1059,10 @@
         },
         {
           "name": "label",
-          "default": "'슬라이드 덱 (인쇄용)'"
+          "deprecated": true
+        },
+        {
+          "name": "aria-label"
         }
       ],
       "dataAttributes": [
@@ -765,6 +1072,385 @@
         "data-lds-slide-surface",
         "data-print-page",
         "data-print-page-count"
+      ]
+    }
+  ],
+  "editorial": [
+    {
+      "name": "KeyFigure",
+      "kind": "editorial",
+      "useFor": "One number, one claim. Composes Core's Stat for the numeral (the chart layer stays upstream) and owns the narrative frame around it: the claim line and an optional source note. The number is always visible text — emphasis never replaces it.",
+      "props": [
+        {
+          "name": "value"
+        },
+        {
+          "name": "unit"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "claim"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "emphasis",
+          "default": "false"
+        }
+      ],
+      "dataAttributes": [
+        "data-emphasis",
+        "data-key-figure-claim",
+        "data-key-figure-source",
+        "data-lds-key-figure"
+      ]
+    },
+    {
+      "name": "PictogramRow",
+      "kind": "editorial",
+      "useFor": "A quantity as repeated units (ISOTYPE style). The pictogram is redundant reinforcement: the exact value is always rendered as text and carried on the accessible name, so the graphic never becomes the only channel. In comparisons, all rows but the one carrying the claim take `emphasis={false}` so the emphasis budget stays at one. Unlike the other components the default is ON: a lone pictogram row IS the claim, and a muted one reads as a disabled control.",
+      "props": [
+        {
+          "name": "value"
+        },
+        {
+          "name": "per",
+          "default": "1"
+        },
+        {
+          "name": "unit"
+        },
+        {
+          "name": "unitLabel",
+          "deprecated": true
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "maxUnits",
+          "default": "20"
+        },
+        {
+          "name": "emphasis"
+        },
+        {
+          "name": "tone",
+          "deprecated": true
+        }
+      ],
+      "dataAttributes": [
+        "data-emphasis",
+        "data-lds-pictogram-row",
+        "data-pictogram-scale",
+        "data-pictogram-unit",
+        "data-pictogram-value"
+      ]
+    },
+    {
+      "name": "AnnotatedFigure",
+      "kind": "editorial",
+      "useFor": "Wraps any figure (a Core chart, an image, an SVG) and owns the annotation contract. The anchor decides the seat (ANNOTATION_REDESIGN_PROPOSAL):",
+      "props": [
+        {
+          "name": "children"
+        },
+        {
+          "name": "annotations",
+          "default": "[]"
+        },
+        {
+          "name": "caption"
+        }
+      ],
+      "dataAttributes": [
+        "data-annotated-figure-body",
+        "data-annotated-figure-notes",
+        "data-annotation",
+        "data-annotation-anchor",
+        "data-annotation-anchor-status",
+        "data-annotation-anchor-warning",
+        "data-annotation-kind",
+        "data-annotation-layout",
+        "data-annotation-leaders",
+        "data-emphasis",
+        "data-lds-annotated-figure"
+      ]
+    },
+    {
+      "name": "RankShift",
+      "kind": "editorial",
+      "useFor": "Rank change between two points in time as a slope graphic. Ranks are ordinal, not measured: the slope is the primary channel, color is reinforcement. Every item is labeled directly with its rank on both sides (no color-only legend), and at most one item carries emphasis — if several ask, the first wins and the rest are demoted.",
+      "props": [
+        {
+          "name": "items",
+          "default": "[]"
+        },
+        {
+          "name": "startLabel"
+        },
+        {
+          "name": "endLabel"
+        },
+        {
+          "name": "rowHeight",
+          "default": "28"
+        }
+      ],
+      "dataAttributes": [
+        "data-emphasis",
+        "data-lds-rank-shift",
+        "data-rank-delta",
+        "data-rank-label-end",
+        "data-rank-label-start",
+        "data-rank-line",
+        "data-rank-shift-end",
+        "data-rank-shift-lines",
+        "data-rank-shift-start"
+      ]
+    },
+    {
+      "name": "BeforeAfter",
+      "kind": "editorial",
+      "useFor": "Deviation from an explicit reference as diverging bars. A deviation without a stated baseline cannot exist here: omit the reference label and the component prints one from the value itself. Direction is carried by bar side and signed text — color is reinforcement — and at most one item carries emphasis; if several ask, the first wins.",
+      "props": [
+        {
+          "name": "reference",
+          "default": "{}"
+        },
+        {
+          "name": "items",
+          "default": "[]"
+        },
+        {
+          "name": "unit"
+        },
+        {
+          "name": "unitLabel",
+          "deprecated": true
+        },
+        {
+          "name": "barHeight",
+          "default": "14"
+        }
+      ],
+      "dataAttributes": [
+        "data-deviation-bar",
+        "data-deviation-direction",
+        "data-deviation-item",
+        "data-deviation-value",
+        "data-emphasis",
+        "data-lds-before-after",
+        "data-reference-label"
+      ]
+    },
+    {
+      "name": "NarrativeTimeline",
+      "kind": "editorial",
+      "useFor": "A chronology that makes a claim. The rail itself is Core's Timeline (ol/time semantics stay upstream); this layer owns the narrative contract: events render in chronological order regardless of input order, an event without a date cannot sit on the rail — it is demoted to a visible \"시점 미상\" footnote instead of being placed by guesswork — and at most one event carries emphasis; if several ask, the first wins. Spacing between events is reading rhythm, not measured duration: a duration claim belongs in a chart, not here.",
+      "props": [
+        {
+          "name": "events",
+          "default": "[]"
+        },
+        {
+          "name": "label",
+          "deprecated": true
+        },
+        {
+          "name": "aria-label"
+        },
+        {
+          "name": "direction",
+          "default": "'column'"
+        }
+      ],
+      "dataAttributes": [
+        "data-emphasis",
+        "data-lds-narrative-timeline",
+        "data-timeline-direction",
+        "data-timeline-event",
+        "data-timeline-undated"
+      ]
+    },
+    {
+      "name": "OptionAssessment",
+      "kind": "editorial",
+      "useFor": "The narrative frame for judging options against criteria (the consulting comparison-table pattern). Editorial owns the judgment contract, not the table styling fashion: the verdict vocabulary is closed, every verdict is spoken in text (the glyph is an auxiliary channel, per the \"graphics are secondary\" convention), and emphasis is spent on at most one option — the recommendation. A recommendation that matches no option is not dropped; it visibly reports \"권고 미확인\", mirroring AnnotatedFigure's broken-anchor honesty: a dangling claim must not pass as a clean table.",
+      "props": [
+        {
+          "name": "criteria",
+          "default": "[]"
+        },
+        {
+          "name": "options",
+          "default": "[]"
+        },
+        {
+          "name": "recommendation"
+        },
+        {
+          "name": "caption"
+        }
+      ],
+      "dataAttributes": [
+        "data-assessment-option",
+        "data-assessment-recommendation-tag",
+        "data-assessment-recommendation-warning",
+        "data-assessment-recommended",
+        "data-assessment-verdict",
+        "data-lds-option-assessment"
+      ]
+    },
+    {
+      "name": "StatusAssessment",
+      "kind": "editorial",
+      "useFor": "The narrative frame for reporting metrics against targets (the consulting traffic-light assessment pattern). The TABLE is Core's Table — banding, group runs, row-header semantics and cell geometry all live upstream since rc.69.27 (docs/TABLE_MEDIUM_CONTRACT_PROPOSAL.md); the hand-rolled table this layer used to carry was duplication waiting for those three contracts.",
+      "props": [
+        {
+          "name": "metrics",
+          "default": "[]"
+        },
+        {
+          "name": "caption"
+        }
+      ],
+      "dataAttributes": [
+        "data-assessment-band",
+        "data-assessment-status",
+        "data-assessment-status-unknown",
+        "data-lds-status-assessment"
+      ]
+    },
+    {
+      "name": "TopicList",
+      "kind": "editorial",
+      "useFor": "The two-level list of a reading page (READING_DECK_PROPOSAL 변경 2-1): topics at note rank / semibold / strong, details one rank down at note-body / regular / neutral, indented by the table's own inline pad so lists and tables share a left rhythm. Two levels is the contract, not a default — the pilot's source material carried three indent levels and the third bought nothing a governing or a page split didn't do better. A deeper hierarchy is a structure, and structures go to a table or another page, not to indentation.",
+      "props": [
+        {
+          "name": "items",
+          "default": "[]"
+        }
+      ],
+      "dataAttributes": [
+        "data-lds-topic-list",
+        "data-topic",
+        "data-topic-details"
+      ]
+    },
+    {
+      "name": "ExhibitRow",
+      "kind": "editorial",
+      "useFor": "Evidence beside the prose (READING_DECK_PROPOSAL 변경 2-2): a reading page keeps its exhibits on the page, unlike the presentation discipline of one exhibit per slide. N exhibits share the row as equal columns.",
+      "props": [
+        {
+          "name": "exhibits",
+          "default": "[]"
+        }
+      ],
+      "dataAttributes": [
+        "data-exhibit",
+        "data-exhibit-rows",
+        "data-lds-exhibit-row"
+      ]
+    },
+    {
+      "name": "WeekSpanRows",
+      "kind": "editorial",
+      "useFor": "The gantt-lite of a weekly plan (READING_DECK_PROPOSAL 변경 2-3): plan items lying as span bars on a week axis, reusing the table grammar (banded data rows, bare header) and the --editorial-* density seam.",
+      "props": [
+        {
+          "name": "weeks",
+          "default": "[]"
+        },
+        {
+          "name": "groups",
+          "default": "[]"
+        },
+        {
+          "name": "rows",
+          "default": "[]"
+        },
+        {
+          "name": "label",
+          "deprecated": true
+        },
+        {
+          "name": "aria-label"
+        }
+      ],
+      "dataAttributes": [
+        "data-lds-week-span-rows",
+        "data-span-bar",
+        "data-span-continues",
+        "data-week-group",
+        "data-week-group-mismatch"
+      ]
+    },
+    {
+      "name": "TrendChart",
+      "kind": "editorial",
+      "useFor": "Change over time, at reading distance. The chart itself is Core's LineChart (scales, ticks, the accessible summary and the reference-line prose all stay upstream); this layer owns the two things that decide whether a product chart survives being put in front of a room.",
+      "props": [
+        {
+          "name": "series",
+          "default": "[]"
+        },
+        {
+          "name": "aspect",
+          "default": "DEFAULT_ASPECT"
+        },
+        {
+          "name": "maxHeight",
+          "default": "DEFAULT_MAX_HEIGHT"
+        },
+        {
+          "name": "minWidth",
+          "default": "320"
+        },
+        {
+          "name": "yLabel"
+        },
+        {
+          "name": "xLabel"
+        }
+      ],
+      "dataAttributes": [
+        "data-lds-trend-chart"
+      ]
+    },
+    {
+      "name": "MappingDiagram",
+      "kind": "editorial",
+      "useFor": "Two ordered lists and the correspondence between them: a token ramp mapped to a medium's steps, a legacy field mapped to its replacement, a role mapped to an owner. Promoted from a real pilot the same way WeekSpanRows was — the hand-drawn version lived in the 매체와 논증의 분리 deck (COMPLETENESS_AUDIT B2, which flagged that hand-drawing a diagram contradicts this system's own \"don't hand-draw a table or a timeline\" discipline).",
+      "props": [
+        {
+          "name": "rows",
+          "default": "[]"
+        },
+        {
+          "name": "fromLabel"
+        },
+        {
+          "name": "toLabel"
+        },
+        {
+          "name": "label",
+          "deprecated": true
+        },
+        {
+          "name": "aria-label"
+        }
+      ],
+      "dataAttributes": [
+        "data-emphasis",
+        "data-lds-mapping-diagram",
+        "data-mapping-channel",
+        "data-mapping-from",
+        "data-mapping-to"
       ]
     }
   ]

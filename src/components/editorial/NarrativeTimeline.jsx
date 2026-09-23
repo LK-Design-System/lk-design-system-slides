@@ -22,7 +22,10 @@ import { Timeline } from '@lk-design-system/lds-core';
  * contract above, and the medium's type ranks, re-pointed through the hooks
  * so the chronology reads at editorial rank instead of product rank.
  */
-export function NarrativeTimeline({ events = [], label, direction = 'column', style, ...rest }) {
+// The accessible name. `aria-label` is canonical — across this package
+// `label` means text the room SEES; `label` is still accepted here (pre-alpha.12).
+export function NarrativeTimeline({ events = [], label: legacyLabel, 'aria-label': ariaLabel, direction = 'column', style, ...rest }) {
+  const label = ariaLabel ?? legacyLabel;
   let emphasisTaken = false;
   const resolved = events.map((event) => {
     const wantsEmphasis = Boolean(event.emphasis);
@@ -48,8 +51,8 @@ export function NarrativeTimeline({ events = [], label, direction = 'column', st
     title: (
       <span
         data-timeline-event
-        data-event-emphasis={event.emphasis ? 'true' : undefined}
-        style={event.emphasis ? { color: 'var(--color-semantic-primary-strong)' } : undefined}
+        data-emphasis={event.emphasis ? 'true' : undefined}
+        style={event.emphasis ? { color: 'var(--editorial-emphasis-text)' } : undefined}
       >
         {event.label}
       </span>

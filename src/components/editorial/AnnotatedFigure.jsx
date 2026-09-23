@@ -142,7 +142,7 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
     lineHeight: 'var(--editorial-note-body-line)',
     letterSpacing: 'var(--editorial-note-body-spacing)',
     fontWeight: 'var(--fw-semibold)',
-    color: emphasis ? 'var(--color-semantic-primary-strong)' : 'var(--color-semantic-label-strong)',
+    color: emphasis ? 'var(--editorial-emphasis-text)' : 'var(--color-semantic-label-strong)',
   });
   const noteBody = {
     margin: 'var(--space-1) 0 0',
@@ -206,7 +206,7 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
             data-annotation
             data-annotation-kind="anchored"
             data-annotation-anchor-status="linked"
-            data-annotation-emphasis={annotation.emphasis ? 'true' : undefined}
+            data-emphasis={annotation.emphasis ? 'true' : undefined}
             style={{
               position: 'absolute',
               left: seat.left,
@@ -257,7 +257,7 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
               data-annotation
               data-annotation-kind={annotation.anchor ? 'anchored' : 'context'}
               data-annotation-anchor-status={seat?.status}
-              data-annotation-emphasis={annotation.emphasis ? 'true' : undefined}
+              data-emphasis={annotation.emphasis ? 'true' : undefined}
             >
               <p style={noteLead(annotation.emphasis)}>{annotation.title}</p>
               {annotation.body && <p style={noteBody}>{annotation.body}</p>}

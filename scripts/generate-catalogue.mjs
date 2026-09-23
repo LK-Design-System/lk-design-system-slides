@@ -15,7 +15,8 @@ import path from 'node:path';
 //   npm run check:catalogue      # fail if stale
 
 const root = process.cwd();
-const componentsDir = path.join(root, 'src', 'components', 'slides');
+const componentsRoot = path.join(root, 'src', 'components');
+const slidesTokensPath = path.join(root, 'tokens', 'slides.css');
 const indexPath = path.join(root, 'src', 'index.js');
 const cataloguePath = path.join(root, 'catalogue.json');
 
@@ -24,9 +25,12 @@ const cataloguePath = path.join(root, 'catalogue.json');
 const RULES = [
   'Pick the layout whose shape matches the content, then fill its props. Layouts own composition; a deck owns wording and order.',
   'One claim per slide. If a slide needs two claims it is two slides.',
-  'Emphasis is spent once per slide. StatSlide grants the first figure that asks and demotes the rest; a slide that spends emphasis on a figure drops its accented eyebrow.',
+  'Emphasis is spent once per slide. The first item that asks gets it and the rest are demoted; a slide that spends emphasis (Stat, Figure, Compare, Roadmap, Triptych, Quadrant) drops its accented eyebrow. Every emphasised element carries data-emphasis="true".',
   'Titles end in a noun; the sentence belongs in `governing` (ContentSlide) or `statement` (StatementSlide).',
-  'Never write an upstream ramp variable (--display1-size and friends) into a component or a deck. Read the --slides-* steps; check:style-ownership enforces it.',
+  'Never write an upstream ramp variable (--display1-size and friends), a colour literal, or an undefined token into a component. Read the --slides-* steps and semantic tokens; check:style-ownership enforces it.',
+  'Prop vocabulary is shared: `label` is text the room sees and `aria-label` an accessible name only; `unit` is a value\'s unit; `emphasis` is a boolean. Props marked deprecated here still work but are not for new decks.',
+  'appearance="brand" is for cover, section, statement and end slides. A content layout refuses it and reports data-slides-appearance-refused.',
+  'Layouts that compose ContentSlide or SlideSurface accept their header and chrome props too — listed per entry under `inherits`.',
   'Every px in this package is a design pixel measured against a 1280px logical canvas. The canvas is fitted to its container, so authored composition is delivered composition.',
   'Content that overruns the canvas is clipped, not scrolled. Cut it, split the slide, or wrap the body in Fit — check:slide-overflow fails the build either way.',
   'Steps reveal on the presenter cue and must not reflow: a pending Step keeps its box. Outside a deck every Step renders revealed.',
@@ -39,17 +43,24 @@ const KINDS = [
   [/^(DeckViewer|PresenterView|DeckPrintSheet)$/, 'deck'],
   [/^(Step|Fit)$/, 'primitive'],
 ];
-const kindOf = (name) => (KINDS.find(([pattern]) => pattern.test(name)) ?? [null, 'primitive'])[1];
+// Editorial components are their own kind: they ride on any slide (or any
+// page) rather than being a slide. They used to be missing from the file
+// entirely — the scan only read components/slides/, so thirteen exports the
+// package ships had no catalogue entry while the catalogue called itself the
+// machine contract.
+const kindOf = (name, dir) => (dir === 'editorial'
+  ? 'editorial'
+  : (KINDS.find(([pattern]) => pattern.test(name)) ?? [null, 'primitive'])[1]);
 
 // The exported surface is the catalogue's boundary — an internal helper that
 // happens to live in the folder is not something a deck may reach for.
 async function exportedNames() {
   const source = await readFile(indexPath, 'utf8');
-  return [...source.matchAll(/export \{ (\w+) \} from '\.\/components\/slides\/(\w+)\.jsx'/g)]
-    .map(([, name, file]) => ({ name, file }));
+  return [...source.matchAll(/export \{ (\w+) \} from '\.\/components\/(slides|editorial)\/(\w+)\.jsx'/g)]
+    .map(([, name, dir, file]) => ({ name, dir, file }));
 }
 
-// The first paragraph of the docstring, minus the "LDS Slides — Name" heading:
+// The first paragraph of the docstring, minus the "LDS Slides|Editorial — Name" heading:
 // one prose statement of what the thing is for. Later paragraphs are rationale
 // for whoever edits the component, not for whoever composes a deck.
 function useFor(source, name) {
@@ -59,7 +70,7 @@ function useFor(source, name) {
     .split('\n')
     .map((line) => line.replace(/^\s*\*ss?/, '').replace(/^\s*\*/, '').trim())
     .join('\n');
-  const withoutHeading = body.replace(new RegExp(`^\\s*LDS Slides\\s*—\\s*${name}\\s*`), '').trim();
+  const withoutHeading = body.replace(new RegExp(`^\\s*LDS (?:Slides|Editorial)\\s*—\\s*${name}\\s*`), '').trim();
   const [first] = withoutHeading.split(/\n\s*\n/);
   return (first || '').replace(/\s+/g, ' ').trim();
 }
@@ -70,7 +81,7 @@ function propsOf(source, name) {
   const signature = source.match(new RegExp(`export function ${name}\\s*\\(\\s*\\{([\\s\\S]*?)\\}\\s*\\)\\s*\\{`));
   if (!signature) return [];
   return signature[1]
-    .split('\n')
+    .split(/\r?\n/)
     .map((line) => line.replace(/\/\/.*$/, '').trim())
     .filter((line) => line && !line.startsWith('//'))
     .join(' ')
@@ -80,12 +91,50 @@ function propsOf(source, name) {
     .filter((entry) => !entry.startsWith('...'))
     .map((entry) => {
       const [rawName, ...rest] = entry.split('=');
-      const propName = rawName.trim();
+      // `key: local` renames — `'aria-label': ariaLabel`, `label: legacyLabel`.
+      // The public name is the key; a `legacy…` local marks an alias kept for
+      // old decks. These used to fail the name filter and vanish.
+      const [key, local] = rawName.split(':').map((part) => part.trim().replace(/^['"]|['"]$/g, ''));
       const fallback = rest.join('=').trim();
-      return fallback ? { name: propName, default: fallback } : { name: propName };
+      const prop = { name: key };
+      if (fallback) prop.default = fallback;
+      if (local && /^legacy/.test(local)) prop.deprecated = true;
+      return prop;
     })
-    .filter((prop) => /^[a-zA-Z]\w*$/.test(prop.name))
+    .filter((prop) => /^[a-zA-Z][\w-]*$/.test(prop.name))
     .filter((prop) => !['style'].includes(prop.name));
+}
+
+// Props a layout accepts through `...rest` because it composes ContentSlide
+// or SlideSurface. The catalogue used to list only the destructured
+// signature, so QuadrantSlide appeared to take no title and StatSlide no
+// governing — an agent reading the catalogue would compose a worse slide
+// than the component allows.
+function inheritedProps(source, ownProps, bases) {
+  if (!/\.\.\.rest\b/.test(source)) return undefined;
+  const own = new Set(ownProps.map((prop) => prop.name));
+  const skip = new Set(['children', 'style']);
+  const from = [];
+  if (/<ContentSlide\b/.test(source)) from.push('ContentSlide', 'SlideSurface');
+  else if (/<SlideSurface\b/.test(source)) from.push('SlideSurface');
+  if (from.length === 0) return undefined;
+  const props = [];
+  for (const base of from) {
+    for (const prop of bases[base]) {
+      if (own.has(prop.name) || skip.has(prop.name) || prop.deprecated) continue;
+      own.add(prop.name);
+      props.push(prop.name);
+    }
+  }
+  return props.length ? { from, props } : undefined;
+}
+
+// The type ramp as the tokens file defines it — every `--slides-<rung>-size`
+// at the top level, not a hand-kept list (which had frozen at five rungs
+// while the file grew to ten).
+async function rampRungs() {
+  const css = (await readFile(slidesTokensPath, 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
+  return [...new Set([...css.matchAll(/--slides-([a-z-]+)-size\s*:/g)].map(([, rung]) => `--slides-${rung}-*`))];
 }
 
 // Data attributes are the contract play assertions and gates hook onto, so they
@@ -97,15 +146,24 @@ function dataAttributes(source) {
 
 const exports_ = await exportedNames();
 const entries = [];
-for (const { name, file } of exports_) {
-  const source = await readFile(path.join(componentsDir, `${file}.jsx`), 'utf8');
-  entries.push({
+const sourceOf = (dir, file) => readFile(path.join(componentsRoot, dir, `${file}.jsx`), 'utf8');
+const bases = {
+  ContentSlide: propsOf(await sourceOf('slides', 'ContentSlide'), 'ContentSlide'),
+  SlideSurface: propsOf(await sourceOf('slides', 'SlideSurface'), 'SlideSurface'),
+};
+for (const { name, dir, file } of exports_) {
+  const source = await sourceOf(dir, file);
+  const props = propsOf(source, name);
+  const entry = {
     name,
-    kind: kindOf(name),
+    kind: kindOf(name, dir),
     useFor: useFor(source, name),
-    props: propsOf(source, name),
-    dataAttributes: dataAttributes(source),
-  });
+    props,
+  };
+  const inherits = name === 'ContentSlide' || name === 'SlideSurface' ? undefined : inheritedProps(source, props, bases);
+  if (inherits) entry.inherits = inherits;
+  entry.dataAttributes = dataAttributes(source);
+  entries.push(entry);
 }
 
 const catalogue = {
@@ -114,13 +172,14 @@ const catalogue = {
   rules: RULES,
   tokens: {
     canvas: ['--slides-canvas-width', '--slides-canvas-max-width', '--slides-aspect', '--slides-safe-x', '--slides-safe-y'],
-    ramp: ['--slides-display-*', '--slides-title-*', '--slides-body-*', '--slides-caption-*', '--slides-fine-*'],
+    ramp: await rampRungs(),
     presets: ['keynote (:root default)', 'briefing (data-slides-preset)'],
     editorialSeam: ['--editorial-value-*', '--editorial-claim-*', '--editorial-note-*', '--editorial-note-body-*', '--editorial-caption-*'],
   },
   layouts: entries.filter((entry) => entry.kind === 'layout'),
   primitives: entries.filter((entry) => entry.kind === 'primitive'),
   deck: entries.filter((entry) => entry.kind === 'deck'),
+  editorial: entries.filter((entry) => entry.kind === 'editorial'),
 };
 
 const serialised = `${JSON.stringify(catalogue, null, 2)}\n`;
@@ -148,13 +207,13 @@ if (process.argv.includes('--check')) {
   } else {
     console.log(
       `✓ catalogue: ${catalogue.layouts.length} layouts, ${catalogue.primitives.length} primitives, `
-      + `${catalogue.deck.length} deck components — matches source.`
+      + `${catalogue.deck.length} deck components, ${catalogue.editorial.length} editorial components — matches source.`
     );
   }
 } else {
   await writeFile(cataloguePath, serialised, 'utf8');
   console.log(
     `Generated catalogue.json: ${catalogue.layouts.length} layouts, ${catalogue.primitives.length} primitives, `
-    + `${catalogue.deck.length} deck components.`
+    + `${catalogue.deck.length} deck components, ${catalogue.editorial.length} editorial components.`
   );
 }

@@ -69,15 +69,17 @@ const BEFORE = `// Editorial — KeyFigure (이전)
 const SEAM_ROWS = [
   { from: 'value', to: 'slides-title' },
   { from: 'claim', to: 'slides-body', emphasis: true },
-  { from: 'note', to: 'slides-caption' },
-  { from: 'note-body', to: 'slides-fine' },
+  // The seam as tokens/slides.css defines it since d3f070b (2026-08-17), which
+  // raised note and note-body a rung — this deck kept teaching the old map.
+  { from: 'note', to: 'slides-body' },
+  { from: 'note-body', to: 'slides-caption' },
   { from: 'caption', to: 'slides-fine' },
 ];
 
 export const Deck = {
   name: '매체와 논증의 분리',
   render: () => (
-    <DeckViewer label="매체와 논증의 분리">
+    <DeckViewer aria-label="매체와 논증의 분리">
       <TitleSlide
         eyebrow="LDS 플랫폼"
         title="매체와 논증의 분리"
@@ -156,10 +158,9 @@ export const Deck = {
             body: '매체가 --slides-body로 재지정하면 컴포넌트는 아무것도 모른 채 따라간다.',
             emphasis: true,
           },
-          { id: 'floor', title: '바닥 두 단계', body: 'note-body와 caption은 같은 곳에 떨어진다 — 하한 아래로는 무게와 색이 순위를 나른다.' },
+          { id: 'edges', title: '양 끝의 수렴', body: 'claim과 note는 같은 body에 앉는다 — 램프의 가장자리에서는 무게와 색이 순위를 나른다.' },
         ]}
-        caption="슬라이드 표면에 스코프된 재지정 블록"
-        source="출처: tokens/slides.css, 2026-07"
+        source="출처: tokens/slides.css 슬라이드 표면 재지정 블록, 2026-08"
         foot="LDS 플랫폼 · 2026 Q3"
         notes="왼쪽이 Editorial이 소유하는 순위, 오른쪽이 매체가 대는 거리다. 화살표가 재지정이다. 중요한 건 매체 단계를 경유한다는 것 — 그래서 briefing 프리셋으로 바꾸면 Editorial 층까지 공짜로 따라온다. [~2분]"
       >
@@ -167,7 +168,7 @@ export const Deck = {
           rows={SEAM_ROWS}
           fromLabel="Editorial — 순위"
           toLabel="매체 — 거리"
-          label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조"
+          aria-label="Editorial 순위 다섯 단계를 매체가 거리로 재지정하는 구조"
         />
       </FigureSlide>
 

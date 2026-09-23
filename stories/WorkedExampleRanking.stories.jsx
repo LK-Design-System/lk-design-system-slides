@@ -165,11 +165,11 @@ export const BeforeAfter = {
     }
 
     // 절차 4 — 강조는 하나, 주장의 주인공(C라인)이다.
-    const emphasizedLabels = rankShift.querySelectorAll('[data-rank-label-end][data-rank-emphasis="true"]');
+    const emphasizedLabels = rankShift.querySelectorAll('[data-rank-label-end][data-emphasis="true"]');
     if (emphasizedLabels.length !== 1 || !emphasizedLabels[0].textContent.includes('C라인')) {
       throw new Error('Exactly one item may carry emphasis, and it must be the subject of the claim.');
     }
-    if (rankShift.querySelectorAll('[data-rank-line][data-rank-emphasis="true"]').length !== 1) {
+    if (rankShift.querySelectorAll('[data-rank-line][data-emphasis="true"]').length !== 1) {
       throw new Error('Exactly one slope line may carry the emphasis stroke.');
     }
 

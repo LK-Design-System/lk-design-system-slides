@@ -1,7 +1,7 @@
 import React from 'react';
 import { DeckStepContext } from './stepContext.js';
 import { DeckPositionContext } from './deckPosition.js';
-import { DeckMediumContext } from './deckMedium.js';
+import { DeckMediumContext, deckUsesEyebrows } from './deckMedium.js';
 
 /**
  * LDS Slides — DeckPrintSheet
@@ -49,7 +49,7 @@ const CANVAS_HEIGHT = 720;
 const PAGE_RULES = `
 @page { size: ${CANVAS_WIDTH}px ${CANVAS_HEIGHT}px; margin: 0; }
 @media print {
-  html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+  html, body { margin: 0 !important; padding: 0 !important; background: var(--color-semantic-static-white, #fff) !important; }
   [data-lds-print-sheet] { gap: 0 !important; }
   [data-lds-print-page] { break-after: page; break-inside: avoid; }
   [data-lds-print-page]:last-child { break-after: auto; }
@@ -70,17 +70,23 @@ export function DeckPrintSheet({
   // that leaves the building.
   classification,
   mark,
-  label = '슬라이드 덱 (인쇄용)',
+  // The accessible name — `aria-label` is canonical; `label` kept (pre-alpha.12).
+  label: legacyLabel,
+  'aria-label': ariaLabel,
   style,
   ...rest
 }) {
+  const label = ariaLabel ?? legacyLabel ?? '슬라이드 덱 (인쇄용)';
   const slides = React.Children.toArray(children);
   const total = slides.length;
+  // Same deck-wide reading as the viewer, so a printed page keeps the header
+  // geometry the room saw.
+  const eyebrowSlot = deckUsesEyebrows(slides);
   const mediumValue = React.useMemo(
     () => ({
-      preset, kind, classification, mark,
+      preset, kind, classification, mark, eyebrowSlot,
     }),
-    [preset, kind, classification, mark],
+    [preset, kind, classification, mark, eyebrowSlot],
   );
 
   return (

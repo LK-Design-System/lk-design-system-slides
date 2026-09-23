@@ -20,7 +20,7 @@ export const ClassifiedDeck = {
   name: 'Classification and Mark',
   render: () => (
     <DeckViewer
-      label="문서 등급 데모"
+      aria-label="문서 등급 데모"
       classification="대외비"
       mark={<Lockup variant="mark" tone="ink" height={20} decorative />}
     >

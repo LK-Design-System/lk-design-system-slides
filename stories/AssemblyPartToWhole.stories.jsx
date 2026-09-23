@@ -78,7 +78,7 @@ export const Default = {
     }
 
     // 강조는 하나.
-    if (canvasElement.querySelectorAll('[data-annotation-emphasis="true"]').length !== 1) {
+    if (canvasElement.querySelectorAll('[data-annotation][data-emphasis="true"]').length !== 1) {
       throw new Error('Exactly one annotation may carry emphasis.');
     }
   },

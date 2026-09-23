@@ -1,5 +1,6 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
+import { SlideEyebrow } from './SlideEyebrow.jsx';
 
 /**
  * LDS Slides — AgendaSlide
@@ -20,31 +21,11 @@ import { SlideSurface } from './SlideSurface.jsx';
 export function AgendaSlide({ title = '목차', items = [], current, style, ...rest }) {
   return (
     <SlideSurface data-lds-agenda-slide style={{ alignItems: 'center', ...style }} {...rest}>
-      <p
-        data-slide-eyebrow
-        style={{
-          margin: '0 0 var(--space-8)',
-          // The overline step — the eyebrow family's ONE deck-wide size.
-          // This label was first promoted to body as a sole-label anchor,
-          // then folded into the shared overline rung when flipping the deck
-          // showed eyebrow-class elements jittering between sizes
-          // (user-flagged, 2026-08-17). Anchoring stays; the size is now the
-          // family's, not this slide's.
-          fontSize: 'var(--slides-overline-size)',
-          lineHeight: 'var(--slides-overline-line)',
-          // The ramp's own tracking, not the Latin kicker idiom. uppercase +
-          // 0.08em is an English smallcaps convention; every real eyebrow in
-          // this repository is Korean, where uppercase is a no-op and tracking
-          // out already-wide syllable blocks loosens them further
-          // (HEADER_SYSTEM_PROPOSAL R2). English eyebrows lose smallcaps —
-          // accepted; the English deck profile is a separate deferred item (E3).
-          letterSpacing: 'var(--slides-overline-spacing)',
-          fontWeight: 'var(--fw-semibold)',
-          color: 'var(--color-semantic-primary-normal)',
-        }}
-      >
-        {title}
-      </p>
+      {/* `title` is set as the eyebrow: the agenda's heading was first a
+          body-scale anchor, then folded into the eyebrow family's one
+          deck-wide size when flipping the deck showed eyebrow-class elements
+          jittering between sizes (user-flagged, 2026-08-17). */}
+      <SlideEyebrow stack="agenda">{title}</SlideEyebrow>
       <ol
         data-slide-agenda
         style={{
@@ -61,7 +42,7 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
             <li
               key={i}
               data-slide-agenda-item
-              data-current={isCurrent || undefined}
+              data-agenda-current={isCurrent || undefined}
               style={{
                 display: 'flex',
                 gap: 'var(--space-6)',
@@ -83,8 +64,8 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
                 // ordinal 400 < name 500 < current 700, every rung distinct.
                 fontWeight: isCurrent ? 'var(--fw-bold)' : 'var(--fw-medium)',
                 color: isCurrent
-                  ? 'var(--color-semantic-label-strong)'
-                  : 'var(--color-semantic-label-neutral)',
+                  ? 'var(--slides-ink-strong)'
+                  : 'var(--slides-ink-neutral)',
               }}
             >
               <span
@@ -104,8 +85,8 @@ export function AgendaSlide({ title = '목차', items = [], current, style, ...r
                   fontVariantNumeric: 'tabular-nums',
                   fontWeight: 'var(--fw-regular)',
                   color: isCurrent
-                    ? 'var(--color-semantic-primary-normal)'
-                    : 'var(--color-semantic-label-alternative)',
+                    ? 'var(--slides-ink-accent)'
+                    : 'var(--slides-ink-quiet)',
                 }}
               >
                 {String(i + 1).padStart(2, '0')}

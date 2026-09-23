@@ -169,7 +169,7 @@ export const BeforeAfter = {
     }
 
     // 절차 4 — 강조는 하나, 주장의 전환점(검증 게이트)이다.
-    const emphasized = root.querySelectorAll('[data-timeline-event][data-event-emphasis="true"]');
+    const emphasized = root.querySelectorAll('[data-timeline-event][data-emphasis="true"]');
     if (emphasized.length !== 1 || !emphasized[0].textContent.includes('검증 게이트')) {
       throw new Error('Exactly one event may carry emphasis, and it must be the turning point of the claim.');
     }

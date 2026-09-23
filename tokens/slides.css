@@ -1,7 +1,9 @@
 /*
  * LDS Slides — slide-owned tokens.
  *
- * Ownership: this file may only define `--slides-*` variables. Color, spacing,
+ * Ownership: this file may only define `--slides-*` variables — plus one
+ * exception, the `--editorial-*` re-pointing scoped to the slide surface at
+ * the bottom of this file (the Editorial seam). Color, spacing,
  * radius, and font tokens are owned upstream (Core/Theme) per the cross-repository
  * style contract; slides tokens compose them, never redefine them.
  *
@@ -161,7 +163,7 @@
      (fine ÷ body — body type may fall to the smallest sanctioned step and no
      further), so the floor follows the preset instead of being a constant that
      outlives it. Pin a number here only to override that. */
-  /* --slides-fit-floor: 0.66; */
+  /* --slides-fit-floor: 0.75; */
 
   /* Surface — slides read on the elevated surface, chrome on the alternative. */
   --slides-surface: var(--color-semantic-background-elevated-normal);
@@ -276,8 +278,9 @@
  * makes presets flow through: `briefing` re-points the slide steps and the
  * editorial layer follows for free.
  *
- * `note-body` and `caption` both land on `fine` on purpose: the floor is a
- * floor. Past it, rank is carried by weight and color, never by shrinking.
+ * `caption` lands on `fine` on purpose: the floor is a floor. `note-body`
+ * sits one rung above it, on `caption` (see the note on the block below) —
+ * at a ramp's edges, rank is carried by weight and color, never by shrinking.
  *
  * Specificity: `:root [data-lds-slide-surface]` (0,2,0) beats the editorial
  * package's own `:root` (0,1,0), so this wins regardless of CSS import order.

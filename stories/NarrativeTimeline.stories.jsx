@@ -54,7 +54,7 @@ export const Default = {
     }
 
     // 강조는 하나 — 입력 배열의 첫 요청(검증 게이트)이 이긴다.
-    const emphasized = root.querySelectorAll('[data-timeline-event][data-event-emphasis="true"]');
+    const emphasized = root.querySelectorAll('[data-timeline-event][data-emphasis="true"]');
     if (emphasized.length !== 1 || !emphasized[0].textContent.includes('검증 게이트')) {
       throw new Error('Two events requested emphasis; the first request (검증 게이트 도입) must win.');
     }

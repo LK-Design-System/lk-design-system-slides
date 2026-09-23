@@ -2,7 +2,7 @@ import React from 'react';
 import { AssessmentSlide, ContentSlide, DeckViewer, EndSlide, TitleSlide } from '../src/index.js';
 
 const meta = {
-  title: 'Slides/Deck Viewer',
+  title: 'Deck/Viewer',
   component: DeckViewer,
   tags: ['autodocs'],
   parameters: {
@@ -20,7 +20,7 @@ export default meta;
 export const Default = {
   name: 'Deck Viewer',
   render: () => (
-    <DeckViewer label="파이프라인 개편 보고 덱">
+    <DeckViewer aria-label="파이프라인 개편 보고 덱">
       <TitleSlide eyebrow="플랫폼팀" title="파이프라인 개편 보고" subtitle="2026년 3분기 계획 검토" />
       <ContentSlide eyebrow="현황" title="수집 지연 현황">
         <p style={{ margin: 0 }}>p95 지연 41분 — 목표 초과 상태가 6주째 지속.</p>
@@ -87,7 +87,7 @@ export const SpeakerNotes = {
     },
   },
   render: () => (
-    <DeckViewer label="노트가 있는 덱">
+    <DeckViewer aria-label="노트가 있는 덱">
       <ContentSlide eyebrow="현황" title="수집 지연 현황" notes={NOTE}>
         <p style={{ margin: 0 }}>p95 지연 41분 — 목표 초과 상태가 6주째 지속.</p>
       </ContentSlide>
@@ -137,7 +137,7 @@ export const SpeakerNotes = {
 export const DeckMediumAxes = {
   name: '계약 · 덱 매체 축 (preset·kind)',
   render: () => (
-    <DeckViewer label="매체 축 데모" kind="read" preset="briefing">
+    <DeckViewer aria-label="매체 축 데모" kind="read" preset="briefing">
       <AssessmentSlide
         eyebrow="지표"
         title="열람 표 페이지"

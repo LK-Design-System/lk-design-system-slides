@@ -29,7 +29,7 @@ export const Default = {
     if (indices[1].textContent !== '02') {
       throw new Error("Agenda numbering must match SectionSlide's zero-padded format — one deck, one count.");
     }
-    const marked = canvasElement.querySelectorAll('[data-slide-agenda-item][data-current]');
+    const marked = canvasElement.querySelectorAll('[data-slide-agenda-item][data-agenda-current]');
     if (marked.length !== 1 || !marked[0].textContent.includes('실행 로드맵')) {
       throw new Error('Exactly one agenda item may be current (1-based, matching SectionSlide index).');
     }

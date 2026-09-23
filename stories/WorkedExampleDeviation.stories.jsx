@@ -1,6 +1,8 @@
 import React from 'react';
 import { StatusBadge } from '@lk-design-system/lds-core';
-import { BeforeAfter } from '../src/index.js';
+// Aliased so the story export can share the worked examples' `BeforeAfter`
+// name (the before/after pair of the method) with the other four.
+import { BeforeAfter as DeviationBars } from '../src/index.js';
 
 // One dataset, two treatments. Daily throughput of five stations vs a 100-unit target.
 const STATIONS = [
@@ -57,7 +59,7 @@ const meta = {
 
 export default meta;
 
-export const BeforeAfterStory = {
+export const BeforeAfter = {
   name: 'Before / After',
   render: () => (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 'var(--space-6)', maxWidth: 1180 }}>
@@ -117,9 +119,9 @@ export const BeforeAfterStory = {
       {/* 절차를 지킨 판 — 주장형 제목, 명시된 기준, 부호 텍스트, 강조 하나, 출처. */}
       <section data-example="compliant" style={panelStyle}>
         <PanelHeader tone="positive" badge="절차 준수" title="D스테이션만 목표 대비 12건 미달" />
-        <BeforeAfter
+        <DeviationBars
           reference={{ value: TARGET, label: '목표 100건' }}
-          unitLabel="건"
+          unit="건"
           items={STATIONS.map((station) => (station.id === 'd' ? { ...station, emphasis: true } : station))}
         />
         <p
@@ -171,7 +173,7 @@ export const BeforeAfterStory = {
     }
 
     // 절차 4 — 강조는 하나, 주장의 주인공(D스테이션)이다.
-    const emphasized = root.querySelectorAll('[data-deviation-item][data-deviation-emphasis="true"]');
+    const emphasized = root.querySelectorAll('[data-deviation-item][data-emphasis="true"]');
     if (emphasized.length !== 1 || !emphasized[0].textContent.includes('D스테이션')) {
       throw new Error('Exactly one item may carry emphasis, and it must be the subject of the claim.');
     }

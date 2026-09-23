@@ -2,7 +2,7 @@ import React from 'react';
 import { DeckStepContext } from './stepContext.js';
 import { DeckPositionContext } from './deckPosition.js';
 import { useDeck } from './useDeck.js';
-import { DeckMediumContext } from './deckMedium.js';
+import { DeckMediumContext, deckUsesEyebrows } from './deckMedium.js';
 import { DeckPrintSheet } from './DeckPrintSheet.jsx';
 import { DeckOverview } from './DeckOverview.jsx';
 import { useFullscreen, useHashPosition } from './deckRuntime.js';
@@ -69,7 +69,10 @@ export function DeckViewer({
   // more than a screen does, since paper is what leaves the building.
   classification,
   mark,
-  label = '슬라이드 덱',
+  // The accessible name — `aria-label` is canonical (in this package `label`
+  // means text the room sees); `label` is the pre-alpha.12 spelling, kept.
+  label: legacyLabel,
+  'aria-label': ariaLabel,
   notesLabel = '발표자 노트',
   overviewLabel,
   fullscreenLabel,
@@ -77,6 +80,7 @@ export function DeckViewer({
   style,
   ...rest
 }) {
+  const label = ariaLabel ?? legacyLabel ?? '슬라이드 덱';
   // Read once: a print run must not change shape halfway through, and the
   // sheet has no navigation to keep in sync.
   const [urlPrint] = React.useState(printModeFromLocation);
@@ -87,7 +91,7 @@ export function DeckViewer({
         preset={preset}
         classification={classification}
         mark={mark}
-        label={label}
+        aria-label={label}
         style={style}
         {...rest}
       >
@@ -163,11 +167,12 @@ function DeckViewerRuntime({
   const positionValue = React.useMemo(() => ({ page: index + 1, total: count }), [index, count]);
   // The deck's medium axes flow to every slide: preset as an overridable
   // default, kind for the adaptive anchor rules (ADAPTIVE_CONTRACTS_PROPOSAL).
+  const eyebrowSlot = React.useMemo(() => deckUsesEyebrows(slides), [slides]);
   const mediumValue = React.useMemo(
     () => ({
-      preset, kind, classification, mark,
+      preset, kind, classification, mark, eyebrowSlot,
     }),
-    [preset, kind, classification, mark],
+    [preset, kind, classification, mark, eyebrowSlot],
   );
 
   const onKeyDown = (event) => {

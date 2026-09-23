@@ -167,7 +167,7 @@ export const Footer = {
   render: () => (
     <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
       <div data-probe="deck">
-        <DeckViewer label="푸터 데모">
+        <DeckViewer aria-label="푸터 데모">
           <ContentSlide foot="플랫폼팀 · 2026 Q3" eyebrow="현황" title="덱 안에서는 번호가 붙는다">
             <p style={{ margin: 0 }}>페이지 번호는 덱이 알고, 캔버스가 그린다.</p>
           </ContentSlide>

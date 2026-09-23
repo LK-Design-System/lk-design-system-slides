@@ -25,14 +25,18 @@ import React from 'react';
  * `rows` is the whole contract: `[{ from, to, emphasis? }]`. Both columns get a
  * heading, because a mapping without named sides is a list of coincidences.
  */
+// The accessible name. `aria-label` is canonical — across this package
+// `label` means text the room SEES; `label` is still accepted here (pre-alpha.12).
 export function MappingDiagram({
   rows = [],
   fromLabel,
   toLabel,
-  label,
+  label: legacyLabel,
+  'aria-label': ariaLabel,
   style,
   ...rest
 }) {
+  const label = ariaLabel ?? legacyLabel;
   let emphasisTaken = false;
   const resolved = rows.map((row) => {
     const granted = Boolean(row.emphasis) && !emphasisTaken;
@@ -49,7 +53,7 @@ export function MappingDiagram({
   };
   const cell = (lit) => ({
     padding: 'var(--space-2) var(--space-3)',
-    borderRadius: 'var(--radius-2, 4px)',
+    borderRadius: 'var(--radius-4)',
     background: lit ? 'var(--editorial-emphasis-surface)' : 'var(--color-semantic-fill-normal)',
     color: lit ? 'var(--color-semantic-label-strong)' : 'var(--color-semantic-label-neutral)',
     fontWeight: lit ? 'var(--fw-semibold)' : 'var(--fw-regular)',
@@ -80,7 +84,7 @@ export function MappingDiagram({
           <div data-mapping-from style={cell(row.emphasis)}>{row.from}</div>
           <div
             data-mapping-channel
-            data-mapping-emphasis={row.emphasis ? 'true' : undefined}
+            data-emphasis={row.emphasis ? 'true' : undefined}
             style={{
               position: 'relative', height: '100%', display: 'flex', alignItems: 'center',
             }}

@@ -91,7 +91,7 @@ export const Default = {
     }
 
     // 강조 예산: 둘이 요청해도 첫째(콜아웃)만 승인된다.
-    const emphasized = figure.querySelectorAll('[data-annotation-emphasis="true"]');
+    const emphasized = figure.querySelectorAll('[data-annotation][data-emphasis="true"]');
     if (emphasized.length !== 1 || emphasized[0] !== callout) {
       throw new Error('Two annotations requested emphasis; the first must win.');
     }

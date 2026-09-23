@@ -55,8 +55,18 @@ export const Default = {
       }
     }
 
-    if (canvasElement.querySelectorAll('[data-panel-emphasis="true"]').length !== 1) {
+    if (canvasElement.querySelectorAll('[data-slide-panel][data-emphasis="true"]').length !== 1) {
       throw new Error('At most one panel carries emphasis.');
+    }
+
+    // The slide-level emphasis budget: a spent emphasis drops the accented
+    // eyebrow (two blue accents on one canvas).
+    const surface = canvasElement.querySelector('[data-lds-triptych-slide]');
+    if (surface.getAttribute('data-emphasis-spent') !== 'panel') {
+      throw new Error('An emphasised item must report the spent budget on the slide.');
+    }
+    if (canvasElement.querySelector('[data-slide-eyebrow]')) {
+      throw new Error('A slide that spends emphasis must drop its accented eyebrow.');
     }
   },
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 
-function Unit({ state, tone }) {
-  const accent = tone === 'muted' ? 'var(--editorial-muted)' : 'var(--editorial-emphasis)';
+function Unit({ state, emphasis }) {
+  const accent = emphasis ? 'var(--editorial-emphasis)' : 'var(--editorial-muted)';
   const fill = state === 'filled' || state === 'partial' ? accent : 'var(--color-semantic-fill-strong)';
   return (
     <svg
@@ -29,10 +29,20 @@ function Unit({ state, tone }) {
  * A quantity as repeated units (ISOTYPE style). The pictogram is redundant
  * reinforcement: the exact value is always rendered as text and carried on
  * the accessible name, so the graphic never becomes the only channel.
- * In comparisons, all rows but the one carrying the claim take tone="muted"
- * so the emphasis budget stays at one.
+ * In comparisons, all rows but the one carrying the claim take
+ * `emphasis={false}` so the emphasis budget stays at one. Unlike the other
+ * components the default is ON: a lone pictogram row IS the claim, and a
+ * muted one reads as a disabled control.
+ *
+ * `unit` and `emphasis` are the system-wide names (KeyFigure's `unit`, every
+ * other component's boolean `emphasis`). `unitLabel` and `tone` are the
+ * pre-0.1.0-alpha.12 spellings, still accepted.
  */
-export function PictogramRow({ value, per = 1, unitLabel, label, maxUnits = 20, tone = 'emphasis', style, ...rest }) {
+export function PictogramRow({
+  value, per = 1, unit, unitLabel: legacyUnitLabel, label, maxUnits = 20, emphasis, tone: legacyTone, style, ...rest
+}) {
+  const unitText = unit ?? legacyUnitLabel;
+  const emphasized = emphasis ?? (legacyTone ? legacyTone !== 'muted' : true);
   const exact = value / per;
   const full = Math.min(Math.floor(exact), maxUnits);
   const hasPartial = exact > full && full < maxUnits;
@@ -40,12 +50,12 @@ export function PictogramRow({ value, per = 1, unitLabel, label, maxUnits = 20, 
     ...Array.from({ length: full }, () => 'filled'),
     ...(hasPartial ? ['partial'] : []),
   ];
-  const valueText = `${value.toLocaleString('ko-KR')}${unitLabel ? ` ${unitLabel}` : ''}`;
+  const valueText = `${value.toLocaleString('ko-KR')}${unitText ? ` ${unitText}` : ''}`;
 
   return (
     <div
       data-lds-pictogram-row
-      data-tone={tone}
+      data-emphasis={emphasized ? 'true' : undefined}
       role="img"
       aria-label={`${label}: ${valueText}`}
       style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', fontFamily: 'var(--font-sans)', ...style }}
@@ -78,7 +88,7 @@ export function PictogramRow({ value, per = 1, unitLabel, label, maxUnits = 20, 
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--editorial-unit-gap)' }}>
         {units.map((state, index) => (
-          <Unit key={index} state={state} tone={tone} />
+          <Unit key={index} state={state} emphasis={emphasized} />
         ))}
       </div>
       {per !== 1 && (
@@ -91,7 +101,7 @@ export function PictogramRow({ value, per = 1, unitLabel, label, maxUnits = 20, 
             color: 'var(--color-semantic-label-alternative)',
           }}
         >
-          ■ = {per.toLocaleString('ko-KR')}{unitLabel ? ` ${unitLabel}` : ''}
+          ■ = {per.toLocaleString('ko-KR')}{unitText ? ` ${unitText}` : ''}
         </span>
       )}
     </div>

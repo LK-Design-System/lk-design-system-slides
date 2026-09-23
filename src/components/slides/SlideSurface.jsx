@@ -217,7 +217,9 @@ export function SlideSurface({
               margin: 0,
               fontSize: 'var(--slides-fine-size)',
               lineHeight: 'var(--slides-fine-line)',
-              letterSpacing: '0.08em',
+              // The ramp's tracking, not the Latin 0.08em kicker idiom — the
+              // grade is Korean ("내부용"), same reasoning as the eyebrow (R2).
+              letterSpacing: 'var(--slides-fine-spacing)',
               fontWeight: 'var(--fw-semibold)',
               color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
             }}

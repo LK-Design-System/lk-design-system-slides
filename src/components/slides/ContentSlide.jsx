@@ -2,6 +2,14 @@ import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
 import { DeckMediumContext } from './deckMedium.js';
 import { phrased } from './phrasing.jsx';
+import { SlideEyebrow } from './SlideEyebrow.jsx';
+
+// A content page on brand navy is a legibility problem, not a brand moment
+// (tokens/slides.css). The restriction used to live only in a comment, and a
+// content slide handed appearance="brand" rendered half-flipped — the eyebrow
+// and chrome went to on-brand ink while the body stayed on white-surface
+// tokens over navy. Refused here, reported on the node, warned once.
+let brandRefusalWarned = false;
 
 /**
  * LDS Slides — ContentSlide
@@ -20,9 +28,20 @@ import { phrased } from './phrasing.jsx';
  * for dense slides; `'center'` opts a short body — one table, one figure —
  * into the middle of the remaining space instead of leaving the bottom half
  * of the canvas dead (COMPOSITION_PROPOSAL.md C, the Marp `lead` shape).
- * The header does not move either way.
+ * The header does not move either way — nor with the eyebrow: in a deck that
+ * uses eyebrows anywhere, a slide without one keeps the eyebrow's line box, so
+ * the title sits at the same height on every content slide of that deck. A
+ * deck with no eyebrows, and a slide rendered on its own, keep the whole region.
  */
-export function ContentSlide({ eyebrow, title, governing, anchor = 'top', children, style, ...rest }) {
+export function ContentSlide({ eyebrow, title, governing, anchor = 'top', appearance, children, style, ...rest }) {
+  const brandRefused = appearance === 'brand';
+  if (brandRefused && !brandRefusalWarned && typeof console !== 'undefined') {
+    brandRefusalWarned = true;
+    console.warn('[lds-slides] appearance="brand" is limited to cover, section, statement and end slides; a content layout stays on the white surface.');
+  }
+  // Every layout composes this one, so the content marker is only added when
+  // the caller did not already name a more specific layout.
+  const namesLayout = Object.keys(rest).some((key) => /^data-lds-[a-z-]+-slide$/.test(key));
   // A present-deck content slide without a claim is a slide with no reason,
   // and until now only the GATE knew it — the component rendered the gap in
   // silence, so the contract lived one repository-layer away from the thing
@@ -34,7 +53,13 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
   const medium = React.useContext(DeckMediumContext);
   const claimMissing = Boolean(medium) && medium.kind !== 'read' && !governing;
   return (
-    <SlideSurface style={{ justifyContent: 'flex-start', ...style }} {...rest}>
+    <SlideSurface
+      data-lds-content-slide={namesLayout ? undefined : ''}
+      data-slides-appearance-refused={brandRefused ? 'brand' : undefined}
+      appearance={brandRefused ? undefined : appearance}
+      style={{ justifyContent: 'flex-start', ...style }}
+      {...rest}
+    >
       {/* data-slide-header VALUES name which of the three header stacks this
           is (content/cover/divider — HEADER_SYSTEM_PROPOSAL). Attribute
           presence selectors keep matching, so existing plays are unmoved. */}
@@ -50,31 +75,7 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
           borderBottom: 'var(--slides-header-rule-width) solid var(--slides-header-rule-color)',
         }}
       >
-        {eyebrow && (
-          <p
-            data-slide-eyebrow
-            style={{
-              margin: '0 0 var(--space-2)',
-              fontSize: 'var(--slides-overline-size)',
-              lineHeight: 'var(--slides-overline-line)',
-              // The ramp's own tracking, not the Latin kicker idiom. uppercase +
-              // 0.08em is an English smallcaps convention; every real eyebrow in
-              // this repository is Korean, where uppercase is a no-op and tracking
-              // out already-wide syllable blocks loosens them further
-              // (HEADER_SYSTEM_PROPOSAL R2). English eyebrows lose smallcaps —
-              // accepted; the English deck profile is a separate deferred item (E3).
-              letterSpacing: 'var(--slides-overline-spacing)',
-              fontWeight: 'var(--fw-semibold)',
-              // The ink indirection, matching TitleSlide — the eyebrow had
-              // split into two colour systems (this one read the label token
-              // directly), which is the footer's brand-navy defect waiting in
-              // ambush. Default resolves identically on white surfaces.
-              color: 'var(--slides-ink-accent)',
-            }}
-          >
-            {eyebrow}
-          </p>
-        )}
+        <SlideEyebrow stack="content" reserve={Boolean(medium?.eyebrowSlot)}>{eyebrow}</SlideEyebrow>
         <h2
           data-slide-title
           style={{
@@ -83,7 +84,9 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
             lineHeight: 'var(--slides-title-line)',
             letterSpacing: 'var(--slides-title-spacing)',
             fontWeight: 'var(--fw-bold)',
-            color: 'var(--color-semantic-label-strong)',
+            // The ink indirection like every other header line (it read the
+            // label token directly — the last header line that did).
+            color: 'var(--slides-ink-strong)',
             textWrap: 'balance',
           }}
         >
@@ -106,7 +109,7 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
               // renders: 500 speaks at the body's volume, and a claim that
               // sounds like its evidence is not a claim.
               fontWeight: 'var(--fw-bold)',
-              color: 'var(--color-semantic-label-normal)',
+              color: 'var(--slides-ink-normal)',
               maxWidth: '46ch',
               textWrap: 'pretty',
             }}
@@ -141,7 +144,7 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', childr
           fontSize: 'var(--slides-body-size)',
           lineHeight: 'var(--slides-body-line)',
           letterSpacing: 'var(--slides-body-spacing)',
-          color: 'var(--color-semantic-label-neutral)',
+          color: 'var(--slides-ink-neutral)',
         }}
       >
         {children}

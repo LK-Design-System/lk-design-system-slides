@@ -54,7 +54,7 @@ export function OptionAssessment({ criteria = [], options = [], recommendation, 
                   data-assessment-recommended={isRecommended || undefined}
                   style={{
                     ...headCell,
-                    color: isRecommended ? 'var(--color-semantic-primary-strong)' : headCell.color,
+                    color: isRecommended ? 'var(--editorial-emphasis-text)' : headCell.color,
                     background: isRecommended ? 'var(--editorial-emphasis-surface)' : undefined,
                   }}
                 >

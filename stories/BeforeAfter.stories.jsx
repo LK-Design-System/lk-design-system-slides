@@ -22,7 +22,7 @@ export const Default = {
   render: () => (
     <BeforeAfter
       reference={{ value: 100, label: '목표 100건' }}
-      unitLabel="건"
+      unit="건"
       style={{ maxWidth: 560 }}
       items={[
         { id: 'a', label: 'A스테이션', value: 112 },
@@ -43,7 +43,7 @@ export const Default = {
     }
 
     // 강조는 하나 — 두 항목이 요청해도 첫 번째(C스테이션)만 승인된다.
-    const emphasized = root.querySelectorAll('[data-deviation-item][data-deviation-emphasis="true"]');
+    const emphasized = root.querySelectorAll('[data-deviation-item][data-emphasis="true"]');
     if (emphasized.length !== 1 || !emphasized[0].textContent.includes('C스테이션')) {
       throw new Error('Two items requested emphasis; the first (C스테이션) must win.');
     }
@@ -72,7 +72,7 @@ export const AutoLabeledReference = {
   render: () => (
     <BeforeAfter
       reference={{ value: 250 }}
-      unitLabel="건"
+      unit="건"
       style={{ maxWidth: 560 }}
       items={[
         { id: 'p', label: '1분기', value: 268 },

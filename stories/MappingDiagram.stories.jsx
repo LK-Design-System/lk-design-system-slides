@@ -64,7 +64,7 @@ export const Default = {
     }
 
     // One lit row, and it is the one that asked first.
-    const lit = diagram.querySelectorAll('[data-mapping-emphasis="true"]');
+    const lit = diagram.querySelectorAll('[data-mapping-channel][data-emphasis="true"]');
     if (lit.length !== 1) throw new Error(`Exactly one row is lit, found ${lit.length}.`);
   },
 };
@@ -85,7 +85,7 @@ export const EmphasisBudget = {
   ),
   play: async ({ canvasElement }) => {
     const rows = [...canvasElement.querySelectorAll('[data-mapping-channel]')];
-    const lit = rows.filter((row) => row.getAttribute('data-mapping-emphasis') === 'true');
+    const lit = rows.filter((row) => row.getAttribute('data-emphasis') === 'true');
     if (lit.length !== 1 || lit[0] !== rows[0]) {
       throw new Error('Two rows asked for emphasis; the first must win, in code rather than in prose.');
     }

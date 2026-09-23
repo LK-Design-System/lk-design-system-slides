@@ -25,7 +25,10 @@ import React from 'react';
  * taken before transforms — so neither the canvas's own fit-to-container scale
  * nor this component's scale feeds back into the number being measured.
  */
-const FALLBACK_FLOOR = 0.66;
+// Used only when the ramp cannot be read. The keynote ratio (fine 18 ÷ body
+// 24) — it was 0.66, the 16px-fine ratio from before fine moved to 18
+// (SCALE_DENSITY_PROPOSAL), and outlived the change.
+const FALLBACK_FLOOR = 0.75;
 
 export function Fit({ children, style, ...rest }) {
   const outerRef = React.useRef(null);

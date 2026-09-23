@@ -25,8 +25,11 @@ import { ContentSlide } from './ContentSlide.jsx';
  */
 const PANEL_COUNT = 3;
 
-export function TriptychSlide({ panels = [], anchor, style, ...rest }) {
+export function TriptychSlide({ panels = [], anchor, eyebrow, style, ...rest }) {
   const resolved = panels.slice(0, PANEL_COUNT);
+  // Slide-level emphasis budget, as on the other figure-bearing layouts: an
+  // emphasised panel drops the accented eyebrow (two blue accents on one
+  // canvas was visible in the real deck).
   let emphasisTaken = false;
   const marked = resolved.map((panel) => {
     const granted = Boolean(panel.emphasis) && !emphasisTaken;
@@ -35,7 +38,15 @@ export function TriptychSlide({ panels = [], anchor, style, ...rest }) {
   });
 
   return (
-    <ContentSlide data-lds-triptych-slide data-panel-count={marked.length} anchor={anchor} style={style} {...rest}>
+    <ContentSlide
+      data-lds-triptych-slide
+      data-panel-count={marked.length}
+      data-emphasis-spent={emphasisTaken ? 'panel' : undefined}
+      eyebrow={emphasisTaken ? undefined : eyebrow}
+      anchor={anchor}
+      style={style}
+      {...rest}
+    >
       <div
         data-slide-triptych
         style={{
@@ -55,7 +66,7 @@ export function TriptychSlide({ panels = [], anchor, style, ...rest }) {
           <section
             key={panel.id ?? panel.label ?? order}
             data-slide-panel={order + 1}
-            data-panel-emphasis={panel.emphasis ? 'true' : undefined}
+            data-emphasis={panel.emphasis ? 'true' : undefined}
             style={{ minWidth: 0, display: 'grid', gap: 'var(--space-3)', alignContent: 'start' }}
           >
             <h3
@@ -67,7 +78,7 @@ export function TriptychSlide({ panels = [], anchor, style, ...rest }) {
                 letterSpacing: 'var(--slides-body-spacing)',
                 fontWeight: 'var(--fw-bold)',
                 color: panel.emphasis
-                  ? 'var(--color-semantic-primary-strong)'
+                  ? 'var(--editorial-emphasis-text)'
                   : 'var(--color-semantic-label-strong)',
                 // The label is the thing that makes this a triptych rather than
                 // a grid, so a missing one is stated, not silently absorbed.

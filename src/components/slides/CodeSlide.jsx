@@ -37,7 +37,7 @@ export function CodeSlide({
   const lit = new Set(highlight);
 
   return (
-    <ContentSlide eyebrow={eyebrow} title={title} governing={governing} style={style} {...rest}>
+    <ContentSlide data-lds-code-slide eyebrow={eyebrow} title={title} governing={governing} style={style} {...rest}>
       <figure
         data-lds-code
         style={{
@@ -86,7 +86,7 @@ export function CodeSlide({
               <div
                 key={number}
                 data-code-line={number}
-                data-code-emphasis={emphasised ? 'true' : undefined}
+                data-emphasis={emphasised ? 'true' : undefined}
                 style={{
                   color: emphasised
                     ? 'var(--color-semantic-label-strong)'

@@ -1,6 +1,7 @@
 import React from 'react';
 import { SlideSurface } from './SlideSurface.jsx';
 import { phrased } from './phrasing.jsx';
+import { SlideEyebrow } from './SlideEyebrow.jsx';
 import { sparseScale, SPARSE_TYPE } from './sparseScale.js';
 
 /**
@@ -27,6 +28,7 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
   const scale = sparseScale(statement);
   return (
     <SlideSurface
+      data-lds-statement-slide
       style={{
         justifyContent: 'center',
         alignItems: 'center',
@@ -35,31 +37,9 @@ export function StatementSlide({ eyebrow, statement, attribution, style, ...rest
       }}
       {...rest}
     >
-      {eyebrow && (
-        <p
-          data-slide-eyebrow
-          style={{
-            margin: '0 0 var(--space-5)',
-            // The overline step — one size for the whole eyebrow family,
-            // deck-wide (see slides.css). Quietness stays a COLOR decision:
-            // this one wears the label tone because the statement owns the
-            // slide's only accent.
-            fontSize: 'var(--slides-overline-size)',
-            lineHeight: 'var(--slides-overline-line)',
-            // The ramp's own tracking, not the Latin kicker idiom. uppercase +
-            // 0.08em is an English smallcaps convention; every real eyebrow in
-            // this repository is Korean, where uppercase is a no-op and tracking
-            // out already-wide syllable blocks loosens them further
-            // (HEADER_SYSTEM_PROPOSAL R2). English eyebrows lose smallcaps —
-            // accepted; the English deck profile is a separate deferred item (E3).
-            letterSpacing: 'var(--slides-overline-spacing)',
-            fontWeight: 'var(--fw-semibold)',
-            color: 'var(--slides-ink-quiet)',
-          }}
-        >
-          {eyebrow}
-        </p>
-      )}
+      {/* One size for the whole eyebrow family; quietness is a COLOR
+          decision — the statement owns the slide's only accent. */}
+      <SlideEyebrow stack="statement" tone="quiet">{eyebrow}</SlideEyebrow>
       <p
         data-slide-statement
         data-slide-scale={scale}

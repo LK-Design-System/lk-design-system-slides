@@ -36,11 +36,15 @@ export function PresenterView({
   children,
   initial = 0,
   channel,
-  label = '발표자 화면',
+  // The accessible name — `aria-label` is canonical (in this package `label`
+  // means text the room sees); `label` is the pre-alpha.12 spelling, kept.
+  label: legacyLabel,
+  'aria-label': ariaLabel,
   running = true,
   style,
   ...rest
 }) {
+  const label = ariaLabel ?? legacyLabel ?? '발표자 화면';
   const {
     slides, count, index, step, stepCount, slideRef,
     forward, backward, deckKeyHandlers, atStart, atEnd, notes, nextSlide,
@@ -73,8 +77,9 @@ export function PresenterView({
     margin: 0,
     fontSize: 'var(--slides-fine-size)',
     lineHeight: 'var(--slides-fine-line)',
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase',
+    // Pane labels are Korean (현재/다음/노트): uppercase is a no-op and the
+    // Latin 0.08em tracking only loosens syllable blocks (R2).
+    letterSpacing: 'var(--slides-fine-spacing)',
     fontWeight: 'var(--fw-semibold)',
     color: 'var(--color-semantic-label-alternative)',
   };

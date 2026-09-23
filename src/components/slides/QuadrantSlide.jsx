@@ -40,9 +40,13 @@ export function QuadrantSlide({
   // vertical room the plot may claim (see the reservation note below).
   source,
   foot,
+  eyebrow,
   style,
   ...rest
 }) {
+  // The slide-level emphasis budget, as on every other figure-bearing layout
+  // (Stat/Figure/Compare/Roadmap): an emphasised item drops the accented
+  // eyebrow instead of letting two accents argue on one canvas.
   let emphasisTaken = false;
   const marked = items.map((item) => {
     const granted = Boolean(item.emphasis) && !emphasisTaken;
@@ -95,7 +99,15 @@ export function QuadrantSlide({
   };
 
   return (
-    <ContentSlide data-lds-quadrant-slide source={source} foot={foot} style={style} {...rest}>
+    <ContentSlide
+      data-lds-quadrant-slide
+      data-emphasis-spent={emphasisTaken ? 'item' : undefined}
+      eyebrow={emphasisTaken ? undefined : eyebrow}
+      source={source}
+      foot={foot}
+      style={style}
+      {...rest}
+    >
       <div
         data-slide-quadrant
         style={{
@@ -153,7 +165,7 @@ export function QuadrantSlide({
             position: 'relative',
             minHeight: 0,
             border: '1px solid var(--color-semantic-line-normal-normal)',
-            borderRadius: 'var(--radius-2, 4px)',
+            borderRadius: 'var(--radius-4)',
             background: 'var(--color-semantic-fill-alternative)',
           }}
         >
@@ -198,7 +210,7 @@ export function QuadrantSlide({
               <span
                 key={item.id ?? item.label ?? order}
                 data-quadrant-item
-                data-item-emphasis={item.emphasis ? 'true' : undefined}
+                data-emphasis={item.emphasis ? 'true' : undefined}
                 style={{
                   position: 'absolute',
                   left: `${x * 100}%`,
@@ -213,10 +225,10 @@ export function QuadrantSlide({
                   letterSpacing: 'var(--slides-caption-spacing)',
                   textAlign: 'center',
                   background: item.emphasis
-                    ? 'var(--color-semantic-primary-normal)'
+                    ? 'var(--editorial-emphasis)'
                     : 'var(--color-semantic-background-elevated-normal)',
                   color: item.emphasis
-                    ? 'var(--color-semantic-static-white, #fff)'
+                    ? 'var(--color-semantic-static-white)'
                     : 'var(--color-semantic-label-strong)',
                   fontWeight: item.emphasis ? 'var(--fw-semibold)' : 'var(--fw-regular)',
                   border: item.emphasis ? 'none' : '1px solid var(--color-semantic-line-normal-normal)',

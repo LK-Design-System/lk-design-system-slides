@@ -45,7 +45,7 @@ export function RankShift({ items = [], startLabel, endLabel, rowHeight = 28, st
     lineHeight: `${rowHeight}px`,
     letterSpacing: 'var(--editorial-note-spacing)',
     fontWeight: item.emphasis ? 'var(--fw-bold)' : 'var(--fw-medium)',
-    color: item.emphasis ? 'var(--color-semantic-primary-strong)' : 'var(--color-semantic-label-neutral)',
+    color: item.emphasis ? 'var(--editorial-emphasis-text)' : 'var(--color-semantic-label-neutral)',
   });
 
   return (
@@ -71,7 +71,7 @@ export function RankShift({ items = [], startLabel, endLabel, rowHeight = 28, st
             <span
               key={item.id ?? item.label}
               data-rank-label-start
-              data-rank-emphasis={item.emphasis ? 'true' : undefined}
+              data-emphasis={item.emphasis ? 'true' : undefined}
               style={labelStyle(item, item.start)}
             >
               {item.label} <span style={{ fontVariantNumeric: 'tabular-nums' }}>{item.start}위</span>
@@ -107,7 +107,7 @@ export function RankShift({ items = [], startLabel, endLabel, rowHeight = 28, st
           {emphasized && (
             <line
               data-rank-line
-              data-rank-emphasis="true"
+              data-emphasis="true"
               x1="0"
               y1={centerY(emphasized.start)}
               x2="100"
@@ -129,13 +129,13 @@ export function RankShift({ items = [], startLabel, endLabel, rowHeight = 28, st
             <span
               key={item.id ?? item.label}
               data-rank-label-end
-              data-rank-emphasis={item.emphasis ? 'true' : undefined}
+              data-emphasis={item.emphasis ? 'true' : undefined}
               style={labelStyle(item, item.end)}
             >
               <span style={{ fontVariantNumeric: 'tabular-nums' }}>{item.end}위</span> {item.label}{' '}
               <span
                 data-rank-delta
-                style={{ color: item.emphasis ? 'var(--color-semantic-primary-strong)' : 'var(--color-semantic-label-alternative)' }}
+                style={{ color: item.emphasis ? 'var(--editorial-emphasis-text)' : 'var(--color-semantic-label-alternative)' }}
               >
                 ({deltaText(item.start, item.end)})
               </span>

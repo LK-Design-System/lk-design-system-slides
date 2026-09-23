@@ -25,7 +25,7 @@ const WEEK_GROUPS = [{ label: '8월', span: 2 }, { label: '9월', span: 1 }];
 export const Deck = {
   name: '주간 업무현황 (열람 예시 2호)',
   render: () => (
-    <DeckViewer label="8월 3주차 LKR 업무현황" kind="read" preset="briefing">
+    <DeckViewer aria-label="8월 3주차 LKR 업무현황" kind="read" preset="briefing">
       <TitleSlide
         eyebrow="LKR 플랫폼"
         title="8월 3주차 업무현황"
@@ -105,7 +105,7 @@ export const Deck = {
         notes="3주 축 계획 — 스팬이 제각각이라 시간 격자가 실제 정보를 나른다: 축 안에서 끝나는 둥근 캡, 중간 시작, 계속 화살촉."
       >
         <WeekSpanRows
-          label="향후 업무 계획"
+          aria-label="향후 업무 계획"
           weeks={WEEKS}
           groups={WEEK_GROUPS}
           rows={[

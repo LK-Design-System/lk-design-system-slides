@@ -21,8 +21,8 @@ export const Default = {
   name: 'Pictogram Row',
   render: () => (
     <div style={{ display: 'grid', gap: 'var(--space-6)', maxWidth: 520 }}>
-      <PictogramRow value={179} per={20} unitLabel="개" label="React 컴포넌트" />
-      <PictogramRow value={111} per={20} unitLabel="건" label="play 함수 단언" />
+      <PictogramRow value={179} per={20} unit="개" label="React 컴포넌트" />
+      <PictogramRow value={111} per={20} unit="건" label="play 함수 단언" />
     </div>
   ),
   play: async ({ canvasElement }) => {

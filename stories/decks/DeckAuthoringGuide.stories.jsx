@@ -107,7 +107,7 @@ export const Skeleton = {
     },
   },
   render: () => (
-    <DeckViewer label="골격 데모">
+    <DeckViewer aria-label="골격 데모">
       <TitleSlide eyebrow="플랫폼팀" title="덱 골격 데모" subtitle="표지 → 목차 → 간지 → 막지" />
       <AgendaSlide items={['첫 챕터']} />
       <SectionSlide index={1} title="첫 챕터" subtitle="간지는 숨 고르는 자리" />

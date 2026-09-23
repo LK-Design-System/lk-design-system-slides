@@ -130,3 +130,51 @@ export const MissingClaimReported = {
     }
   },
 };
+
+export const HeaderHoldsWithoutEyebrow = {
+  name: '헤더 높이 유지 (eyebrow 없음)',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'eyebrow를 쓰는 덱에서는 eyebrow가 없는 슬라이드도 그 줄 상자를 남깁니다. 그래서 덱을 넘길 때 제목이 장마다 오르내리지 않습니다 — 강조 예산이 eyebrow를 내린 슬라이드도 같습니다. 남긴 자리는 보이지 않고 접근성 트리 밖이며 `data-slide-eyebrow`를 달지 않습니다. eyebrow를 전혀 쓰지 않는 덱과 덱 밖의 단독 렌더는 자리를 남기지 않습니다.',
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
+      {/* The medium a DeckViewer provides for a deck that uses eyebrows. */}
+      <DeckMediumContext.Provider value={{ kind: 'present', eyebrowSlot: true }}>
+        <ContentSlide eyebrow="진단" title="지연 원인" governing="지연의 대부분은 배치 대기에서 생깁니다.">
+          <p style={{ margin: 0 }}>본문.</p>
+        </ContentSlide>
+        <ContentSlide title="지연 원인" governing="지연의 대부분은 배치 대기에서 생깁니다.">
+          <p style={{ margin: 0 }}>본문.</p>
+        </ContentSlide>
+      </DeckMediumContext.Provider>
+      {/* On its own: no neighbours to stay level with, so no reservation. */}
+      <ContentSlide title="지연 원인" governing="지연의 대부분은 배치 대기에서 생깁니다.">
+        <p style={{ margin: 0 }}>본문.</p>
+      </ContentSlide>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const surfaces = [...canvasElement.querySelectorAll('[data-lds-slide-surface]')];
+    const titleTop = (surface) => surface.querySelector('[data-slide-title]').getBoundingClientRect().top
+      - surface.getBoundingClientRect().top;
+    const [withEyebrow, without] = surfaces.map(titleTop);
+    if (Math.abs(withEyebrow - without) > 0.5) {
+      throw new Error(`The title must sit at one height with or without an eyebrow, measured ${withEyebrow} vs ${without}.`);
+    }
+    const reserved = surfaces[1].querySelector('[data-slide-eyebrow-reserved]');
+    if (!reserved || reserved.getAttribute('aria-hidden') !== 'true' || getComputedStyle(reserved).visibility !== 'hidden') {
+      throw new Error('The reserved eyebrow slot must be invisible and outside the accessibility tree.');
+    }
+    if (surfaces[1].querySelector('[data-slide-eyebrow]')) {
+      throw new Error('A reserved slot must not report itself as an eyebrow.');
+    }
+    if (surfaces[2].querySelector('[data-slide-eyebrow-reserved]')) {
+      throw new Error('A slide rendered on its own keeps its whole region — nothing to stay level with.');
+    }
+  },
+};

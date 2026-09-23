@@ -112,8 +112,8 @@ export const BeforeAfter = {
           emphasis
         />
         <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
-          <PictogramRow value={LAST_YEAR} per={10} unitLabel="대" label="2025년" tone="muted" />
-          <PictogramRow value={THIS_YEAR} per={10} unitLabel="대" label="2026년" />
+          <PictogramRow value={LAST_YEAR} per={10} unit="대" label="2025년" emphasis={false} />
+          <PictogramRow value={THIS_YEAR} per={10} unit="대" label="2026년" />
         </div>
       </section>
     </div>
@@ -152,8 +152,8 @@ export const BeforeAfter = {
     }
 
     // 절차 4 — 강조는 하나: 비교 행 중 한 행만 emphasis 톤을 가진다.
-    const emphasisRows = compliant.querySelectorAll('[data-lds-pictogram-row][data-tone="emphasis"]');
-    const mutedRows = compliant.querySelectorAll('[data-lds-pictogram-row][data-tone="muted"]');
+    const emphasisRows = compliant.querySelectorAll('[data-lds-pictogram-row][data-emphasis="true"]');
+    const mutedRows = compliant.querySelectorAll('[data-lds-pictogram-row]:not([data-emphasis])');
     if (emphasisRows.length !== 1 || mutedRows.length !== 1) {
       throw new Error('In a comparison, exactly one pictogram row may carry the emphasis tone.');
     }

@@ -31,7 +31,7 @@ const DECK = [
 
 export const Runtime = {
   name: 'Fullscreen · Deep link · Overview',
-  render: () => <DeckViewer label="런타임 데모">{DECK}</DeckViewer>,
+  render: () => <DeckViewer aria-label="런타임 데모">{DECK}</DeckViewer>,
   play: async ({ canvasElement }) => {
     const deck = canvasElement.querySelector('[data-lds-deck-viewer]');
     if (!deck) throw new Error('The deck must render.');
