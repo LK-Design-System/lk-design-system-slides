@@ -13,7 +13,8 @@
     "catalogue.json",
     "docs",
     "bin",
-    "scripts"
+    "scripts",
+    "qa/rubric.md"
   ],
   "sideEffects": [
     "*.css",

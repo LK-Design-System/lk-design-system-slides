@@ -3,10 +3,12 @@
 발표 슬라이드용 LDS 자매 시스템. Robotics·3D와 같은 패턴으로, Core/Theme 토큰을 소비해
 슬라이드 지오메트리·투사 타이포 스케일·슬라이드 레이아웃 계약을 소유한다.
 
-**이 저장소는 매체(medium)다.** 무엇을 주장하는지는 매체 중립인
-[LDS Editorial](../lk-design-system-editorial)이 소유하고, 그걸 얼마나 먼 거리에서 읽는지를
-여기가 소유한다. 그래서 Slides는 숫자·주석·픽토그램을 다시 만들지 않고 Editorial을 얹는다 —
-`StatSlide`의 수치는 Editorial `KeyFigure`가, 그 안의 조판은 Product `Stat`이 그린다.
+**이 저장소는 매체(medium)다.** 무엇을 주장하는지는 매체 중립인 Editorial 층이 소유하고,
+그걸 얼마나 먼 거리에서 읽는지를 Slides 층이 소유한다. 두 층은 한 패키지에 있다 — Editorial은
+원래 별도 패키지(`@lk-design-system/lds-editorial-ui`)였고 alpha.2에서 이 저장소로 흡수됐다
+(`src/components/editorial/`, `tokens/editorial.css`). 그래도 경계는 그대로다: Slides는
+숫자·주석·픽토그램을 다시 만들지 않고 Editorial을 얹는다 — `StatSlide`의 수치는 Editorial
+`KeyFigure`가, 그 안의 조판은 Product `Stat`이 그린다.
 
 ## 소유 경계
 
@@ -17,11 +19,11 @@
   `ContentSlide`는 한국 장표의 헤더 계약(제목/거버닝/본문)도 소유한다: `governing`은 제목
   아래 놓이는 완결 문장 한 개의 주장이며, 슬라이드는 그 위치·타입(본문 스케일, 본문보다
   무거움)만 소유하고 문구는 덱이 소유한다. 명사형 종결은 제목의 것, 문장은 거버닝의 것.
-- **Core/Theme이 소유**: 색·간격·radius·폰트 토큰 전부. 이 저장소는 `--slides-*` 접두사만
-  정의하며, 교차 저장소 스타일 계약의 소유 접두사(`--color-` `--space-` `--radius-` `--font-`)를
+- **Core/Theme이 소유**: 색·간격·radius·폰트 토큰 전부. 이 저장소는 `--slides-*`와
+  `--editorial-*` 접두사만 정의하며, 교차 저장소 스타일 계약의 소유 접두사(`--color-` `--space-` `--radius-` `--font-`)를
   재정의하지 않는다.
-- **LDS Editorial이 소유**: 주장 프레임·주석·픽토그램의 서사 규약과 그 순위. Slides는 그
-  순위를 재해석하지 않고 거리만 지정한다.
+- **Editorial 층이 소유**(`src/components/editorial/`, `tokens/editorial.css`): 주장 프레임·
+  주석·픽토그램의 서사 규약과 그 순위. Slides 층은 그 순위를 재해석하지 않고 거리만 지정한다.
 - **덱(사용처)이 소유**: 발표 내용, 슬라이드 순서, 콘텐츠 구성.
 
 ## 논리 캔버스
@@ -63,29 +65,42 @@ Editorial 컴포넌트는 업스트림 램프를 직접 참조하지 않고 `--e
 슬라이드에 얹힌 Editorial 컴포넌트는 컴포넌트가 아무것도 모르는 채로 투사 거리에서 읽힌다.
 
 업스트림 램프가 아니라 **`--slides-*`를 경유**해 매핑하는 것이 핵심이다 — `briefing`
-프리셋이 슬라이드 단계를 갈아끼우면 Editorial 층도 공짜로 따라온다. `note-body`와
-`caption`이 둘 다 `--slides-fine-*`에 떨어지는 건 의도된 바닥이다: 하한 아래로는 크기가
-아니라 무게와 색이 순위를 나른다.
+프리셋이 슬라이드 단계를 갈아끼우면 Editorial 층도 공짜로 따라온다. `caption`이
+`--slides-fine-*`에 떨어지는 건 의도된 바닥이고, `note-body`는 한 단 위 `--slides-caption-*`에
+놓인다(슬라이드에서는 도판이 곧 본문이라 첫 매핑의 fine은 너무 작았다 — `tokens/slides.css`의
+재지정 블록 주석). 램프의 가장자리에서는 크기가 아니라 무게와 색이 순위를 나른다.
 
 강조 예산도 여기서 집행된다. Editorial은 한 도판 안에서만 강조를 단속할 수 있고 경쟁은
-도판들 사이·도판과 eyebrow 사이에서 일어나므로, `StatSlide`가 첫 요청만 승인하고 나머지를
-강등하며 강조를 쓴 슬라이드는 악센트 eyebrow를 내린다.
+도판들 사이·도판과 eyebrow 사이에서 일어나므로, 강조를 받는 레이아웃(Stat·Figure·Compare·
+Roadmap·Triptych·Quadrant)이 첫 요청만 승인하고 나머지를 강등하며, 강조를 쓴 슬라이드는
+악센트 eyebrow를 내린다(`data-emphasis-spent`). 내려도 제목은 움직이지 않는다 — eyebrow를
+쓰는 덱에서는 콘텐츠 헤더가 eyebrow가 없을 때도 그 줄 상자를 남긴다(eyebrow를 전혀 쓰지
+않는 덱은 그 줄을 쓰지 않고 영역을 온전히 받는다). 강조된 요소는 어느 컴포넌트든
+`data-emphasis="true"` 하나로 표시되고, 강조 글자색은 `--editorial-emphasis-text`를 읽는다.
 
 ## 상태
 
-`0.1.0-alpha.9` — **덱 저작 스킬이 패키지에 실린다**(`docs/agent-skills/lds-deck/`).
-설치한 쪽이 그 디렉터리를 `.claude/skills/lds-deck/`로 복사하면 자기 앱에서 같은
-내용 규율로 덱을 만든다 — 컴포넌트만 나가고 규율은 저장소에 남던 비대칭이 닫혔다.
+`0.1.0-alpha.11` — **게이트가 소비자 명령이 된다**: `lds-slides-check`가 bin으로 실리고
+그 규칙을 돌릴 `scripts/`가 함께 나간다(아래 "소비 레포에서 게이트 돌리기"). 덱 단위
+분류 표기와 상시 마크, 2단 기간 머리, 자산 계약과 그 게이트, 한국어 제목 규칙이 판정하지
+못한 것을 통과로 두지 않는 신고가 같은 릴리스다. `@playwright/test`는 optional
+dependency — 컴포넌트만 쓰는 쪽이 브라우저 값을 치르지 않는다.
 
-직전 alpha.8은 위임 복귀 세대였다. 손말이 중복 두 벌이 업스트림으로
+직전 alpha.10은 덱을 Storybook 밖으로 꺼냈다: PDF 내보내기(인쇄 시트), `TrendChart`,
+`QuadrantSlide`·`TriptychSlide`, `MappingDiagram`, `appearance="brand"`, 발표 런타임
+(전체 화면·`#7` 딥링크·개요). alpha.9는 덱 저작 스킬을 패키지에 실었다
+(`docs/agent-skills/lds-deck/`).
+
+alpha.8은 위임 복귀 세대였다. 손말이 중복 두 벌이 업스트림으로
 돌아갔다: NarrativeTimeline의 가로 레일은 Core Timeline의
 `orientation="horizontal"` 위임으로, StatusAssessment의 표는 Core Table의
 `banded`+`groupKey` 위임으로 — 레일 지오메트리와 셀 문법은 업스트림 것이고,
 이 층은 서사·판정 계약과 매체 랭크 재지정(`--lk-timeline-*`·`--lk-table-*`)만
-남긴다. 직전 alpha.7의 열람 덱 축(`DeckViewer kind="present"|"read"`),
+남긴다. alpha.7의 열람 덱 축(`DeckViewer kind="present"|"read"`),
 열람 계약 3종(`TopicList`·`ExhibitRow`·`WeekSpanRows`), chrome-intrusion
-가드는 그대로다. **Core/Theme/Product `>=0.1.0-rc.69.27` 필수** — 위임에
-쓰는 `groupKey`와 `--lk-timeline-*` 훅이 그 릴리스에서 생겼다. Storybook
+가드는 그대로다. **Core/Theme/Product `>=0.1.0-rc.69.28` 필수** — 위임에
+쓰는 `groupKey`와 `--lk-timeline-*` 훅은 rc.69.27에서, `TrendChart`가 쓰는
+`--lk-chart-*`와 `StatSlide`의 `--lk-stat-*` 훅은 rc.69.28에서 생겼다. Storybook
 포트는 **6009** (사다리: Core 6006 · 3D 6007 · Robotics 6008 · Slides 6009 —
 새 자매는 6011부터).
 
@@ -95,7 +110,8 @@ Core/Product/Theme은 `peerDependencies`라 트리에 Core는 정확히 하나�
 인증이 준비되면 Robotics처럼 semver 고정(캐럿 없음)으로 전환한다.
 
 ```bash
-npm run check:storybook   # 소유권 검사 + 빌드 + 모든 play 단언을 headless Chromium에서 실행
+npm run check:storybook   # 정적 게이트 3종(스타일 소유권·스킬 배송·카탈로그) → 빌드 → play·초과·내용·
+                          # 도판 충전·인쇄 시트·자산·시각 스냅샷 게이트를 headless Chromium에서 실행
 ```
 
 `check:style-ownership`이 체인의 첫 게이트다: 컴포넌트는 업스트림 램프 변수
@@ -149,13 +165,14 @@ DOM에도 남기지 않는다. 기본 숨김이고 `N`으로 연다.
 
 `Fit`이 **흡수한다** — 줄이기만 하고 키우지 않는다. 바닥은 상수가 아니라 램프에서
 유도한다: 본문은 `--slides-fine-*`, 투사 램프가 인정하는 가장 작은 단계까지만 줄어든다.
-그래서 프리셋이 바뀌면 바닥도 따라간다(keynote 16÷24 = 0.667, briefing 14÷20 = 0.70).
+그래서 프리셋이 바뀌면 바닥도 따라간다(keynote 18÷24 = 0.75, briefing 14÷20 = 0.70).
 `--slides-fit-floor`를 박으면 그 값이 이긴다.
 
 `check:slide-overflow`가 **읽는다** — 흡수하지 못한 만큼은 `data-fit-overflow`와 콘솔
 경고로 신고되고, 게이트가 그 신호와 캔버스 자체의 초과를 함께 검사해 빌드를 실패시킨다.
 신고에 독자가 없으면 절반짜리이므로 둘은 한 벌이다. 래칫은 play 게이트와 같은 조건으로
-`slide-overflow-known-failures.json`에 고정된다.
+`slide-overflow-known-failures.json`에 고정된다(현재 고정된 실패가 없어 파일이 없다 — 없으면
+빈 래칫으로 읽는다. `figure-fill-known-failures.json`도 같다).
 
 `Fit`은 자동이 아니라 **옵트인**이다. 분량 초과는 대개 내용 문제이고, 조용히 줄여서 덮는
 것이 바로 이 계약이 막으려는 행동이다. 게이트가 항상 켜져 있고 `Fit`은 의도적인 예외다.
@@ -184,8 +201,12 @@ DOM에도 남기지 않는다. 기본 숨김이고 `N`으로 연다.
 
 ## 카탈로그
 
-`catalogue.json`이 export된 모든 것을 기계가 읽는 형태로 내보낸다 — 용도, props, 계약을
-거는 data 속성, 그리고 덱 작성 규칙. 덱 스킬이 산문 대신 이걸 읽는다.
+`catalogue.json`이 export된 모든 것 — 레이아웃·프리미티브·덱 컴포넌트·Editorial 컴포넌트 —
+을 기계가 읽는 형태로 내보낸다: 용도, props, 계약을 거는 data 속성, 그리고 덱 작성 규칙.
+덱 스킬이 산문 대신 이걸 읽는다. `ContentSlide`나 `SlideSurface`를 조합한 레이아웃은
+`...rest`로 넘겨받는 헤더·크롬 prop을 `inherits`에 따로 적는다(시그니처만 읽으면
+`QuadrantSlide`에 제목이 없는 것처럼 보였다). 옛 철자로 계속 받는 prop은 `deprecated`로
+표시된다. 타입 램프 목록도 `tokens/slides.css`에서 뽑는다.
 
 **소스에서 생성한다.** 손으로 쓰면 진실이 두 벌이 되고 두 벌은 어긋난다. 컴포넌트 위의
 docstring 첫 문단이 곧 카탈로그의 `useFor`이고 props는 구조분해 시그니처에서 나오므로,
@@ -194,6 +215,25 @@ docstring 첫 문단이 곧 카탈로그의 `useFor`이고 props는 구조분해
 ```bash
 npm run generate:catalogue   # 소스에서 다시 뽑기
 ```
+
+## 이름 규칙
+
+- **data 속성.** 표면 수준의 시스템 축은 복수형 `data-slides-*`(`preset`, `appearance`),
+  슬라이드 안의 요소는 단수형 `data-slide-*`, 레이아웃 루트는 `data-lds-<name>-slide`(모든
+  레이아웃에 하나씩), Editorial 컴포넌트 루트는 `data-lds-<name>`. 강조된 요소는 어느
+  컴포넌트든 `data-emphasis="true"` 하나로 표시한다(예전의 `data-panel-emphasis`·
+  `data-rank-emphasis` 등 여덟 갈래를 합쳤다 — 조회는 요소 속성과 함께:
+  `[data-slide-panel][data-emphasis="true"]`).
+- **prop 어휘.** `label`은 화면에 보이는 글자, 접근 가능한 이름만일 때는 표준 `aria-label`.
+  값의 단위는 `unit`. 강조는 boolean `emphasis`. 옛 철자(`unitLabel`, PictogramRow의
+  `tone`, 이름 전용 `label`)는 계속 받지만 카탈로그에 `deprecated`로 표시되고 새 덱에는 쓰지
+  않는다.
+- **크롬 prop.** `foot`은 푸터 라벨(문자열), `footer={false}`는 띠 전체를 내리는 스위치 —
+  역할이 달라 두 이름이다.
+- **Storybook 계층.** `Slides/`는 슬라이드 레이아웃과 프리미티브, `Editorial/`은 Editorial
+  컴포넌트, `Deck/`(단수)은 덱 컴포넌트 계열(Viewer·Presenter View·Chrome·Runtime),
+  `Decks/`(복수)는 완성된 예시 덱 — `check:deck-content`가 이 접두사로 덱을 찾는다.
+  `Assembly/`와 `Methodology/`는 Editorial 도판의 조합·작성 예제다.
 
 ## 시각 회귀 — 측정과 스냅샷 두 층
 
@@ -208,7 +248,8 @@ npm run generate:catalogue   # 소스에서 다시 뽑기
   스코프는 FigureSlide 하나 — ImageSlide(contained)는 잔여 높이 주도가 계약이라
   좁은 것이 정상이고, 표·지표 행은 이미 매체 폭 정책이 소유한다. 넓히면 오탐이
   규칙의 신뢰를 깎는다.
-- `check:visual-snapshot` — **스냅샷**. 대표 슬라이드 17장의 렌더를 커밋된
+- `check:visual-snapshot` — **스냅샷**. 대표 슬라이드(현재 26장 — 스크립트의 `SUBJECTS`
+  목록이 정본)의 렌더를 커밋된
   베이스라인과 비교한다(pixelmatch, threshold 0.1, includeAA false — 플랫폼별
   텍스트 래스터화 차이를 흡수한다). 의미를 모르는 그물이라 화살촉 비율·이음매·
   랭크 이동처럼 규칙으로 못 적은 결함까지 덮는다. 대신 **"틀렸다"가 아니라
@@ -223,10 +264,13 @@ npm run generate:catalogue   # 소스에서 다시 뽑기
 무엇을 말할지의 규칙 중 **숫자가 있는 것은 기계가, 없는 것은 심사가** 잡는다.
 
 `check:deck-content`가 `Decks/` 아래 모든 덱을 (초과 게이트와 같은 방식으로) 끝까지
-몰면서 여덟 규칙을 검사한다: 명사형 종결 제목, 콘텐츠 슬라이드의 거버닝 유무와 형태
-(한 문장·55자 — Alley의 assertion-evidence 8–14단어에서 온 상한), 불릿 상한 7(tahta),
-본문 상한 140자(academic-pptx-skill의 ~40단어), 데이터 슬라이드의 source, 덱당
-StatementSlide 최대 2장, 막지의 잔향. 임계값마다 출처가 스크립트 머리 주석에 있다 —
+몰면서 열다섯 규칙을 검사한다. 내용 규칙: 명사형 종결 제목(한국어가 없는 제목은 통과가
+아니라 "판정 안 됨"으로 신고), 콘텐츠 슬라이드의 거버닝 유무와 형태(한 문장·55자 —
+Alley의 assertion-evidence 8–14단어에서 온 상한), 불릿 상한 7(tahta), 본문 상한 140자
+(academic-pptx-skill의 ~40단어), 데이터 슬라이드의 source, 덱당 StatementSlide 최대 2장,
+막지의 잔향, 로드맵의 평평한 날짜. 구성 규칙: 크롬 침범, 이미지 alt와 크기, 캔버스 미충전,
+죽은 하단. 열람 덱(`kind="read"`)은 발표 문법만 내려놓는다 — 거버닝 필수 해제, 본문 상한
+300자, 캔버스 미충전 해제. 규칙 목록과 임계값마다의 출처가 스크립트 머리 주석에 있다 —
 근거 없는 숫자는 규칙이 아니라 취향이다. 래칫은 다른 게이트와 같은 조건.
 
 숫자가 없는 차원 — 고스트 덱(거버닝 체인이 논증인가), 레이아웃 적합, 구성 다양성,
@@ -309,9 +353,9 @@ dependency이고, 없으면 설치 방법을 알려주고 멈춘다.
 
 - 레이아웃 어휘: mckinsey-pptx 카탈로그의 주요 패턴은 매핑 완료(구조·stat·도판·비교·
   로드맵·상태 평가·주장). 추가 확장은 실제 덱에서 수요가 생길 때 카탈로그 기준으로 선별.
-- 프리젠터 뷰: 노트·다음 장·경과 시간을 별도 창에 띄우는 2창 동기화 (덱 밖 도구 영역과의
-  경계를 먼저 정할 것).
-- Directory 등재: Core Storybook의 LDS Directory에 행 추가, github.io 배포.
+- 콘텐츠 영역의 크롬 예약: 흐름 밖 출처·푸터 띠를 콘텐츠 영역이 스스로 비켜 가도록
+  `ContentSlide` 수준에서 한 번에 해결한다(지금은 `QuadrantSlide`만 로컬로 예약한다 —
+  그 파일의 주석).
 
 ## AI 에이전트 진입점
 
@@ -319,4 +363,5 @@ dependency이고, 없으면 설치 방법을 알려주고 멈춘다.
 [docs/AGENT_SKILL_REFERENCE.md](docs/AGENT_SKILL_REFERENCE.md)다 — LDS Core가 배포하는
 `lds-ui` 스킬이 이 경로로 라우팅한다(설치 기준
 `@lk-design-system/lds-slides-ui/docs/AGENT_SKILL_REFERENCE.md`). 이 저장소 안에서
-덱을 저작할 때의 정본은 여전히 `.claude/skills/lds-deck`이다.
+덱을 저작할 때의 진입점은 `.claude/skills/lds-deck`이고, 그 스킬이 읽는 규칙 본문은
+`docs/agent-skills/lds-deck/references/`의 한 벌이다(위 "덱 생성 스킬").

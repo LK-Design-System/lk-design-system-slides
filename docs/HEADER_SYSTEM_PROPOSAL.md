@@ -87,6 +87,34 @@ play는 깨지지 않는다. 이후의 게이트·플레이·문서가 "어느 �
 검토점: 거버닝을 위임 레이아웃(Stat·Compare 등)이 rest로 전달하므로, 경고
 지점은 ContentSlide 하나로 충분하다.
 
+## 변경 R5 — eyebrow 자리 유지와 공용 원자 (2026-09-24, 구현)
+
+일관성 점검에서 드러난 두 가지를 닫는다.
+
+- **제목이 eyebrow 유무에 따라 38 설계 px 움직였다.** content 헤더는 eyebrow가
+  없으면 그 줄을 접었고, 강조 예산이 eyebrow를 내린 슬라이드(Stat 등)도 마찬가지라
+  한 덱을 넘길 때 제목이 장마다 오르내렸다 — "헤더는 움직이지 않는다"는
+  ContentSlide의 약속이 eyebrow 한 줄에서 깨졌다. 이제 **eyebrow를 쓰는 덱에서는**
+  content 헤더가 eyebrow가 없어도 그 줄 상자를 남긴다(보이지 않음, 접근성 트리 밖,
+  `data-slide-eyebrow`를 달지 않음 → `data-slide-eyebrow-reserved`). 덱 단위인 이유: 첫
+  구현은 모든 장에 예약했는데, eyebrow를 안 쓰는 덱까지 매 장 약 38 설계 px를 내줬고
+  꽉 찬 도식 두 장이 즉시 크롬 밴드를 침범했다(check:deck-content). 제목이 튀는 것은
+  eyebrow 있는 장과 없는 장이 섞일 때뿐이므로 그때만 예약한다 — `deckUsesEyebrows`가
+  덱의 슬라이드 prop을 읽어 medium의 `eyebrowSlot`으로 내린다(인쇄 시트도 같은 값).
+  덱 밖 단독 렌더는 예약하지 않는다. 표지·간지·선언은 중앙 조판이라 대상이 아니다.
+  같은 작업에서 두 덱의 도식 장 캡션을 출처 줄로 합쳤고, `매체와 논증의 분리` 9장의
+  재지정 도식을 실제 토큰(note→body, note-body→caption)으로 바로잡았다.
+  play: `Slides/Content Slide › 헤더 높이 유지`.
+- **eyebrow가 네 벌이었다**(Content·Title·Statement·Agenda). 크기·자간·굵기는 같았지만
+  Agenda만 primary 토큰을 직접 읽었고, 간격은 space-2/4/5/8로 각자 박혀 있었다. 이제
+  `SlideEyebrow`(내부 원자) 하나가 타입·자간·굵기·잉크를 소유하고, 간격은 스택별
+  표(content 2 · cover 4 · statement 5 · agenda 8 — 아래에 오는 것의 크기에 맞춘 값)로
+  남긴다. 값은 그대로라 렌더 변화 없음.
+- 함께: content 헤더의 제목·거버닝과 Agenda 목록도 `--slides-ink-*`를 탄다. 본문
+  레이아웃은 `appearance="brand"`를 거부하고 `data-slides-appearance-refused`로
+  신고한다(반쪽만 반전되던 헤더). `check:style-ownership` 규칙 6이 헤더·희소 계열의
+  label/primary 직접 참조를 막는다.
+
 ## 판정 기록 (변경 없음)
 
 - **briefing 구분선은 content 헤더 전용이다.** 표지·간지는 중앙 조판의 희소

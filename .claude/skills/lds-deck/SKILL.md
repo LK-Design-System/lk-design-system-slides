@@ -97,7 +97,7 @@ export default meta;
 export const Deck = {
   name: '<덱 제목>',
   render: () => (
-    <DeckViewer label="<덱 제목>">
+    <DeckViewer aria-label="<덱 제목>">
       <TitleSlide eyebrow="…" title="…" subtitle="…" />
       <AgendaSlide items={['…', '…']} />
       <SectionSlide index={1} title="…" />
@@ -154,7 +154,11 @@ export const Deck = {
    내용이 세이프 존을 넘치지 않는지 본다 — 넘치면 스타일을 줄이지 말고 **내용을 쪼갠다**
    (슬라이드 추가가 정답, 폰트 축소는 오답).
 2. content-rules.md의 체크리스트를 통과시킨다.
-3. 저장소 게이트: `npm run check:storybook` (소유권 검사 + 모든 play 단언).
+3. 저장소 게이트: `npm run check:storybook` — 정적 게이트(스타일 소유권·스킬 배송·
+   카탈로그) → 빌드 → play·초과·내용·도판 충전·인쇄 시트·자산·시각 스냅샷.
+4. 심사: [qa/rubric.md](../../../qa/rubric.md)로 논증·레이아웃 적합·다양성·마감을 1–5로
+   매기고 약점을 슬라이드 번호와 함께 적는다. **게이트가 전부 초록이어도 루브릭을 거치기
+   전에는 검토 완료가 아니다.**
 
 ## 산출 규칙
 

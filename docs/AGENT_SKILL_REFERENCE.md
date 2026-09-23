@@ -2,7 +2,7 @@
 
 이 문서는 소비 레포의 에이전트 스킬(`lds-ui`, `@lk-design-system/lds-core/docs/agent-skills/lds-ui/`)이 슬라이드·에디토리얼 작업 시점에 로드하는 도메인 규칙 요약이다. 설치된 패키지에서는 `@lk-design-system/lds-slides-ui/docs/AGENT_SKILL_REFERENCE.md`로 도달한다.
 
-기계 계약의 정본은 [catalogue.json](../catalogue.json)(레이아웃 어휘 + 규칙 10개), 소유 철학의 정본은 [README.md](../README.md)다. 산문과 컴포넌트 동작이 다르면 스토리 play 단언이 정본이다. **덱을 저작하는 작업이면 이 요약이 아니라 [`agent-skills/lds-deck/`](agent-skills/lds-deck/SKILL.md) 스킬을 쓴다** — 이 패키지에 함께 실려 나가며, 소비 레포의 `.claude/skills/lds-deck/`로 복사하면 발표자료 요청에서 자동 트리거된다. 이 요약은 덱 저작이 아닌 작업(제품 화면에 슬라이드 표면을 얹는 등)에서 도메인 규칙만 필요할 때의 것이다.
+기계 계약의 정본은 [catalogue.json](../catalogue.json)(레이아웃·Editorial 어휘, 상속 prop, 규칙), 소유 철학의 정본은 [README.md](../README.md)다. 산문과 컴포넌트 동작이 다르면 스토리 play 단언이 정본이다. **덱을 저작하는 작업이면 이 요약이 아니라 [`agent-skills/lds-deck/`](agent-skills/lds-deck/SKILL.md) 스킬을 쓴다** — 이 패키지에 함께 실려 나가며, 소비 레포의 `.claude/skills/lds-deck/`로 복사하면 발표자료 요청에서 자동 트리거된다. 이 요약은 덱 저작이 아닌 작업(제품 화면에 슬라이드 표면을 얹는 등)에서 도메인 규칙만 필요할 때의 것이다.
 
 ## 소유 경계 — 덱은 내용·순서·문구만 소유한다
 
@@ -12,19 +12,25 @@
 
 ## 타입 — 업스트림 램프 직접 참조 금지
 
-- 컴포넌트·덱 마크업에 `--display1-*`, `--body2-*` 같은 업스트림 램프 변수를 쓰지 않는다. 타입은 `--slides-*` 5단계에서만 읽는다.
+- 컴포넌트·덱 마크업에 `--display1-*`, `--body2-*` 같은 업스트림 램프 변수를 쓰지 않는다. 타입은 `--slides-*` 단계에서만 읽는다(hero·spot·display·title·governing·body·caption·orient·overline·fine의 10단 — `catalogue.json`의 `tokens.ramp`가 정본).
 - 에디토리얼 프리미티브를 직접 쓰면 `--editorial-*` 5단계(value > claim > note > note-body > caption)만 읽는다 — rank는 불변이고 거리(크기)는 매체가 재지정한다.
 - 새 CSS 파일·새 토큰·인라인 px 폰트 크기 금지. `preset`은 토큰 축이다(keynote 기본 / briefing 한 단 아래).
 
 ## 콘텐츠 규율 (기계 게이트가 집행하는 것)
 
 - **제목은 명사형 종결**, 문장은 `governing`(1문장 ≤55자)의 것. StatementSlide.statement만 예외로 완전한 문장.
-- 슬라이드당 주장 1개(2개면 2장), 전시물 1개, 강조 1회(컴포넌트가 자동 중재). 불릿 ≤7, 본문 ≤140자, StatementSlide 덱당 ≤2.
+- 슬라이드당 주장 1개(2개면 2장), 전시물 1개, 강조 1회(컴포넌트가 자동 중재 — 강조를 쓴 슬라이드는 eyebrow를 내린다. eyebrow를 쓰는 덱이면 내려도 제목 높이는 그대로다). 불릿 ≤7, 본문 ≤140자, StatementSlide 덱당 ≤2.
 - **넘치면 스타일을 줄이지 말고 내용을 쪼갠다.** 오버플로는 클립되고 스크롤 없음. `Fit`은 램프 유도 바닥까지만.
 - **수동 개행 금지** — keep-all과 의존명사 접착은 매체 소유. 어색한 줄은 문구를 다시 쓴다.
 - 데이터 슬라이드는 출처 필수: `출처: <시스템/문서>, <YYYY-MM>`. 자기 데이터도. 재구성 도표는 `재구성: <원 출처>`.
 - EndSlide 메시지는 감사 인사가 아니라 논증의 잔여. 발표자 노트는 `notes` prop — 캔버스 불가침이되, 핵심 증거를 노트에만 두지 않는다.
 - Step 공개는 리플로 금지 — 완전 공개 상태 기준으로 조립한다.
+
+## 이름 규칙
+
+- prop: `label`은 화면에 보이는 글자, 접근 가능한 이름만이면 `aria-label`. 단위는 `unit`, 강조는 boolean `emphasis`. 카탈로그에 `deprecated`로 표시된 옛 철자(`unitLabel`, PictogramRow `tone`)는 새 코드에 쓰지 않는다.
+- 강조된 요소는 어느 컴포넌트든 `data-emphasis="true"`. 테스트는 요소 속성과 함께 조회한다(`[data-slide-panel][data-emphasis="true"]`).
+- `appearance="brand"`는 표지·간지·선언·막지 전용. 본문 레이아웃은 거부하고 `data-slides-appearance-refused`로 신고한다.
 
 ## 차트·그래픽 규율 (에디토리얼 계보)
 

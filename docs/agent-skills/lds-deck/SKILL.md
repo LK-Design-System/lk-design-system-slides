@@ -87,7 +87,7 @@ import '@lk-design-system/lds-slides-ui/styles.css';
 
 export function QuarterlyDeck() {
   return (
-    <DeckViewer label="<덱 제목>" kind="present">
+    <DeckViewer aria-label="<덱 제목>" kind="present">
       <TitleSlide eyebrow="…" title="…" subtitle="…" />
       <AgendaSlide items={['…', '…']} />
       <SectionSlide index={1} title="…" />
@@ -134,9 +134,11 @@ export function QuarterlyDeck() {
 
 ### 5단계 — QA
 
-**소비 레포에는 저장소의 기계 게이트(`check:deck-content`·`check:slide-overflow`)가
-없다.** 그러니 [content-rules.md §7 체크리스트](references/content-rules.md)를
-사람이 전부 확인한다. 특히 기계가 대신 잡아주지 않는 것:
+**덱을 Storybook으로 빌드해 두었다면 게이트를 그대로 돌릴 수 있다**: `npx lds-slides-check
+<빌드된 Storybook 루트 URL>`(`--only=overflow,content`로 골라 돌림) — 패키지에 실린 저장소
+게이트 스크립트가 남의 Storybook을 잰다. Storybook이 없는 소비 레포라면 게이트를 대신할
+것이 없으므로 [content-rules.md §7 체크리스트](references/content-rules.md)를 사람이 전부
+확인한다. 어느 쪽이든 기계가 대신 잡아주지 않는 것:
 
 1. **넘침** — 캔버스는 `overflow: hidden`이라 넘친 내용은 스크롤도 경고도 없이
    잘린다. 각 슬라이드를 실제 크기로 띄워 세이프 존을 넘치지 않는지 눈으로

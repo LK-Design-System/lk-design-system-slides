@@ -117,6 +117,15 @@ ExhibitRow. **폭은 항상 균등** — 하나가 더 중요하면 `emphasis`�
 구분과 같은 결). 이 슬라이드에서는 statement 자체가 accent라 eyebrow는 자동으로
 라벨 톤으로 내려간다. 덱이 도는 결정적 주장이나 인용에만 쓴다 — 남발하면 무게가 죽는다.
 
+### CodeSlide — 코드 한 토막
+```jsx
+<CodeSlide eyebrow="구현" title="인쇄 시트 진입점" governing="…"
+  code={source} highlight={[3, 4]} caption="src/components/slides/DeckPrintSheet.jsx" />
+```
+투사 거리의 코드. 줄바꿈하지 않고 62열에서 자른다 — 넘치면 줄이지 말고 발췌를
+자른다. `highlight`(1-기반 줄 번호)가 요점을 진하게, 나머지를 물린다. 문법 색칠은
+하지 않는다. `caption`에는 파일 경로를 적는다.
+
 ## 단계 공개 — Step
 
 ```jsx
@@ -305,6 +314,24 @@ date를 비워 각주로 보내는 것이 같은 날짜를 복붙하는 것보�
 status 닫힌 어휘: `met`(무채색) `watch` `missed`. 상태 틴트는 일탈 채널이라 강조 예산과
 경쟁하지 않는다 — eyebrow 유지됨.
 
+## Editorial 프리미티브 (슬라이드 안에 직접 얹을 때)
+
+위 슬라이드들이 이미 조합하는 것들이다. 레이아웃이 맞지 않는 도판을 `ContentSlide`
+본문이나 `FigureSlide` 안에 직접 얹을 때만 쓴다. 모두 강조는 하나(boolean `emphasis`),
+정확한 값은 항상 글자로 병기한다.
+
+- `KeyFigure` — 숫자 하나에 주장 하나(`value`, `unit`, `label`, `claim`). StatSlide의 칸.
+- `AnnotatedFigure` — 도판을 감싸 주석을 단다(`annotations`, `caption`). FigureSlide의 속.
+- `PictogramRow` — 수량을 반복 단위로(`value`, `per`, `unit`, `label`). 비교할 때는
+  주장하는 행 하나만 두고 나머지는 `emphasis={false}`.
+- `RankShift` — 두 시점 사이의 순위 변화(`items`, `startLabel`, `endLabel`).
+- `BeforeAfter` — 명시된 기준 대비 편차 막대(`reference`, `items`, `unit`). 기준 없는
+  편차는 만들 수 없다.
+- `NarrativeTimeline` — 주장을 하는 연대기(`events`, `direction`). 너무 많으면 접지
+  않고 넘쳐서 게이트에 걸린다.
+- `OptionAssessment` / `StatusAssessment` — CompareSlide / AssessmentSlide의 표 본체.
+- `TrendChart`, `MappingDiagram` — 위 절 참조.
+
 ## 열람 페이지 콘텐츠 (kind="read" 전용 어휘, content-rules §8)
 
 ContentSlide children 안에서 쓰는 열람 덱의 세 계약. 레퍼런스 실물:
@@ -330,7 +357,7 @@ N열 균등 grid + 잔여 높이 주도 이미지(고정 px 높이 금지 — �
 
 ### WeekSpanRows — 주차 스팬 행 (간트-lite)
 ```jsx
-<WeekSpanRows label="향후 업무 계획" weeks={['8월 2주차', '8월 3주차']}
+<WeekSpanRows aria-label="향후 업무 계획" weeks={['8월 2주차', '8월 3주차']}
   rows={[{ name: '화재 검출', work: '화재 데이터셋 수집 및 학습', from: 0, to: 1, continues: true }]} />
 ```
 시간 격자(주차 칸 눈금 + 칸 중앙 헤더)가 축을 만들고, 스팬 바는 grid-column
@@ -341,7 +368,7 @@ N열 균등 grid + 잔여 높이 주도 이미지(고정 px 높이 금지 — �
 
 ### DeckViewer
 ```jsx
-<DeckViewer label="덱 제목" initial={0} kind="present"> {slides} </DeckViewer>
+<DeckViewer aria-label="덱 제목" initial={0} kind="present"> {slides} </DeckViewer>
 ```
 `kind`: `present`(기본, 발표) | `read`(회람·열람 — 콘텐츠 게이트 프로파일이
 바뀐다, content-rules §8).
@@ -355,6 +382,19 @@ N열 균등 grid + 잔여 높이 주도 이미지(고정 px 높이 금지 — �
 <ContentSlide title="…" notes="이 장에서는 비용 얘기를 먼저 꺼낸다. [~2분]" … />
 ```
 
+### PresenterView — 발표자 화면
+```jsx
+<PresenterView channel="deck-1" aria-label="발표자">{slides}</PresenterView>
+<DeckViewer channel="deck-1" aria-label="청중">{slides}</DeckViewer>
+```
+`DeckViewer`와 같은 상태 기계. 현재 장·다음 장 미리보기·노트·경과 시간을 보인다.
+두 뷰는 같은 `channel`로 이어진다(다른 창이면 BroadcastChannel). 늦게 연 창은
+청중이 보고 있는 위치를 물어서 채택한다.
+
+### DeckPrintSheet — 인쇄/PDF
+`DeckViewer`가 `?lds-print=1`(또는 `print`)에서 스스로 이것으로 바뀐다 — 직접 쓸 일은
+드물다. 전 장을 1280×720 페이지로 1:1, 단계는 최종 상태로 인쇄한다.
+
 ### SlideSurface (직접 쓸 일은 드묾)
 고정 1280px 논리 캔버스를 컨테이너에 scale로 끼움. 모든 px는 설계 px.
 새 레이아웃이 필요할 때만 직접 조립하되, 그 전에 lds-slides-ui 소유자에게 어휘 확장을 요청한다 — 우회 구현은 계약 밖이다.
@@ -363,6 +403,12 @@ N열 균등 grid + 잔여 높이 주도 이미지(고정 px 높이 금지 — �
 
 - `source` prop이 있는 슬라이드(Stat/Figure/Compare/Roadmap/Assessment)에서 외부·내부
   데이터를 보였으면 반드시 출처를 채운다. 형식: `"출처: <시스템/문서>, <YYYY-MM>"`.
-- 강조 예산 요약: 슬라이드당 accent는 하나다. figure emphasis / annotation emphasis /
-  recommendation / phase emphasis 중 하나가 쓰이면 eyebrow의 accent가 자동으로 내려간다.
-  status 틴트(AssessmentSlide)만 예외.
+- 강조 예산 요약: 슬라이드당 accent는 하나다. figure / annotation / recommendation /
+  phase / panel(Triptych) / item(Quadrant) 강조 중 하나가 쓰이면 eyebrow의 accent가
+  자동으로 내려간다 — eyebrow를 쓰는 덱이면 내려도 제목 높이는 그대로다(자리가 남는다).
+  그 대가로 eyebrow 없는 장도 한 줄(약 38 설계 px)을 덜 받으므로, 꽉 찬 도식 장은 덱이
+  eyebrow를 쓰는지 보고 분량을 잡는다. status
+  틴트(AssessmentSlide)만 예외.
+- prop 이름: `label`은 화면에 보이는 글자, 이름만이면 `aria-label`. 단위는 `unit`,
+  강조는 boolean `emphasis`. `unitLabel`·PictogramRow `tone`은 옛 철자다.
+- `appearance="brand"`는 표지·간지·선언·막지에만. 본문 레이아웃은 받지 않는다.
