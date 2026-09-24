@@ -81,8 +81,8 @@ export const BeforeAfter = {
                     borderRadius: '3px 3px 0 0',
                     background:
                       station.value >= TARGET
-                        ? 'var(--color-semantic-status-positive)'
-                        : 'var(--color-semantic-status-negative)',
+                        ? 'var(--color-semantic-status-positive-foreground)'
+                        : 'var(--color-semantic-status-negative-foreground)',
                   }}
                 />
                 <span style={{ fontSize: 'var(--label2-size)', color: 'var(--color-semantic-label-neutral)' }}>{station.label.replace('스테이션', '')}</span>
@@ -91,11 +91,11 @@ export const BeforeAfter = {
           </div>
           <div style={{ display: 'flex', gap: 'var(--space-4)', fontSize: 'var(--label2-size)', color: 'var(--color-semantic-label-neutral)' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)' }}>
-              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--color-semantic-status-positive)' }} />
+              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--color-semantic-status-positive-foreground)' }} />
               달성
             </span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)' }}>
-              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--color-semantic-status-negative)' }} />
+              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--color-semantic-status-negative-foreground)' }} />
               미달
             </span>
           </div>

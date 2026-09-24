@@ -57,8 +57,8 @@ export const Default = {
             aria-label="주간 처리량"
             width={420}
             height={150}
-            yDomain={[750, 1050]}
-            yTicks={3}
+            yDomain={[700, 1100]}
+            yTicks={4}
             xTicks={WEEKS}
             yLabel="건"
             series={[{ name: '주간 처리량', points: WEEKS.map((week, index) => ({ x: week, y: THROUGHPUT[index] })) }]}

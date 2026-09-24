@@ -76,12 +76,12 @@ export const BeforeAfter = {
         <PanelHeader tone="negative" badge="절차 위반" title="AMR 운영 현황" />
         <div data-violation-figure style={{ display: 'flex', alignItems: 'flex-end', gap: 'var(--space-10)', padding: 'var(--space-4) 0' }}>
           <div style={{ display: 'grid', gap: 'var(--space-2)', justifyItems: 'center' }}>
-            <RobotIcon scale={1} color="var(--color-semantic-status-cautionary)" />
+            <RobotIcon scale={1} color="var(--color-semantic-status-cautionary-foreground)" />
             <span style={{ fontSize: 'var(--label1-size)', color: 'var(--color-semantic-label-neutral)' }}>작년</span>
           </div>
           <div style={{ display: 'grid', gap: 'var(--space-2)', justifyItems: 'center' }}>
-            <RobotIcon scale={THIS_YEAR / LAST_YEAR} color="var(--color-semantic-status-negative)" />
-            <span style={{ fontSize: 'var(--label1-size)', fontWeight: 'var(--fw-bold)', color: 'var(--color-semantic-status-negative)' }}>올해 급증!</span>
+            <RobotIcon scale={THIS_YEAR / LAST_YEAR} color="var(--color-semantic-status-negative-foreground)" />
+            <span style={{ fontSize: 'var(--label1-size)', fontWeight: 'var(--fw-bold)', color: 'var(--color-semantic-status-negative-text)' }}>올해 급증!</span>
           </div>
         </div>
         <ul

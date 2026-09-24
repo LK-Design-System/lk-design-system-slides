@@ -55,7 +55,7 @@ export function StatusAssessment({ metrics = [], caption, style, ...rest }) {
             ) : (
               <span
                 data-assessment-status-unknown
-                style={{ color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))' }}
+                style={{ color: 'var(--color-semantic-status-cautionary-text)' }}
               >
                 판정 미상: {String(metric.status)}
               </span>

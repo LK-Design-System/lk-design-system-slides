@@ -269,7 +269,7 @@ export function AnnotatedFigure({ children, annotations = [], caption, style, ..
                     fontSize: 'var(--editorial-caption-size)',
                     lineHeight: 'var(--editorial-caption-line)',
                     letterSpacing: 'var(--editorial-caption-spacing)',
-                    color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
+                    color: 'var(--color-semantic-status-cautionary-text)',
                   }}
                 >
                   앵커 미확인: {annotation.anchor}

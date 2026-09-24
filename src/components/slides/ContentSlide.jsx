@@ -125,7 +125,7 @@ export function ContentSlide({ eyebrow, title, governing, anchor = 'top', appear
               fontSize: 'var(--slides-fine-size)',
               lineHeight: 'var(--slides-fine-line)',
               fontWeight: 'var(--fw-semibold)',
-              color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
+              color: 'var(--color-semantic-status-cautionary-text)',
             }}
           >
             거버닝 미기재 — 본문이 입증할 주장 한 문장이 필요합니다

@@ -60,7 +60,7 @@ const LatencyChart = () => (
       y1="87"
       x2="320"
       y2="87"
-      stroke="var(--color-semantic-status-cautionary)"
+      stroke="var(--color-semantic-status-cautionary-foreground)"
       strokeWidth="1"
       strokeDasharray="3 3"
     />

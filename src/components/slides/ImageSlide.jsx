@@ -131,7 +131,7 @@ function Image({ src, alt, fit, aspect }) {
             borderRadius: 'var(--radius-md, 12px)',
             fontSize: 'var(--slides-fine-size)',
             lineHeight: 'var(--slides-fine-line)',
-            background: 'var(--color-semantic-status-cautionary)',
+            background: 'var(--color-semantic-status-cautionary-signal)',
             // Black, not white: white on the cautionary fill measured ~2:1,
             // a warning that could not be read. Static black clears 4.5:1.
             color: 'var(--color-semantic-static-black)',

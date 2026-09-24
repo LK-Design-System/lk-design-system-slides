@@ -67,10 +67,10 @@ export const BeforeAfter = {
           includeZero={false}
           yDomain={[780, 1060]}
           xTicks={WEEKS}
-          series={[{ name: 'AMR-A', color: 'var(--color-semantic-status-negative)', points: POINTS }]}
+          series={[{ name: 'AMR-A', color: 'var(--color-semantic-status-negative-foreground)', points: POINTS }]}
           referenceLines={[
-            { y: 900, label: '목표!', color: 'var(--color-semantic-status-cautionary)' },
-            { y: 1000, label: '신기록!', color: 'var(--color-semantic-status-positive)' },
+            { y: 900, label: '목표!', color: 'var(--color-semantic-status-cautionary-foreground)' },
+            { y: 1000, label: '신기록!', color: 'var(--color-semantic-status-positive-foreground)' },
           ]}
         />
         <ul

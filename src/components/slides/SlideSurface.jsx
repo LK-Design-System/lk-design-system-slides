@@ -221,7 +221,7 @@ export function SlideSurface({
               // grade is Korean ("내부용"), same reasoning as the eyebrow (R2).
               letterSpacing: 'var(--slides-fine-spacing)',
               fontWeight: 'var(--fw-semibold)',
-              color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
+              color: 'var(--color-semantic-status-cautionary-text)',
             }}
           >
             {resolvedClassification}

@@ -12,11 +12,11 @@ const EVENTS = [
 ];
 
 const LOUD = [
-  'var(--color-semantic-status-negative)',
-  'var(--color-semantic-status-cautionary)',
-  'var(--color-semantic-status-positive)',
-  'var(--color-semantic-status-negative)',
-  'var(--color-semantic-status-cautionary)',
+  'var(--color-semantic-status-negative-foreground)',
+  'var(--color-semantic-status-cautionary-foreground)',
+  'var(--color-semantic-status-positive-foreground)',
+  'var(--color-semantic-status-negative-foreground)',
+  'var(--color-semantic-status-cautionary-foreground)',
 ];
 
 const panelStyle = {

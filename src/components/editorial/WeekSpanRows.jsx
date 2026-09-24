@@ -98,7 +98,7 @@ export function WeekSpanRows({
                 padding: '0 var(--editorial-cell-pad-inline) var(--space-1)',
                 fontSize: 'var(--editorial-caption-size)',
                 lineHeight: 'var(--editorial-caption-line)',
-                color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
+                color: 'var(--color-semantic-status-cautionary-text)',
               }}
             >
               구간 합 {spanned} ≠ 기간 {weeks.length}

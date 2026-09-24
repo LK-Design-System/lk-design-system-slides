@@ -82,7 +82,7 @@ export function TriptychSlide({ panels = [], anchor, eyebrow, style, ...rest }) 
                   : 'var(--color-semantic-label-strong)',
                 // The label is the thing that makes this a triptych rather than
                 // a grid, so a missing one is stated, not silently absorbed.
-                ...(panel.label ? null : { color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))' }),
+                ...(panel.label ? null : { color: 'var(--color-semantic-status-cautionary-text)' }),
               }}
             >
               {panel.label || '레이블 없음'}

@@ -266,7 +266,7 @@ export function QuadrantSlide({
               fontSize: 'var(--slides-fine-size)',
               lineHeight: 'var(--slides-fine-line)',
               letterSpacing: 'var(--slides-fine-spacing)',
-              color: 'var(--color-semantic-status-cautionary-text, var(--color-semantic-status-cautionary))',
+              color: 'var(--color-semantic-status-cautionary-text)',
             }}
           >
             좌표 미지정: {unplaced.map((item) => item.label).join(', ')}

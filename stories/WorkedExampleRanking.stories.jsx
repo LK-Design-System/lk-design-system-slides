@@ -12,9 +12,9 @@ const ITEMS = [
 ];
 
 const RAINBOW = [
-  'var(--color-semantic-status-negative)',
-  'var(--color-semantic-status-cautionary)',
-  'var(--color-semantic-status-positive)',
+  'var(--color-semantic-status-negative-foreground)',
+  'var(--color-semantic-status-cautionary-foreground)',
+  'var(--color-semantic-status-positive-foreground)',
   'var(--color-semantic-primary-normal)',
   'var(--color-semantic-accent-blue-text, #336CA1)',
 ];
