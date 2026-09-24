@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
 import { closeServer, loadStoryIndex, openStorybook } from './_storybook-static.mjs';
+import { CONTENT } from './_thresholds.mjs';
 
 // Content discipline, mechanised — the layer of content-rules.md a machine can
 // hold. The ghost-deck test (does the governing chain argue?) and layout-fit
@@ -152,7 +153,9 @@ async function auditStory(page, origin, id) {
     return { id, issues: [], visited: 0 };
   }
   await page.waitForTimeout(300);
-  return page.evaluate(async ({ maxAdvances, settleMs }) => {
+  // The walk runs in the page, so the thresholds travel in as an argument —
+  // a module import is not visible inside page.evaluate.
+  return page.evaluate(async ({ maxAdvances, settleMs, CONTENT }) => {
     const wait = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
     const clean = (text) => (text ?? '').replace(/\s+/g, ' ').trim();
     // Images decode after layout; auditing before they settle judges a slide
@@ -250,7 +253,7 @@ async function auditStory(page, origin, id) {
         const text = clean(governing.textContent);
         const terminators = (text.match(/[.!?](?=\s|$)/g) ?? []).length;
         if (terminators > 1) flag('governing-shape', `"${text.slice(0, 40)}…" — 문장이 둘이면 슬라이드가 둘`);
-        if (text.length > 55) flag('governing-shape', `${text.length}자 — 상한 55자 (Alley 8–14 단어)`);
+        if (text.length > CONTENT.governingChars) flag('governing-shape', `${text.length}자 — 상한 ${CONTENT.governingChars}자 (Alley 8–14 단어)`);
       }
 
       // canvas-under-fill — counted per slide here, judged per deck below:
@@ -295,7 +298,7 @@ async function auditStory(page, origin, id) {
         // bullet-count — past seven the list is a structure pretending to be
         // prose; show it as a diagram, a table, or two slides.
         const bullets = content.querySelectorAll('li');
-        if (bullets.length > 7) flag('bullet-count', `불릿 ${bullets.length}개 — 상한 7 (tahta MANY_BULLETS)`);
+        if (bullets.length > CONTENT.bullets) flag('bullet-count', `불릿 ${bullets.length}개 — 상한 ${CONTENT.bullets} (tahta MANY_BULLETS)`);
 
         // body-cap — prose beyond the kind's budget is a document wearing a
         // slide's clothes (present ~140 ≈ 40 words; read 300, a page's worth).
@@ -396,8 +399,8 @@ async function auditStory(page, origin, id) {
     // pages are document flow, not a defect).
     const kind = deck?.getAttribute('data-lds-deck-kind') ?? 'present';
     const profile = kind === 'read'
-      ? { governingRequired: false, bodyCap: 300, fillDiscipline: false }
-      : { governingRequired: true, bodyCap: 140, fillDiscipline: true };
+      ? { governingRequired: false, bodyCap: CONTENT.bodyCap.read, fillDiscipline: false }
+      : { governingRequired: true, bodyCap: CONTENT.bodyCap.present, fillDiscipline: true };
     const surfacesNow = () => [...document.querySelectorAll('[data-lds-slide-surface]')]
       .filter((node) => !node.closest('[data-presenter-next-slide]'));
 
@@ -405,7 +408,7 @@ async function auditStory(page, origin, id) {
       await imagesSettled();
       surfacesNow().forEach((surface) => auditSurface(surface, null));
       if (underFilled.length >= 3) issues.push({ rule: 'canvas-under-fill', position: 'deck', detail: `절반도 못 채운 콘텐츠 슬라이드 ${underFilled.length}장 — ${underFilled.join(', ')} — 병합하거나 더 찬 레이아웃으로` });
-    if (statements > 2) issues.push({ rule: 'statement-budget', position: 'deck', detail: `StatementSlide ${statements}장 — 한두 번이 한계` });
+    if (statements > CONTENT.statementBudget) issues.push({ rule: 'statement-budget', position: 'deck', detail: `StatementSlide ${statements}장 — 한두 번이 한계` });
       return { issues, visited: surfacesNow().length };
     }
 
@@ -434,9 +437,9 @@ async function auditStory(page, origin, id) {
       if (progressOf() === before) break;
     }
     if (underFilled.length >= 3) issues.push({ rule: 'canvas-under-fill', position: 'deck', detail: `절반도 못 채운 콘텐츠 슬라이드 ${underFilled.length}장 — ${underFilled.join(', ')} — 병합하거나 더 찬 레이아웃으로` });
-    if (statements > 2) issues.push({ rule: 'statement-budget', position: 'deck', detail: `StatementSlide ${statements}장 — 한두 번이 한계` });
+    if (statements > CONTENT.statementBudget) issues.push({ rule: 'statement-budget', position: 'deck', detail: `StatementSlide ${statements}장 — 한두 번이 한계` });
     return { issues, visited: visited.size };
-  }, { maxAdvances: 400, settleMs: 90 }).then((result) => ({ id, ...result }));
+  }, { maxAdvances: 400, settleMs: 90, CONTENT }).then((result) => ({ id, ...result }));
 }
 
 async function loadKnown() {

@@ -173,6 +173,22 @@
           "name": "children"
         }
       ],
+      "inherits": {
+        "from": [
+          "SlideSurface"
+        ],
+        "props": [
+          "safeArea",
+          "preset",
+          "classification",
+          "mark",
+          "scale",
+          "notes",
+          "foot",
+          "footer",
+          "source"
+        ]
+      },
       "dataAttributes": [
         "data-lds",
         "data-lds-content-slide",
@@ -1418,6 +1434,7 @@
           "name": "xLabel"
         }
       ],
+      "forwardsTo": "@lk-design-system/lds-product LineChart",
       "dataAttributes": [
         "data-lds-trend-chart"
       ]

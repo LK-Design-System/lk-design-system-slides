@@ -80,6 +80,9 @@ Roadmap·Triptych·Quadrant)이 첫 요청만 승인하고 나머지를 강등�
 
 ## 상태
 
+현재 버전과 필요한 Core/Theme/Product 범위는 `package.json`(`version`, `peerDependencies`)이
+정본이다. 아래는 최근 릴리스 기록이다(위가 최신).
+
 `0.1.0-alpha.11` — **게이트가 소비자 명령이 된다**: `lds-slides-check`가 bin으로 실리고
 그 규칙을 돌릴 `scripts/`가 함께 나간다(아래 "소비 레포에서 게이트 돌리기"). 덱 단위
 분류 표기와 상시 마크, 2단 기간 머리, 자산 계약과 그 게이트, 한국어 제목 규칙이 판정하지
@@ -98,9 +101,9 @@ alpha.8은 위임 복귀 세대였다. 손말이 중복 두 벌이 업스트림�
 이 층은 서사·판정 계약과 매체 랭크 재지정(`--lk-timeline-*`·`--lk-table-*`)만
 남긴다. alpha.7의 열람 덱 축(`DeckViewer kind="present"|"read"`),
 열람 계약 3종(`TopicList`·`ExhibitRow`·`WeekSpanRows`), chrome-intrusion
-가드는 그대로다. **Core/Theme/Product `>=0.1.0-rc.69.28` 필수** — 위임에
-쓰는 `groupKey`와 `--lk-timeline-*` 훅은 rc.69.27에서, `TrendChart`가 쓰는
-`--lk-chart-*`와 `StatSlide`의 `--lk-stat-*` 훅은 rc.69.28에서 생겼다. Storybook
+가드는 그대로다. 필요한 Core/Theme/Product 하한의 이유: 위임에 쓰는 `groupKey`와
+`--lk-timeline-*` 훅은 rc.69.27에서, `TrendChart`가 쓰는 `--lk-chart-*`와 `StatSlide`의
+`--lk-stat-*` 훅은 rc.69.28에서 생겼다. Storybook
 포트는 **6009** (사다리: Core 6006 · 3D 6007 · Robotics 6008 · Slides 6009 —
 새 자매는 6011부터).
 
@@ -248,8 +251,8 @@ npm run generate:catalogue   # 소스에서 다시 뽑기
   스코프는 FigureSlide 하나 — ImageSlide(contained)는 잔여 높이 주도가 계약이라
   좁은 것이 정상이고, 표·지표 행은 이미 매체 폭 정책이 소유한다. 넓히면 오탐이
   규칙의 신뢰를 깎는다.
-- `check:visual-snapshot` — **스냅샷**. 대표 슬라이드(현재 26장 — 스크립트의 `SUBJECTS`
-  목록이 정본)의 렌더를 커밋된
+- `check:visual-snapshot` — **스냅샷**. 대표 슬라이드(목록은 스크립트의 `SUBJECTS`가
+  정본)의 렌더를 커밋된
   베이스라인과 비교한다(pixelmatch, threshold 0.1, includeAA false — 플랫폼별
   텍스트 래스터화 차이를 흡수한다). 의미를 모르는 그물이라 화살촉 비율·이음매·
   랭크 이동처럼 규칙으로 못 적은 결함까지 덮는다. 대신 **"틀렸다"가 아니라
@@ -264,7 +267,8 @@ npm run generate:catalogue   # 소스에서 다시 뽑기
 무엇을 말할지의 규칙 중 **숫자가 있는 것은 기계가, 없는 것은 심사가** 잡는다.
 
 `check:deck-content`가 `Decks/` 아래 모든 덱을 (초과 게이트와 같은 방식으로) 끝까지
-몰면서 열다섯 규칙을 검사한다. 내용 규칙: 명사형 종결 제목(한국어가 없는 제목은 통과가
+몰면서 규칙을 검사한다(목록과 출처는 스크립트 머리 주석, 임계값은 `scripts/_thresholds.mjs`가
+정본이고 `check:skill-shipping`이 이 절과 스킬 문서의 숫자를 그 값에 묶는다). 내용 규칙: 명사형 종결 제목(한국어가 없는 제목은 통과가
 아니라 "판정 안 됨"으로 신고), 콘텐츠 슬라이드의 거버닝 유무와 형태(한 문장·55자 —
 Alley의 assertion-evidence 8–14단어에서 온 상한), 불릿 상한 7(tahta), 본문 상한 140자
 (academic-pptx-skill의 ~40단어), 데이터 슬라이드의 source, 덱당 StatementSlide 최대 2장,

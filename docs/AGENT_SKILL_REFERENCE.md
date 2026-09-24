@@ -12,7 +12,7 @@
 
 ## 타입 — 업스트림 램프 직접 참조 금지
 
-- 컴포넌트·덱 마크업에 `--display1-*`, `--body2-*` 같은 업스트림 램프 변수를 쓰지 않는다. 타입은 `--slides-*` 단계에서만 읽는다(hero·spot·display·title·governing·body·caption·orient·overline·fine의 10단 — `catalogue.json`의 `tokens.ramp`가 정본).
+- 컴포넌트·덱 마크업에 `--display1-*`, `--body2-*` 같은 업스트림 램프 변수를 쓰지 않는다. 타입은 `--slides-*` 단계에서만 읽는다(단계 목록은 `catalogue.json`의 `tokens.ramp`가 정본 — 이 문서는 옮겨 적지 않는다).
 - 에디토리얼 프리미티브를 직접 쓰면 `--editorial-*` 5단계(value > claim > note > note-body > caption)만 읽는다 — rank는 불변이고 거리(크기)는 매체가 재지정한다.
 - 새 CSS 파일·새 토큰·인라인 px 폰트 크기 금지. `preset`은 토큰 축이다(keynote 기본 / briefing 한 단 아래).
 

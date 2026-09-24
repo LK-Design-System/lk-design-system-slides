@@ -160,8 +160,22 @@ for (const { name, dir, file } of exports_) {
     useFor: useFor(source, name),
     props,
   };
-  const inherits = name === 'ContentSlide' || name === 'SlideSurface' ? undefined : inheritedProps(source, props, bases);
+  // ContentSlide itself forwards ...rest to SlideSurface, so it inherits the
+  // chrome props too (`notes` on a ContentSlide is correct usage).
+  const inherits = name === 'SlideSurface' ? undefined : inheritedProps(source, props, bases);
   if (inherits) entry.inherits = inherits;
+  // A component that spreads ...rest into an UPSTREAM component accepts that
+  // component's props as well — TrendChart hands its axis props to Product's
+  // LineChart. The catalogue cannot list another package's props, so it says
+  // where they go instead of pretending the list is closed.
+  const upstream = [...source.matchAll(/import \{([^}]+)\} from '(@lk-design-system\/[\w-]+)'/g)]
+    .flatMap(([, names, pkgName]) => names.split(',').map((n) => [n.trim(), pkgName]));
+  for (const [upstreamName, pkgName] of upstream) {
+    if (new RegExp(`<${upstreamName}\\b[^>]*\\{\\.\\.\\.rest\\}`).test(source)) {
+      entry.forwardsTo = `${pkgName} ${upstreamName}`;
+      break;
+    }
+  }
   entry.dataAttributes = dataAttributes(source);
   entries.push(entry);
 }

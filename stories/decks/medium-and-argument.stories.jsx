@@ -1,4 +1,5 @@
 import React from 'react';
+import slidesTokens from '../../tokens/slides.css?raw';
 import {
   DeckViewer,
   TitleSlide,
@@ -66,15 +67,15 @@ const BEFORE = `// Editorial — KeyFigure (이전)
 // WeekSpanRows와 같은 절차로 승격됐다 (COMPLETENESS_AUDIT B2). 파일럿이
 // 지불한 교훈(HTML 배치로 폭을 채운다·통로가 여유를 먹는다·한 행만 켠다)은
 // 컴포넌트 docstring에 옮겨 적혀 있다.
-const SEAM_ROWS = [
-  { from: 'value', to: 'slides-title' },
-  { from: 'claim', to: 'slides-body', emphasis: true },
-  // The seam as tokens/slides.css defines it since d3f070b (2026-08-17), which
-  // raised note and note-body a rung — this deck kept teaching the old map.
-  { from: 'note', to: 'slides-body' },
-  { from: 'note-body', to: 'slides-caption' },
-  { from: 'caption', to: 'slides-fine' },
-];
+// Read from the token file itself, not retyped. The first version of this
+// deck typed the map by hand and kept teaching the pre-d3f070b seam
+// (note→caption, note-body→fine) for weeks after the tokens moved; the
+// diagram now cannot disagree with the file it describes.
+const SEAM_RANKS = ['value', 'claim', 'note', 'note-body', 'caption'];
+const SEAM_ROWS = SEAM_RANKS.map((rank) => {
+  const step = new RegExp(`--editorial-${rank}-size:\\s*var\\(--(slides-[a-z-]+?)-size\\)`).exec(slidesTokens);
+  return { from: rank, to: step ? step[1] : '(재지정 없음)', emphasis: rank === 'claim' };
+});
 
 export const Deck = {
   name: '매체와 논증의 분리',

@@ -47,13 +47,14 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
 import { closeServer, loadStoryIndex, openStorybook } from './_storybook-static.mjs';
+import { FIGURE } from './_thresholds.mjs';
 
 const root = process.cwd();
 const staticDir = path.join(root, 'storybook-static');
 const knownPath = path.join(root, 'figure-fill-known-failures.json');
 const updateKnown = process.argv.includes('--update-known-failures');
 const reportOnly = process.argv.includes('--report');
-const MINIMUM_FILL = 0.70;
+const MINIMUM_FILL = FIGURE.minimumFill;
 // How far an exhibit's SVG text may drift from its specced size before it is a
 // rank inversion. 12% absorbs subpixel CTM noise; the defect that prompted the
 // rule sat at +97%.
