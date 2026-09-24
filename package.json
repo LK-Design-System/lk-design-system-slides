@@ -44,7 +44,8 @@
     "@lk-design-system/lds-product": ">=0.1.0-rc.69.28 <0.2.0",
     "@lk-design-system/lds-theme": ">=0.1.0-rc.69.28 <0.2.0",
     "react": ">=18 <20",
-    "react-dom": ">=18 <20"
+    "react-dom": ">=18 <20",
+    "@playwright/test": ">=1.61.1 <2"
   },
   "devDependencies": {
     "@lk-design-system/lds-core": "file:vendor/lk-design-system-lds-core-0.1.0-rc.69.28.tgz",
@@ -71,7 +72,9 @@
   "bin": {
     "lds-slides-check": "./bin/lds-slides-check.mjs"
   },
-  "optionalDependencies": {
-    "@playwright/test": "1.61.1"
+  "peerDependenciesMeta": {
+    "@playwright/test": {
+      "optional": true
+    }
   }
 }

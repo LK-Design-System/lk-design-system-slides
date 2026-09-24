@@ -14,9 +14,12 @@
  *   npx lds-slides-check http://localhost:6006 --only=overflow,content
  *
  * The URL is the ROOT of a built Storybook (the one with index.json), not a
- * story URL. Playwright's Chromium does the rendering and is an optional
- * dependency: this tool is useless without a browser, and a consumer who only
- * wants the components should not pay 300MB for one.
+ * story URL. Playwright's Chromium does the rendering, and @playwright/test is
+ * an OPTIONAL PEER: this tool is useless without a browser, and a consumer who
+ * only wants the components should not pay 300MB for one. It was an
+ * optionalDependency once — npm installs those into every consumer, which put
+ * a second Playwright in their tree and made their `playwright install`
+ * fetch the other copy's browser.
  */
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';

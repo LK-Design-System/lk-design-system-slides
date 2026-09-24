@@ -350,8 +350,11 @@ npx lds-slides-check https://acme.github.io/decks
 URL은 스토리 주소가 아니라 빌드된 Storybook의 루트(`index.json`이 있는 곳)다.
 `--only=overflow,content`로 골라 돌린다. CLI가 규칙을 다시 구현하지 않는 것이 핵심이다 —
 `LDS_SLIDES_ORIGIN`이 이 저장소의 게이트 스크립트를 그대로 남의 Storybook에 겨눈다.
-규칙과 그 사본이 갈라질 자리가 없다. Chromium이 필요하므로 Playwright는 optional
-dependency이고, 없으면 설치 방법을 알려주고 멈춘다.
+규칙과 그 사본이 갈라질 자리가 없다. Chromium이 필요하므로 `@playwright/test`는 **선택적
+peer 의존성**이다 — 게이트를 돌리는 쪽만 직접 설치하고(`npm i -D @playwright/test`), 없으면
+설치 방법을 알려주고 멈춘다. 예전에는 optionalDependency였는데, npm은 그것을 모든 소비
+repo에 자동 설치해 트리에 Playwright가 두 벌 생겼고, 소비 repo의 `playwright install`이
+다른 벌의 브라우저를 받아 렌더러가 브라우저를 찾지 못했다(motion CI가 이 때문에 5주 실패).
 
 ## 다음 단계
 
