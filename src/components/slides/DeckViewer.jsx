@@ -14,6 +14,7 @@ import { useFullscreen, useHashPosition } from './deckRuntime.js';
 // exists: the person who needs a PDF has an URL in front of them, not a source
 // file. `print` still overrides, so a consumer can mount the sheet directly.
 const PRINT_PARAM = 'lds-print';
+const chromeButtonStyle = { font: 'inherit', whiteSpace: 'nowrap', flexShrink: 0 };
 function printModeFromLocation() {
   if (typeof window === 'undefined') return false;
   try {
@@ -236,6 +237,8 @@ function DeckViewerRuntime({
         data-deck-chrome
         style={{
           display: 'flex',
+          flexWrap: 'wrap',
+          minWidth: 0,
           alignItems: 'center',
           gap: 'var(--space-4)',
           fontFamily: 'var(--font-sans)',
@@ -246,7 +249,7 @@ function DeckViewerRuntime({
           data-deck-prev
           onClick={backward}
           disabled={atStart}
-          style={{ font: 'inherit' }}
+          style={chromeButtonStyle}
         >
           이전
         </button>
@@ -255,7 +258,7 @@ function DeckViewerRuntime({
           data-deck-next
           onClick={forward}
           disabled={atEnd}
-          style={{ font: 'inherit' }}
+          style={chromeButtonStyle}
         >
           다음
         </button>
@@ -265,7 +268,7 @@ function DeckViewerRuntime({
             data-deck-notes-toggle
             aria-expanded={showNotes}
             onClick={() => setShowNotes((visible) => !visible)}
-            style={{ font: 'inherit' }}
+            style={chromeButtonStyle}
           >
             {notesLabel}
           </button>
@@ -275,7 +278,7 @@ function DeckViewerRuntime({
           data-deck-overview-toggle
           aria-expanded={showOverview}
           onClick={() => setShowOverview((visible) => !visible)}
-          style={{ font: 'inherit' }}
+          style={chromeButtonStyle}
         >
           {overviewLabel}
         </button>
@@ -284,7 +287,7 @@ function DeckViewerRuntime({
           data-deck-fullscreen-toggle
           aria-pressed={fullscreen.active}
           onClick={fullscreen.toggle}
-          style={{ font: 'inherit' }}
+          style={chromeButtonStyle}
         >
           {fullscreen.active ? fullscreenExitLabel : fullscreenLabel}
         </button>
@@ -292,7 +295,8 @@ function DeckViewerRuntime({
           data-deck-progress-track
           aria-hidden="true"
           style={{
-            flex: 1,
+            flex: '1 1 64px',
+            minWidth: 0,
             height: 3,
             borderRadius: 'var(--radius-pill, 999px)',
             background: 'var(--color-semantic-fill-normal)',
@@ -313,6 +317,8 @@ function DeckViewerRuntime({
           aria-live="polite"
           style={{
             margin: 0,
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
             fontSize: 'var(--slides-fine-size)',
             lineHeight: 'var(--slides-fine-line)',
             letterSpacing: 'var(--slides-fine-spacing)',
