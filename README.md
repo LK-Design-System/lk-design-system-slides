@@ -17,7 +17,7 @@
 기존 자동 CI는 아래 현행 경로를 유지한다. 전체 검증을 현재 PC로 fallback하거나 새
 VM/runner를 자동 등록하지 않는다. 상세 규칙은 [AGENTS.md](AGENTS.md#ci릴리스-실행-호스트-필수)를 따른다.
 
-Storybook build는 GitHub-hosted Windows, Pages publish는 Ubuntu다. 전용 패키지 발행 workflow/runner는 구성되어 있지 않다. 신규 발행 환경이 필요하면 server04의 저장소 전용 격리 VM으로 별도 승인·자격검증한다.
+Storybook build와 Pages publish는 GitHub-hosted Ubuntu다. 2026-10-09부터 Linux가 정본 플랫폼이며(LDS 전체 결정) visual snapshot 베이스라인도 Linux에서 캡처한다. server04는 발행 전용이다. 전용 패키지 발행 workflow/runner는 구성되어 있지 않다. 신규 발행 환경이 필요하면 server04의 저장소 전용 격리 VM으로 별도 승인·자격검증한다.
 
 ## 소유 경계
 
@@ -268,8 +268,12 @@ npm run generate:catalogue   # 소스에서 다시 뽑기
   "달라졌다"만** 말한다 — 잘못 축복된 베이스라인은 영원히 통과하므로 측정
   게이트를 대신할 수 없다.
 
-의도된 변경이면 `npm run update:visual-snapshot`으로 갱신하되 **새 렌더를 눈으로
-보고** 원인이 된 변경과 같은 커밋에 넣는다. 차이 이미지는 `.visual-diff/`에 남는다.
+의도된 변경이면 베이스라인을 갱신하되 **새 렌더를 눈으로 보고** 원인이 된 변경과 같은
+커밋에 넣는다. 베이스라인의 정본 플랫폼은 Linux다(2026-10-09). Pages workflow를
+`update_visual_snapshot=true`로 dispatch하면 Linux에서 `npm run update:visual-snapshot`을
+실행해 `canonical-linux-visual-baseline` artifact로 올리고 배포는 하지 않는다. 그 PNG로
+`visual-baseline/`을 교체한다. 개발 PC의 `npm run update:visual-snapshot`은 미리보기용이며
+정본이 아니다. 차이 이미지는 `.visual-diff/`에 남는다.
 
 ## 내용 규율
 

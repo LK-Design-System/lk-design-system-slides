@@ -5,20 +5,27 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      update_visual_snapshot:
+        description: Capture the canonical Linux visual baselines and upload them as an artifact instead of deploying.
+        type: boolean
+        default: false
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# A baseline capture never deploys, so it must not cancel a Pages deploy or be
+# cancelled by one.
 concurrency:
-  group: github-pages
+  group: ${{ inputs.update_visual_snapshot && 'slides-visual-snapshot' || 'github-pages' }}
   cancel-in-progress: true
 
 jobs:
   build:
     name: Build Storybook
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -33,7 +40,7 @@ jobs:
       # Core/Theme/Product are installed from the vendored tarballs in vendor/,
       # so a clean CI install never needs the private registry.
       - name: Install dependencies
-        run: npm.cmd ci
+        run: npm ci
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -56,9 +63,10 @@ jobs:
       # The play functions are where the expression contracts are enforced, so
       # they gate the deploy: a build that violates one never reaches Pages.
       # Chromium is installed explicitly because the runner image ships no
-      # Playwright browsers, and only Chromium is needed.
+      # Playwright browsers, and only Chromium is needed. --with-deps adds the
+      # system libraries it needs on Linux.
       - name: Install Playwright Chromium
-        run: npx playwright install chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Run story play assertions
         run: npm run check:story-play
@@ -100,7 +108,24 @@ jobs:
       # The cheap net over everything the measuring gates do not know to look
       # for. Baselines are committed; a diff here means someone must look.
       - name: Check visual snapshots
+        if: ${{ !inputs.update_visual_snapshot }}
         run: npm run check:visual-snapshot
+
+      # Baselines are captured on Linux, the canonical platform since 2026-10-09
+      # — a developer PC rasterises text differently. A dispatch with
+      # update_visual_snapshot=true captures them here and uploads them for
+      # review and commit, and does not deploy: nothing was compared.
+      - name: Capture canonical Linux visual snapshots
+        if: ${{ inputs.update_visual_snapshot }}
+        run: npm run update:visual-snapshot
+
+      - name: Upload canonical Linux visual baselines
+        if: ${{ inputs.update_visual_snapshot }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-linux-visual-baseline
+          path: visual-baseline
+          if-no-files-found: error
 
       # The shipped copy of the deck-authoring skill must stay in step with the
       # repository's own — two editions, one copy of the rules.
@@ -108,14 +133,14 @@ jobs:
         run: npm run check:skill-shipping
 
       - name: Include third-party notices
-        shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force storybook-static/licenses | Out-Null
-          Copy-Item -LiteralPath node_modules/@lk-design-system/lds-core/THIRD_PARTY_NOTICES.md -Destination storybook-static/licenses/lds-core-THIRD_PARTY_NOTICES.md
-          Copy-Item -LiteralPath node_modules/@lk-design-system/lds-product/THIRD_PARTY_NOTICES.md -Destination storybook-static/licenses/lds-product-THIRD_PARTY_NOTICES.md
-          Copy-Item -LiteralPath node_modules/@lk-design-system/lds-theme/THIRD_PARTY_NOTICES.md -Destination storybook-static/licenses/lds-theme-THIRD_PARTY_NOTICES.md
+          mkdir -p storybook-static/licenses
+          cp node_modules/@lk-design-system/lds-core/THIRD_PARTY_NOTICES.md storybook-static/licenses/lds-core-THIRD_PARTY_NOTICES.md
+          cp node_modules/@lk-design-system/lds-product/THIRD_PARTY_NOTICES.md storybook-static/licenses/lds-product-THIRD_PARTY_NOTICES.md
+          cp node_modules/@lk-design-system/lds-theme/THIRD_PARTY_NOTICES.md storybook-static/licenses/lds-theme-THIRD_PARTY_NOTICES.md
 
       - name: Upload GitHub Pages artifact
+        if: ${{ !inputs.update_visual_snapshot }}
         uses: actions/upload-pages-artifact@v4
         with:
           path: storybook-static
@@ -123,6 +148,7 @@ jobs:
   deploy:
     name: Deploy GitHub Pages
     needs: build
+    if: ${{ !inputs.update_visual_snapshot }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
